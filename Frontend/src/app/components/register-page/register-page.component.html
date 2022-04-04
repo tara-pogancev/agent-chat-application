@@ -1,1 +1,54 @@
-<p>register-page works!</p>
+<body>
+  <div class="centered-content container columns shadow">
+    <div
+      class="column light-background is-flex is-flex-direction-column is-justify-content-center"
+    >
+      <div class="p-5 m-5" *ngIf="!isRegistered">
+        <h1>Create your account</h1>
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>Username</mat-label>
+            <input matInput placeholder="Username" />
+          </mat-form-field>
+        </div>
+
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input type="password" matInput placeholder="Password" />
+          </mat-form-field>
+        </div>
+
+        <div>
+          <button mat-flat-button color="primary">Register</button>
+          <button
+            mat-flat-button
+            color="info"
+            class="ml-5"
+            (click)="redirectLogin()"
+          >
+            Login instead
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="p-5 m-5 is-flex has-content-centered-center is-flex-direction-column has-text-centered"
+        *ngIf="isRegistered"
+      >
+        <h1>Thank you for registrating! 😄</h1>
+        <p>Feel free to login with your newly created account.</p>
+        <div>
+          <button
+            mat-flat-button
+            color="primary"
+            class="mt-5"
+            (click)="redirectLogin()"
+          >
+            Login
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
