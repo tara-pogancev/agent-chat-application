@@ -1,0 +1,30 @@
+h1 {
+  margin-bottom: 0px;
+  color: #a7c868;
+}
+
+.title-backdrop {
+  background-color: #ccee8c;
+}
+
+.sidebar-container {
+  background-color: #5c5f96;
+  color: #9b9ddd;
+}
+
+mat-button-toggle {
+  background-color: #5c5f96;
+  color: #9b9ddd;
+  border: none;
+}
+
+.mat-button-toggle-checked {
+  background-color: #515382 !important;
+  color: #dddfff;
+}
+
+.logout-container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}

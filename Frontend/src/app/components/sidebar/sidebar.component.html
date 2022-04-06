@@ -1,0 +1,41 @@
+<div class="sidebar-container stretch-height">
+  <div class="p-5 has-text-centered title-backdrop">
+    <h1>AgentChat</h1>
+  </div>
+  <div>
+    <mat-button-toggle-group
+      vertical="true"
+      [(ngModel)]="currentPage"
+      (change)="redirect()"
+    >
+      <mat-button-toggle value="" [disabled]="currentPage == ''"
+        >Messages</mat-button-toggle
+      >
+      <mat-button-toggle
+        value="new-message"
+        [disabled]="currentPage == 'new-message'"
+        >New message</mat-button-toggle
+      >
+      <mat-button-toggle
+        value="new-group-message"
+        [disabled]="currentPage == 'new-group-message'"
+        >New group message</mat-button-toggle
+      >
+      <mat-button-toggle
+        value="active-users"
+        [disabled]="currentPage == 'active-users'"
+        >Active users</mat-button-toggle
+      >
+      <mat-button-toggle
+        value="registered-users"
+        [disabled]="currentPage == 'registered-users'"
+        >Registered users</mat-button-toggle
+      >
+    </mat-button-toggle-group>
+  </div>
+  <div class="has-text-centered p-5 logout-container">
+    <button mat-icon-button matTooltip="Logout">
+      <mat-icon>cancel</mat-icon>
+    </button>
+  </div>
+</div>
