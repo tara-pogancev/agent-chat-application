@@ -49,6 +49,12 @@ body {
   min-height: 100%;
 }
 
+.page-container {
+  width: 100%;
+  min-height: 100%;
+  background-color: #515382;
+}
+
 /* Max width */
 .max-width-500 {
   max-width: 500px;
@@ -77,6 +83,11 @@ body {
 /* Border */
 .container {
   border-radius: 10px;
+}
+
+hr {
+  height: 0.8px;
+  opacity: 0.4;
 }
 
 /* Aditional */

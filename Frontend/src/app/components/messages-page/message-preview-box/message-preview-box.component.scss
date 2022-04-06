@@ -1,0 +1,17 @@
+@use "~@angular/material" as mat;
+@import "/src/custom-theme.scss";
+
+.box-container {
+  border-radius: 10px;
+  background-color: mat.get-color-from-palette(
+    $chat-application-primary,
+    "default"
+  );
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+p,
+strong {
+  color: #abaedf;
+}

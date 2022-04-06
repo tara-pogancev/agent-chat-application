@@ -1,0 +1,8 @@
+<div class="box-container clickable" (click)="changeMessage()">
+  <h2 class="is-light">John Smith</h2>
+  <p>
+    {{ text.length > 150 ? (text | slice: 0:150) + "..." : text }}
+  </p>
+  <hr />
+  <strong>24/05/2022</strong>
+</div>

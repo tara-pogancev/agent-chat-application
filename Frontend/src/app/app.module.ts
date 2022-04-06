@@ -16,6 +16,8 @@ import { NewMessagePageComponent } from './components/new-message-page/new-messa
 import { NewGroupMessagePageComponent } from './components/new-group-message-page/new-group-message-page.component';
 import { ActiveUsersPageComponent } from './components/active-users-page/active-users-page.component';
 import { RegisteredUsersPageComponent } from './components/registered-users-page/registered-users-page.component';
+import { MessagePreviewComponent } from './components/messages-page/message-preview/message-preview.component';
+import { MessagePreviewBoxComponent } from './components/messages-page/message-preview-box/message-preview-box.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { RegisteredUsersPageComponent } from './components/registered-users-page
     NewGroupMessagePageComponent,
     ActiveUsersPageComponent,
     RegisteredUsersPageComponent,
+    MessagePreviewComponent,
+    MessagePreviewBoxComponent,
   ],
   imports: [
     BrowserModule,

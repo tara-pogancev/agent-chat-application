@@ -1,3 +1,6 @@
+@use "~@angular/material" as mat;
+@import "/src/custom-theme.scss";
+
 h1 {
   margin-bottom: 0px;
   color: #a7c868;
