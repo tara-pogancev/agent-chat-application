@@ -5,3 +5,11 @@ h1 {
   font-size: 48px;
   color: mat.get-color-from-palette($chat-application-accent, "default");
 }
+
+mat-button-wrapper {
+  line-height: 24px;
+}
+
+mat-icon {
+  margin-top: -5px;
+}
