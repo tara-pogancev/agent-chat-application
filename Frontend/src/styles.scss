@@ -1,4 +1,6 @@
+@use "~@angular/material" as mat;
 @import "bulma/css/bulma.css";
+@import "/src/custom-theme.scss";
 
 html,
 body {
@@ -52,7 +54,10 @@ body {
 .page-container {
   width: 100%;
   min-height: 100%;
-  background-color: #515382;
+  background-color: mat.get-color-from-palette(
+    $chat-application-accent,
+    "default"
+  ) !important;
 }
 
 /* Max width */
