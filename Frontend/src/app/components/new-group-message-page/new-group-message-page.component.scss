@@ -1,0 +1,18 @@
+@use "~@angular/material" as mat;
+@import "/src/custom-theme.scss";
+
+.container {
+  background-color: white;
+  padding: 50px;
+}
+
+textarea {
+  min-height: 150px;
+}
+
+h3 {
+  color: mat.get-color-from-palette(
+    $chat-application-primary,
+    "default"
+  ) !important;
+}

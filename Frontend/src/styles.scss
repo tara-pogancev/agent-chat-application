@@ -1,6 +1,7 @@
 @use "~@angular/material" as mat;
-@import "bulma/css/bulma.css";
 @import "/src/custom-theme.scss";
+
+@import "bulma/css/bulma.css";
 
 html,
 body {

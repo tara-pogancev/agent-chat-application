@@ -1,1 +1,21 @@
-<p>new-group-message-page works!</p>
+<div class="page-container pt-5">
+  <div class="container">
+    <form (ngSubmit)="submit()" [formGroup]="messageForm">
+      <h1>Send a new group message</h1>
+      <h3>This message will be sent to all currently active users.</h3>
+      <div class="is-flex is-flex-direction-column">
+        <mat-form-field appearance="outline">
+          <mat-label>Subject</mat-label>
+          <input matInput formControlName="subject" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Message content</mat-label>
+          <textarea matInput formControlName="content"></textarea>
+        </mat-form-field>
+        <div class="is-flex is-flex-direction-row-reverse">
+          <button mat-raised-button color="primary" type="submit">Send</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
