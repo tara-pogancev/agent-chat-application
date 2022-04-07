@@ -11,10 +11,17 @@ export class SidebarComponent implements OnInit {
 
   constructor(private router: Router) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.router.url);
+    this.currentPage = this.router.url.substring(1);
+  }
 
   redirect() {
     console.log(this.currentPage);
     this.router.navigate([this.currentPage]);
+  }
+
+  logout() {
+    alert('logout');
   }
 }
