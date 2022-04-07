@@ -16,8 +16,8 @@ h1 {
     "default"
   );
   color: mat.get-color-from-palette(
-    $chat-application-primary,
-    "text"
+    $chat-application-accent,
+    "text-light"
   ) !important;
 }
 
@@ -31,8 +31,8 @@ mat-button-toggle {
     "default"
   ) !important;
   color: mat.get-color-from-palette(
-    $chat-application-primary,
-    "text"
+    $chat-application-accent,
+    "text-light"
   ) !important;
   border: none !important;
 }
@@ -43,8 +43,8 @@ mat-button-toggle {
     "default"
   ) !important;
   color: mat.get-color-from-palette(
-    $chat-application-primary,
-    "text"
+    $chat-application-accent,
+    "text-light"
   ) !important;
   border: none !important;
 }

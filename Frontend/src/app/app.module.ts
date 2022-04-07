@@ -10,7 +10,7 @@ import { ChatPageComponent } from './components/chat-page/chat-page.component';
 import { RegisterPageComponent } from './components/register-page/register-page.component';
 import { ErrorPageComponent } from './components/error-page/error-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MessagesPageComponent } from './components/messages-page/messages-page.component';
 import { NewMessagePageComponent } from './components/new-message-page/new-message-page.component';
 import { NewGroupMessagePageComponent } from './components/new-group-message-page/new-group-message-page.component';
@@ -41,6 +41,7 @@ import { MessagePreviewBoxComponent } from './components/messages-page/message-p
     MaterialModule,
     BrowserAnimationsModule,
     FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

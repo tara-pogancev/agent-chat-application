@@ -15,8 +15,7 @@ $chat-application-primary: mat.define-palette(
   mat.$indigo-palette,
   400,
   300,
-  600,
-  50
+  600
 );
 
 $chat-application-accent: (
@@ -25,6 +24,7 @@ $chat-application-accent: (
 
   darker: #182b61,
   text: #000,
+  text-light: #e2e4f8,
 );
 
 // The warn palette is optional (defaults to red).

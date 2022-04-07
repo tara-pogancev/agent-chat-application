@@ -1,8 +1,12 @@
 <div class="box-container clickable" (click)="changeMessage()">
-  <h2 class="is-light">John Smith</h2>
+  <h2 class="is-light">{{ message.sender.username }}: {{ message.subject }}</h2>
   <p>
-    {{ text.length > 150 ? (text | slice: 0:150) + "..." : text }}
+    {{
+      message.content.length > 150
+        ? (message.content | slice: 0:150) + "..."
+        : message.content
+    }}
   </p>
   <hr />
-  <strong>24/05/2022</strong>
+  <strong>{{ message.date | date: "medium" }}</strong>
 </div>
