@@ -8,7 +8,7 @@ import { DisplayMessageService } from '../display-message.service';
   styleUrls: ['./message-preview.component.scss'],
 })
 export class MessagePreviewComponent implements OnInit {
-  message: Message = new Message();
+  @Input() message: Message = new Message();
 
   constructor(private displayMessageService: DisplayMessageService) {
     displayMessageService.refreshMessage$.subscribe((newMessage) => {

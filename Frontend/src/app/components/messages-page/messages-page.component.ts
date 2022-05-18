@@ -15,7 +15,9 @@ export class MessagesPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.chatService.messages.subscribe((msg) => {
-      console.log('Response from websocket: ' + msg);
+      console.log('Response from websocket: ');
+      console.log(msg);
+      this.messages.push(msg);
     });
   }
 

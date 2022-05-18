@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-// import com.google.gson.Gson;
+import com.google.gson.Gson;
 
 public class ChatMessage implements Serializable {
 
@@ -75,8 +75,8 @@ public class ChatMessage implements Serializable {
 	}	
 	
 	public String toJson() {
-		//Gson gson = new Gson();
-	    //String json = gson.toJson(this);
-		return "jk";
+		Gson gson = new Gson();
+	    String json = gson.toJson(this);
+		return json;
 	}
 }

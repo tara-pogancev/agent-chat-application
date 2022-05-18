@@ -1,9 +1,12 @@
 <div class="page-container">
   <div class="columns">
     <div class="column is-4 is-flex is-flex-direction-column overflow-y">
-      <h1 class="is-light">All messages</h1>
-      <message-preview-box></message-preview-box>
-      <p *ngFor="let message of messages">{{ message.content }}</p>
+      <h1 class="is-light">All messages ({{ messages.length }})</h1>
+      <p class="is-light mt-5" *ngIf="messages.length == 0">No new messages.</p>
+      <message-preview-box
+        *ngFor="let msg of messages"
+        [message]="msg"
+      ></message-preview-box>
       <button (click)="sendMessage()">Drzi me boze pascu ti</button>
     </div>
     <div class="column text-column stretch-width">
