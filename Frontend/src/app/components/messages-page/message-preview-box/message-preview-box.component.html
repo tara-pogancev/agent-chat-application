@@ -1,5 +1,5 @@
 <div class="box-container clickable" (click)="changeMessage()">
-  <h2 class="is-light">{{ message.sender.username }}: {{ message.subject }}</h2>
+  <h2 class="is-light">{{ message.sender }}: {{ message.subject }}</h2>
   <p>
     {{
       message.content.length > 150

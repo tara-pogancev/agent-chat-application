@@ -5,9 +5,7 @@
         <div class="is-flex is-justify-content-space-between stretch-width">
           <h1>{{ message.subject }}</h1>
         </div>
-        <h2>
-          {{ message.sender.username }}, {{ message.date | date: "medium" }}
-        </h2>
+        <h2>{{ message.sender }}, {{ message.date | date: "medium" }}</h2>
       </div>
       <div>
         <button mat-raised-button color="primary" (click)="closeMessage()">

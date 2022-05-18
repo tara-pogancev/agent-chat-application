@@ -13,6 +13,7 @@ import javax.jms.TextMessage;
 import chatmanager.ChatManagerRemote;
 import messagemanager.AgentMessage;
 import messagemanager.MessageManagerRemote;
+import models.ChatMessage;
 import models.User;
 import util.JNDILookup;
 import ws.WSChat;
@@ -36,7 +37,7 @@ public class ChatAgent implements Agent {
 
 	@PostConstruct
 	public void postConstruct() {
-		System.out.println("Created Chat Agent!");
+		System.out.println("Created Chat Agent.");
 	}
 
 	//private List<String> chatClients = new ArrayList<String>();
@@ -56,6 +57,7 @@ public class ChatAgent implements Agent {
 				String option = "";
 				String response = "";
 				try {
+					
 					option = (String) tmsg.getObjectProperty("command");
 					switch (option) {
 					case "REGISTER":
@@ -79,8 +81,12 @@ public class ChatAgent implements Agent {
 						for (User u : users) {
 							response += u.toString() + "|";
 						}
-
 						break;
+					case "NEW_MESSAGE":
+						String content = (String) tmsg.getObjectProperty("content");	
+						response = "New message: " + content;
+						break;
+
 					case "x":
 						break;
 					default:
@@ -88,7 +94,7 @@ public class ChatAgent implements Agent {
 						break;
 					}
 					System.out.println(response);
-					ws.onMessage("chat", response);
+					ws.onMessage("tara", response);
 					
 				} catch (JMSException e) {
 					e.printStackTrace();
@@ -110,4 +116,10 @@ public class ChatAgent implements Agent {
 	public String getAgentId() {
 		return agentId;
 	}
+
+	public void setAgentId(String agentId) {
+		this.agentId = agentId;
+	}
+	
+	
 }

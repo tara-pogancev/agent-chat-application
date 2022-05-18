@@ -61,7 +61,6 @@ public class MessageManagerBean implements MessageManagerRemote {
 			}
 			return msg;
 		} catch (JMSException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return msg;

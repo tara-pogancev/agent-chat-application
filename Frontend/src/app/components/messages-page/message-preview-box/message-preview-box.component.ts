@@ -13,7 +13,7 @@ export class MessagePreviewBoxComponent implements OnInit {
   constructor(private displayMessageService: DisplayMessageService) {
     this.message.content =
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In condimentum odi et dolor ultrices consectetur. Vestibulum pellentesque, justo a commodo   placerat, nibh erat tempor ante, non accumsan risus sapien sed diam. Sed    pharetra semper ipsum, non sollicitudin libero sodales sit amet. Proin a    rhoncus felis. Pellentesque habitant morbi tristique senectus et netus et    malesuada fames ac turpis egestas. Integer id mauris sit amet quam lacinia    maximus a quis mauris. Pellentesque tempor, felis tristique egestas    facilisis, tortor nunc pharetra ante, et porta risus diam sed ipsum. Nullam    dolor metus, sollicitudin vel iaculis in, bibendum ut turpis.';
-    this.message.sender.username =
+    this.message.sender =
       'JohnSmith' + Math.round(Math.random() * 1000);
     this.message.subject = 'Whats my message subject?';
   }

@@ -7,10 +7,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
+import models.ChatMessage;
 import models.User;
 
 @Remote
 public interface ChatRest {
+	
 	@POST
 	@Path("/register")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -24,4 +26,9 @@ public interface ChatRest {
 	@GET
 	@Path("/loggedIn")
 	public void getloggedInUsers();
+	
+	@POST
+	@Path("/messages/all")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void sendMessageToAll(ChatMessage message);
 }

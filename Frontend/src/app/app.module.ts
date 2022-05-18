@@ -18,6 +18,7 @@ import { ActiveUsersPageComponent } from './components/active-users-page/active-
 import { RegisteredUsersPageComponent } from './components/registered-users-page/registered-users-page.component';
 import { MessagePreviewComponent } from './components/messages-page/message-preview/message-preview.component';
 import { MessagePreviewBoxComponent } from './components/messages-page/message-preview-box/message-preview-box.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { MessagePreviewBoxComponent } from './components/messages-page/message-p
     MaterialModule,
     BrowserAnimationsModule,
     FormsModule,
+    HttpClientModule,
     ReactiveFormsModule,
   ],
   providers: [],

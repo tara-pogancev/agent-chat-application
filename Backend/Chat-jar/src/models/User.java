@@ -5,11 +5,11 @@ import java.io.Serializable;
 public class User implements Serializable {
 
 	/**
-	 * 
+	 * For code simplicity, DTO === model 
 	 */
-	private static final long serialVersionUID = 1L;
-	private String username;
-	private String password;
+	public static final long serialVersionUID = 1L;
+	public String username;
+	public String password;
 
 	public String getUsername() {
 		return username;

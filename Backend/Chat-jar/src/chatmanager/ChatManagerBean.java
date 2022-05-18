@@ -8,7 +8,6 @@ import javax.ejb.Stateful;
 
 import models.User;
 
-// TODO Implement the rest of Client-Server functionalities 
 /**
  * Session Bean implementation class ChatBean
  */

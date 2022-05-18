@@ -29,7 +29,7 @@ public class UserAgent implements Agent {
 
 	@PostConstruct
 	public void postConstruct() {
-		System.out.println("Created User Agent!");
+		System.out.println("Created User Agent: " + agentId);
 	}
 	
 	@Override
