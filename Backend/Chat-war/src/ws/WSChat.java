@@ -39,11 +39,16 @@ public class WSChat {
 
 	public void onMessage(String username, String message) {
 		Session session = sessions.get(username);
-		ChatMessage msg = new ChatMessage();
-		msg.setContent(message);
-		msg.setSubject("sub");
-		msg.setSender("ja sama sebi");
-		sendMessage(session, msg);
+		if (session != null) {
+			ChatMessage msg = new ChatMessage();
+			msg.setContent(message);
+			msg.setSubject("sub");
+			msg.setSender("ja sama sebi");
+			sendMessage(session, msg);
+		} else {
+			System.out.println("Message delivery failure: Looks like " + username + " is offline.");
+		}
+
 	}
 
 	public void onMessage(String message) {
@@ -51,7 +56,7 @@ public class WSChat {
 	}
 
 	public void sendMessage(Session session, String message) {
-		if (session.isOpen()) {
+		if (session != null && session.isOpen()) {
 			try {
 				for (Session s : sessions.values()) {
 					session.getBasicRemote().sendText(message);
@@ -59,11 +64,11 @@ public class WSChat {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+		} 
 	}
 	
 	public void sendMessage(Session session, ChatMessage message) {
-		if (session.isOpen()) {
+		if (session != null && session.isOpen()) {
 			try {
 				for (Session s : sessions.values()) {
 					session.getBasicRemote().sendText(message.toJson());

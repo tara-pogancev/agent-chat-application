@@ -94,7 +94,7 @@ public class ChatAgent implements Agent {
 						break;
 					}
 					System.out.println(response);
-					ws.onMessage("tara", response);
+					ws.onMessage("s", response);
 					
 				} catch (JMSException e) {
 					e.printStackTrace();
