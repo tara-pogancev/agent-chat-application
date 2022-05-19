@@ -3,10 +3,12 @@ package chatmanager;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateful;
 
 import models.User;
+import ws.WSChat;
 
 /**
  * Session Bean implementation class ChatBean
@@ -15,8 +17,8 @@ import models.User;
 @LocalBean
 public class ChatManagerBean implements ChatManagerRemote, ChatManagerLocal {
 	
-	//@EJB
-	//private WSChat ws;
+	@EJB
+	private WSChat ws;
 
 	private List<User> registered = new ArrayList<User>();
 	private List<User> loggedIn = new ArrayList<User>();
@@ -34,7 +36,7 @@ public class ChatManagerBean implements ChatManagerRemote, ChatManagerLocal {
 		} else {
 			registered.add(user);
 			System.out.println("New user registered: " + user.username);
-			//ws.notifyNewRegistration(user.username);
+			ws.notifyNewRegistration(user.username);
 			return true;
 		}
 	}
@@ -46,6 +48,7 @@ public class ChatManagerBean implements ChatManagerRemote, ChatManagerLocal {
 			boolean isActive = loggedIn.stream().anyMatch(u->u.getUsername().equals(username));
 			if (!isActive) {
 				loggedIn.add(new User(username, password, null));
+				ws.notifyNewLogin(username);
 				return true;
 			}
 		}

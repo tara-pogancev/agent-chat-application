@@ -3,8 +3,8 @@ package rest;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import agentmanager.AgentManagerBean;
 import agentmanager.AgentManagerRemote;
@@ -17,7 +17,7 @@ import util.JNDILookup;
 
 @Stateless
 @Path("/chat")
-public class ChatRestBean implements ChatRest {
+public class ChatRestRemoteBean implements ChatRestRemote {
 
 	@EJB
 	private MessageManagerRemote messageManager;
@@ -26,20 +26,6 @@ public class ChatRestBean implements ChatRest {
 	private ChatManagerRemote chatManager;
 	
 	private AgentManagerRemote agentManager = JNDILookup.lookUp(JNDILookup.AgentManagerLookup, AgentManagerBean.class);
-	
-	@Override
-	public void register(User user) {
-		boolean response = chatManager.register(new User(user.username, user.password, null));
-		System.out.println(response);
-		//return Response.status(Status.OK).entity(response).build();
-	}
-
-	@Override
-	public void login(User user) {
-		boolean response = chatManager.login(user.username, user.password);
-		System.out.println(response);
-		//return Response.status(Status.OK).entity(response).build();
-	}
 
 	@Override
 	public void getloggedInUsers() {

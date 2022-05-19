@@ -14,18 +14,8 @@ import models.ChatMessage;
 import models.User;
 
 @Remote
-public interface ChatRest {
-	
-	@POST
-	@Path("/users/register")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void register(User user);
-	
-	@POST
-	@Path("/users/login")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void login(User user);
-	
+public interface ChatRestRemote {
+
 	// AGENTS	
 	@GET
 	@Path("/users/loggedIn")
