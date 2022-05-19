@@ -82,14 +82,12 @@ public class ChatAgent implements Agent {
 						chatMessage.setSender((String) tmsg.getObjectProperty("sender"));
 						chatMessage.setSubject((String) tmsg.getObjectProperty("subject"));
 						chatMessage.setContent((String) tmsg.getObjectProperty("content"));
-						String msgReceiver = (String) tmsg.getObjectProperty("msgReceiver");
 						
-						chatManager.saveNewMessage(chatMessage, msgReceiver);
+						chatManager.saveNewMessage(chatMessage, receiver);
 						
 						System.out.println("New message: " + chatMessage.getContent());
-						ws.sendMessage(msgReceiver, chatMessage);
+						ws.sendMessage(receiver, chatMessage);
 						break;
-
 					
 					case "NEW_GROUP_MESSAGE":
 						chatMessage = new ChatMessage();
@@ -120,17 +118,9 @@ public class ChatAgent implements Agent {
 						break;
 						
 					case "GET_MESSAGES":
-						chatMessage = new ChatMessage();
-						chatMessage.setSender((String) tmsg.getObjectProperty("sender"));
-						chatMessage.setSubject((String) tmsg.getObjectProperty("subject"));
-						chatMessage.setContent((String) tmsg.getObjectProperty("content"));
-						
-						for (String groupReceiver: chatManager.getActiveUsers()) {
-							chatManager.saveNewMessage(chatMessage, groupReceiver);
+						for (ChatMessage userChatMessage : chatManager.getMessagesByUser(receiver)) {
+							ws.sendMessage(receiver, userChatMessage);
 						}
-						
-						System.out.println("New group message: " + chatMessage.getContent());
-						ws.sendMessageToAllActive(chatMessage);
 						break;
 
 					default:

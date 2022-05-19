@@ -14,3 +14,14 @@
   height: 100vh;
   overflow-y: scroll;
 }
+
+.mat-spinner {
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+::ng-deep .mat-progress-spinner circle,
+.mat-spinner circle {
+  stroke: rgba(255, 255, 255, 0.75) !important;
+}

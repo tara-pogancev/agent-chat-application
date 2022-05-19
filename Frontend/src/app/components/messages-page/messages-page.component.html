@@ -2,7 +2,10 @@
   <div class="columns">
     <div class="column is-4 is-flex is-flex-direction-column overflow-y">
       <h1 class="is-light">All messages ({{ messages.length }})</h1>
-      <p class="is-light mt-5" *ngIf="messages.length == 0">No new messages.</p>
+      <mat-spinner *ngIf="loading"></mat-spinner>
+      <p class="is-light mt-5" *ngIf="messages.length == 0 && !loading">
+        No new messages.
+      </p>
       <message-preview-box
         *ngFor="let msg of messages"
         [message]="msg"

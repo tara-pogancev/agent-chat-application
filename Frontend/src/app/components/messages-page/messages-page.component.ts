@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Message } from 'src/app/model/message';
 import { ChatWebsocketService } from 'src/app/service/chat-websocket.service';
 import { ChatService } from 'src/app/service/chat.service';
+import { ChatPageComponent } from '../chat-page/chat-page.component';
 
 @Component({
   selector: 'messages-page',
@@ -10,6 +11,7 @@ import { ChatService } from 'src/app/service/chat.service';
 })
 export class MessagesPageComponent implements OnInit {
   messages: Message[] = [];
+  loading: Boolean = true;
 
   constructor(
     private chatService: ChatService,
@@ -22,5 +24,15 @@ export class MessagesPageComponent implements OnInit {
         this.messages.push(msg);
       }
     });
+
+    if (ChatPageComponent.hasConnection) {
+      this.chatService.getUsersMessages().subscribe();
+      this.loading = false;
+    } else {
+      setTimeout(() => {
+        this.chatService.getUsersMessages().subscribe();
+        this.loading = false;
+      }, 400);
+    }
   }
 }

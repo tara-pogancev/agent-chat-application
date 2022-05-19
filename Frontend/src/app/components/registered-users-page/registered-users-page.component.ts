@@ -1,4 +1,3 @@
-import { trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { ApplicationUser } from 'src/app/model/application-user';
 import { ChatWebsocketService } from 'src/app/service/chat-websocket.service';
