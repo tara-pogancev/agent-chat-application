@@ -6,10 +6,12 @@
       <p class="is-light mt-5" *ngIf="messages.length == 0 && !loading">
         No new messages.
       </p>
-      <message-preview-box
-        *ngFor="let msg of messages"
-        [message]="msg"
-      ></message-preview-box>
+      <div class="is-flex is-flex-direction-column-reverse">
+        <message-preview-box
+          *ngFor="let msg of messages"
+          [message]="msg"
+        ></message-preview-box>
+      </div>
     </div>
     <div class="column text-column stretch-width">
       <div
