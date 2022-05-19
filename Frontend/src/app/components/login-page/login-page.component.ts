@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ApplicationUser } from 'src/app/model/application-user';
+import { ChatService } from 'src/app/service/chat.service';
 
 @Component({
   selector: 'app-login-page',
@@ -9,7 +11,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 export class LoginPageComponent implements OnInit {
   loginForm = new FormGroup({});
 
-  constructor() {
+  constructor(private chatService: ChatService) {
     this.loginForm = new FormGroup({
       username: new FormControl(null, [Validators.required]),
       password: new FormControl(null, [Validators.required]),
@@ -20,7 +22,17 @@ export class LoginPageComponent implements OnInit {
 
   submit() {
     if (this.loginForm.valid) {
-      alert('submit');
+      var user = new ApplicationUser();
+      user.username = this.loginForm.controls.username.value;
+      user.password = this.loginForm.controls.password.value;
+      this.chatService.login(user).subscribe((data) => {
+        if (data) {
+          this.chatService.setSessionStorageLogin(user.username);
+          window.location.href = '/';
+        } else {
+          alert('Incorrect username or password!');
+        }
+      });
     }
   }
 }

@@ -28,15 +28,17 @@ public class ChatRestBean implements ChatRest {
 	private AgentManagerRemote agentManager = JNDILookup.lookUp(JNDILookup.AgentManagerLookup, AgentManagerBean.class);
 	
 	@Override
-	public Response register(User user) {
+	public void register(User user) {
 		boolean response = chatManager.register(new User(user.username, user.password, null));
-		return Response.status(Status.OK).entity(response).build();
+		System.out.println(response);
+		//return Response.status(Status.OK).entity(response).build();
 	}
 
 	@Override
-	public Response login(User user) {
+	public void login(User user) {
 		boolean response = chatManager.login(user.username, user.password);
-		return Response.status(Status.OK).entity(response).build();
+		System.out.println(response);
+		//return Response.status(Status.OK).entity(response).build();
 	}
 
 	@Override
@@ -50,13 +52,15 @@ public class ChatRestBean implements ChatRest {
 
 	@Override
 	public void getregisteredUsers() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub		
 		
 	}
 
 	@Override
 	public void sendMessageToAllActive(ChatMessage message) {
+		System.out.println("hello");
 		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "tara");
+		System.out.println("hello");
 		AgentMessage agentMsg = new AgentMessage();
 		agentMsg.userArgs.put("receiver", "tara");
 		agentMsg.userArgs.put("command", "NEW_MESSAGE");

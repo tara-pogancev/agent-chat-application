@@ -27,7 +27,7 @@ export class MessagesPageComponent implements OnInit {
 
   sendMessage() {
     this.chatService
-      .sendMessage(new Message([], 'tara2', new Date(), 'ok', 'OKK'))
+      .sendMessageToAlActive(new Message([], 'tara2', new Date(), 'ok', 'OKK'))
       .subscribe((data) => {
         console.log('Something was sent.');
       });

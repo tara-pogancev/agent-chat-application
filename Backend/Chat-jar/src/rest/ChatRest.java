@@ -13,18 +13,18 @@ import javax.ws.rs.core.Response;
 import models.ChatMessage;
 import models.User;
 
-// @Remote
+@Remote
 public interface ChatRest {
 	
 	@POST
 	@Path("/users/register")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response register(User user);
+	public void register(User user);
 	
 	@POST
 	@Path("/users/login")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response login(User user);
+	public void login(User user);
 	
 	// AGENTS	
 	@GET

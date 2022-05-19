@@ -3,12 +3,10 @@ package chatmanager;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateful;
 
 import models.User;
-import ws.WSChat;
 
 /**
  * Session Bean implementation class ChatBean
@@ -44,9 +42,14 @@ public class ChatManagerBean implements ChatManagerRemote, ChatManagerLocal {
 	@Override
 	public boolean login(String username, String password) {
 		boolean exists = registered.stream().anyMatch(u->u.getUsername().equals(username) && u.getPassword().equals(password));
-		if(exists)
-			loggedIn.add(new User(username, password, null));
-		return exists;
+		if(exists) {
+			boolean isActive = loggedIn.stream().anyMatch(u->u.getUsername().equals(username));
+			if (!isActive) {
+				loggedIn.add(new User(username, password, null));
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
