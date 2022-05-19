@@ -52,7 +52,7 @@ public class WSChat {
 		if (session != null && session.isOpen()) {
 			try {
 				session.getBasicRemote().sendText(message.toJson());
-			} catch (IOException e) {
+			} catch (IOException e) {				
 				e.printStackTrace();
 			}
 		} else {

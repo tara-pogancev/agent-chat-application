@@ -77,6 +77,7 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 		
 		Boolean response = chatManager.logOut(username);	
 		if (response) {
+			System.out.println("--- LOGOUT: " + username + " ---");
 			messageManager.post(agentMsg);	
 		}
 	}

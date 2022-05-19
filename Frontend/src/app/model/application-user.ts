@@ -4,6 +4,6 @@ export class ApplicationUser {
   constructor(
     public username: string = '',
     public password: string = '',
-    public host: HostModel = new HostModel()
+    public host: HostModel | null = new HostModel()
   ) {}
 }

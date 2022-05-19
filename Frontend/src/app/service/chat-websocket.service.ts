@@ -5,6 +5,7 @@ import { WebsocketService } from './websocket.service';
 import { map } from 'rxjs/operators';
 import { ApplicationUser } from '../model/application-user';
 import { ChatService } from './chat.service';
+import { HostModel } from '../model/host';
 
 @Injectable({
   providedIn: 'root',
@@ -28,8 +29,9 @@ export class ChatWebsocketService {
           console.log('Safely ignore.');
         } else {
           console.log(response.data);
-          let data = JSON.parse(response.data);
-          return data;
+          //let data = JSON.parse(response.data);
+          // return data;
+          return new Message();
         }
       })
     );
@@ -41,8 +43,8 @@ export class ChatWebsocketService {
             console.log('Safely ignore.');
           } else {
             console.log(response.data);
-            let data = JSON.parse(response.data);
-            return data;
+            //let data = JSON.parse(response.data);
+            return new ApplicationUser('active', 'a', null);
           }
         })
       )
@@ -55,8 +57,8 @@ export class ChatWebsocketService {
             console.log('Safely ignore.');
           } else {
             console.log(response.data);
-            let data = JSON.parse(response.data);
-            return data;
+            //let data = JSON.parse(response.data);
+            return new ApplicationUser('registered', 'a', null);
           }
         })
       )
