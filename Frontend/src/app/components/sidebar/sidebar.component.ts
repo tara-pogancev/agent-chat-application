@@ -23,6 +23,6 @@ export class SidebarComponent implements OnInit {
   }
 
   logout() {
-    this.chatService.logOut(this.chatService.getActiveUsername()!);
+    this.chatService.logOut();
   }
 }

@@ -11,7 +11,7 @@ import models.User;
 
 @Stateless
 @Path("/chat")
-public class AuthRestBean implements AuthRestLocal {
+public class AuthRestLocalBean implements AuthRestLocal {
 	
 	@EJB
 	private ChatManagerRemote chatManager;
@@ -19,14 +19,12 @@ public class AuthRestBean implements AuthRestLocal {
 	@Override
 	public Response register(User user) {
 		boolean response = chatManager.register(new User(user.username, user.password, null));
-		System.out.println(response);
 		return Response.status(Status.OK).entity(response).build();
 	}
 
 	@Override
 	public Response login(User user) {
 		boolean response = chatManager.login(user.username, user.password);
-		System.out.println(response);
 		return Response.status(Status.OK).entity(response).build();
 	}
 

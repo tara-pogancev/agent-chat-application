@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
-import javax.ejb.Stateful;
+import javax.ejb.Singleton;
 
 import models.User;
 import ws.WSChat;
@@ -13,15 +13,15 @@ import ws.WSChat;
 /**
  * Session Bean implementation class ChatBean
  */
-@Stateful
+@Singleton
 @LocalBean
-public class ChatManagerBean implements ChatManagerRemote, ChatManagerLocal {
+public class ChatManagerBean implements ChatManagerRemote {
 	
 	@EJB
 	private WSChat ws;
 
 	private List<User> registered = new ArrayList<User>();
-	private List<User> loggedIn = new ArrayList<User>();
+	private List<String> loggedIn = new ArrayList<String>();
 	
 	/**
 	 * Default constructor.
@@ -41,7 +41,6 @@ public class ChatManagerBean implements ChatManagerRemote, ChatManagerLocal {
 			return false;
 		} else {
 			registered.add(user);
-			System.out.println("New user registered: " + user.username);
 			ws.notifyNewRegistration(user.username);
 			return true;
 		}
@@ -50,10 +49,9 @@ public class ChatManagerBean implements ChatManagerRemote, ChatManagerLocal {
 	@Override
 	public boolean login(String username, String password) {
 		boolean exists = registered.stream().anyMatch(u->u.getUsername().equals(username) && u.getPassword().equals(password));
-		if(exists) {
-			boolean isActive = loggedIn.stream().anyMatch(u->u.getUsername().equals(username));
-			if (!isActive) {
-				loggedIn.add(new User(username, password, null));
+		if(exists) {			
+			if (!isUserActive(username))  {
+				loggedIn.add(username);
 				ws.notifyNewLogin(username);
 				return true;
 			}
@@ -62,8 +60,28 @@ public class ChatManagerBean implements ChatManagerRemote, ChatManagerLocal {
 	}
 
 	@Override
-	public List<User> loggedInUsers() {
+	public List<String> loggedInUsers() {
 		return loggedIn;
+	}
+
+	@Override
+	public void logOut(String username) {
+		if (isUserActive(username)) {
+			loggedIn.remove(username);
+			ws.closeSessionOnLogOut(username);
+			System.out.println("LogOut - " + username + ".");
+		}
+		
+	}
+	
+	private boolean isUserActive(String username) {
+		for (String activeUsername : loggedIn) {
+			if (activeUsername.equals(username)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 }

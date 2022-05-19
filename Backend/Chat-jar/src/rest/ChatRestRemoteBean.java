@@ -1,10 +1,12 @@
 package rest;
 
 import javax.ejb.EJB;
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import agentmanager.AgentManagerBean;
 import agentmanager.AgentManagerRemote;
@@ -16,11 +18,14 @@ import models.User;
 import util.JNDILookup;
 
 @Stateless
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@LocalBean
 @Path("/chat")
 public class ChatRestRemoteBean implements ChatRestRemote {
 
 	@EJB
-	private MessageManagerRemote messageManager;
+	public MessageManagerRemote messageManager;
 	
 	@EJB
 	private ChatManagerRemote chatManager;
@@ -28,16 +33,12 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 	private AgentManagerRemote agentManager = JNDILookup.lookUp(JNDILookup.AgentManagerLookup, AgentManagerBean.class);
 
 	@Override
-	public void getloggedInUsers() {
-		AgentMessage message = new AgentMessage();
-		message.userArgs.put("receiver", "chat");
-		message.userArgs.put("command", "GET_LOGGEDIN");
-		
-		messageManager.post(message);
+	public void getLoggedInUsers() {
+		agentManager.getLoggedInUsers(this);
 	}
 
 	@Override
-	public void getregisteredUsers() {
+	public void getRegisteredUsers() {
 		// TODO Auto-generated method stub		
 		
 	}
@@ -69,8 +70,7 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 
 	@Override
 	public void logOut(String username) {
-		// TODO Auto-generated method stub
-		
+		chatManager.logOut(username);		
 	}
 
 }

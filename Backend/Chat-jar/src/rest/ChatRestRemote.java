@@ -1,17 +1,15 @@
 package rest;
 
 import javax.ejb.Remote;
-import javax.websocket.server.PathParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import models.ChatMessage;
-import models.User;
 
 @Remote
 public interface ChatRestRemote {
@@ -19,11 +17,11 @@ public interface ChatRestRemote {
 	// AGENTS	
 	@GET
 	@Path("/users/loggedIn")
-	public void getloggedInUsers();
+	public void getLoggedInUsers();
 	
 	@GET
 	@Path("/users/registered")
-	public void getregisteredUsers();
+	public void getRegisteredUsers();
 
 	@POST
 	@Path("/messages/all")
@@ -36,12 +34,12 @@ public interface ChatRestRemote {
 	public void sendMessage(ChatMessage message);
 	
 	@GET
-	@Path("/messages/{id}")
+	@Path("/messages/{userId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getUsersMessages(@PathParam("id") String username);
+	public void getUsersMessages(@PathParam("userId") String username);
 	
 	@DELETE
-	@Path("/users/loggedIn/{id}")
+	@Path("/users/loggedIn/{userId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void logOut(@PathParam("id") String username);
+	public void logOut(@PathParam("userId") String username);
 }

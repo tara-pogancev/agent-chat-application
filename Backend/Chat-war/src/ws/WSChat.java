@@ -3,6 +3,8 @@ package ws;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 
 import javax.ejb.Singleton;
 import javax.websocket.OnClose;
@@ -17,6 +19,7 @@ import models.ChatMessage;
 @Singleton
 @ServerEndpoint("/ws/{username}")
 public class WSChat {
+	
 	private Map<String, Session> sessions = new HashMap<String, Session>();
 
 	@OnOpen
@@ -34,7 +37,12 @@ public class WSChat {
 	@OnError
 	public void onError(@PathParam("username") String username, Session session, Throwable t) {
 		sessions.remove(username);
-		t.printStackTrace();
+		System.out.println("ERROR: Websocket aborted by the host.");
+	}
+	
+	public void closeSessionOnLogOut(String username) {
+		sessions.remove(username);
+		this.notifyLogOut(username);
 	}
 
 	public void sendMessage(String username, ChatMessage message) {
@@ -46,7 +54,7 @@ public class WSChat {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("Message delivery failure: Looks like " + session.getId() + " is offline.");
+			System.out.println("Message delivery failure: Looks like " +  getUsernameFromSession(session.getId()) + " is offline.");
 		}
 	}
 	
@@ -60,7 +68,7 @@ public class WSChat {
 					e.printStackTrace();
 				}
 			}
-			System.out.println("Message delivery failure: Looks like " + session.getId() + " is offline.");
+			System.out.println("Message delivery failure: Looks like " + getUsernameFromSession(session.getId()) + " is offline.");
 		}			
 	}
 
@@ -87,6 +95,26 @@ public class WSChat {
 			}
 		}		
 	}
-
+	
+	public void notifyLogOut(String username) {
+		for (Session session: sessions.values()) {
+			if (session != null && session.isOpen()) {
+				try {
+					session.getBasicRemote().sendText("LOGOUT&" + username);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}		
+	}
+	
+	private String getUsernameFromSession(String sessionId) {
+	    for (Entry<String, Session> entry : sessions.entrySet()) {
+	        if (Objects.equals(sessionId, entry.getValue().getId())) {
+	            return entry.getKey();
+	        }
+	    }
+		return "null";
+	}
 
 }

@@ -68,10 +68,11 @@ export class ChatService {
     return this._http.get<any>(url);
   }
 
-  logOut(username: String) {
-    sessionStorage.clear();
-    window.location.href = '/login';
-    const url = this.url + 'users/loggedIn' + username;
-    return this._http.delete<any>(url);
+  logOut() {
+    const url = this.url + 'users/loggedIn/' + this.getActiveUsername();
+    this._http.delete<any>(url).subscribe((data) => {
+      sessionStorage.clear();
+      window.location.href = '/login';
+    });
   }
 }
