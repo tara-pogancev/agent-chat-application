@@ -110,10 +110,13 @@ public class ChatManagerBean implements ChatManagerRemote {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getRegisteredUsers() {
-		return (List<String>) registered.stream().map(u -> u.getUsername());
+		List<String> retVal = new ArrayList<>();
+		for (User user: registered) {
+			retVal.add(user.username);
+		}
+		return retVal;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationUser } from 'src/app/model/application-user';
+import { ChatWebsocketService } from 'src/app/service/chat-websocket.service';
+import { ChatService } from 'src/app/service/chat.service';
 
 @Component({
   selector: 'registered-users-page',
@@ -9,7 +11,18 @@ import { ApplicationUser } from 'src/app/model/application-user';
 export class RegisteredUsersPageComponent implements OnInit {
   users: ApplicationUser[] = [];
 
-  constructor() {}
+  constructor(
+    private chatService: ChatService,
+    private chatWsService: ChatWebsocketService
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.chatService.getRegisteredUsers().subscribe();
+
+    this.chatWsService.registeredUsers.subscribe((msg) => {
+      if (msg != undefined) {
+        this.users.push(msg);
+      }
+    });
+  }
 }

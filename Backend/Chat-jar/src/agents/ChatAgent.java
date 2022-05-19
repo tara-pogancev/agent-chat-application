@@ -112,7 +112,7 @@ public class ChatAgent implements Agent {
 						break;
 						
 					case "GET_REGISTERED_USERS":
-						List<String> registeredUsers = chatManager.getActiveUsers();
+						List<String> registeredUsers = chatManager.getRegisteredUsers();
 						for (String registeredUser: registeredUsers) {
 							ws.sendMessage(receiver, "REGISTRATION&"+registeredUser);
 						}

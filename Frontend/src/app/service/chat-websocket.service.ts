@@ -62,12 +62,9 @@ export class ChatWebsocketService {
       wsService.connect(this.ws_url).pipe(
         map((response: MessageEvent) => {
           let responseString: string = response.data;
-          if (responseString.startsWith('LOGOUT')) {
-            return new ApplicationUser(
-              'Registered',
-              'Somebody registered!',
-              null
-            );
+          let username: string = responseString.split('&')[1];
+          if (responseString.startsWith('REGISTRATION')) {
+            return new ApplicationUser(username, 'LOGOUT', null);
           } else {
             console.log('REGISTERED USERS: Safely ignore.');
             return;
