@@ -3,6 +3,8 @@ package rest;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response;
 
 import agentmanager.AgentManagerBean;
 import agentmanager.AgentManagerRemote;
@@ -24,23 +26,17 @@ public class ChatRestBean implements ChatRest {
 	private ChatManagerRemote chatManager;
 	
 	private AgentManagerRemote agentManager = JNDILookup.lookUp(JNDILookup.AgentManagerLookup, AgentManagerBean.class);
-
 	
 	@Override
-	public boolean register(User user) {
-		return chatManager.register(new User(user.username, user.password, null));
+	public Response register(User user) {
+		boolean response = chatManager.register(new User(user.username, user.password, null));
+		return Response.status(Status.OK).entity(response).build();
 	}
 
 	@Override
-	public boolean login(User user) {
-		AgentMessage message = new AgentMessage();
-		message.userArgs.put("receiver", "chat");
-		message.userArgs.put("command", "LOG_IN");
-		message.userArgs.put("username", user.getUsername());
-		message.userArgs.put("password", user.getPassword());
-		
-		messageManager.post(message);
-		return true;
+	public Response login(User user) {
+		boolean response = chatManager.login(user.username, user.password);
+		return Response.status(Status.OK).entity(response).build();
 	}
 
 	@Override

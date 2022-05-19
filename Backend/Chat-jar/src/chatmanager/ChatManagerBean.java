@@ -17,8 +17,8 @@ import ws.WSChat;
 @LocalBean
 public class ChatManagerBean implements ChatManagerRemote, ChatManagerLocal {
 	
-	@EJB
-	private WSChat ws;
+	//@EJB
+	//private WSChat ws;
 
 	private List<User> registered = new ArrayList<User>();
 	private List<User> loggedIn = new ArrayList<User>();
@@ -35,7 +35,8 @@ public class ChatManagerBean implements ChatManagerRemote, ChatManagerLocal {
 			return false;
 		} else {
 			registered.add(user);
-			ws.notifyNewRegistration(user.username);
+			System.out.println("New user registered: " + user.username);
+			//ws.notifyNewRegistration(user.username);
 			return true;
 		}
 	}

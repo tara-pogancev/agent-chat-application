@@ -8,22 +8,23 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import models.ChatMessage;
 import models.User;
 
-@Remote
+// @Remote
 public interface ChatRest {
 	
 	@POST
 	@Path("/users/register")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public boolean register(User user);
+	public Response register(User user);
 	
 	@POST
 	@Path("/users/login")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public boolean login(User user);
+	public Response login(User user);
 	
 	// AGENTS	
 	@GET

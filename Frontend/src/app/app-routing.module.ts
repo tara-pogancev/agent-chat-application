@@ -9,11 +9,13 @@ import { NewGroupMessagePageComponent } from './components/new-group-message-pag
 import { NewMessagePageComponent } from './components/new-message-page/new-message-page.component';
 import { RegisterPageComponent } from './components/register-page/register-page.component';
 import { RegisteredUsersPageComponent } from './components/registered-users-page/registered-users-page.component';
+import { AuthGuard, UnAuthGuard } from './service/auth-guard.service';
 
 const routes: Routes = [
   {
     path: '',
     component: ChatPageComponent,
+    canActivate: [AuthGuard],
     children: [
       { path: '', component: MessagesPageComponent },
       { path: 'new-message', component: NewMessagePageComponent },
@@ -22,9 +24,13 @@ const routes: Routes = [
       { path: 'registered-users', component: RegisteredUsersPageComponent },
     ],
   },
-  { path: 'login', component: LoginPageComponent },
-  { path: 'register', component: RegisterPageComponent },
-  { path: 'dashboard', component: ChatPageComponent },
+  { path: 'login', component: LoginPageComponent, canActivate: [UnAuthGuard] },
+  {
+    path: 'register',
+    component: RegisterPageComponent,
+    canActivate: [UnAuthGuard],
+  },
+  { path: 'dashboard', component: ChatPageComponent, canActivate: [AuthGuard] },
   { path: '**', component: ErrorPageComponent },
 ];
 

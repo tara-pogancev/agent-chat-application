@@ -19,8 +19,51 @@ export class ChatService {
     return this._http.post<any>(url, user);
   }
 
-  sendMessage(message: Message) {
+  login(user: ApplicationUser) {
+    const url = this.url + 'users/login';
+    return this._http.post<any>(url, user);
+  }
+
+  setSessionStorageLogin(username: string) {
+    sessionStorage.setItem('activeUsername', username);
+  }
+
+  isUserActive(): boolean {
+    return (
+      sessionStorage.getItem('activeUsername') != null &&
+      sessionStorage.getItem('activeUsername') != ''
+    );
+  }
+
+  getActiveUsers() {
+    const url = this.url + 'users/loggedIn';
+    return this._http.get<any>(url);
+  }
+
+  getRegisteredUsers() {
+    const url = this.url + 'users/registered';
+    return this._http.get<any>(url);
+  }
+
+  sendMessageToAlActive(message: Message) {
     const url = this.url + 'messages/all';
     return this._http.post<any>(url, message);
+  }
+
+  sendMessage(message: Message) {
+    const url = this.url + 'messages/user';
+    return this._http.post<any>(url, message);
+  }
+
+  getUsersMessages(username: String) {
+    const url = this.url + 'messages/' + username;
+    return this._http.get<any>(url);
+  }
+
+  logOut(username: String) {
+    sessionStorage.clear();
+    window.location.href = '/login';
+    const url = this.url + 'users/loggedIn' + username;
+    return this._http.delete<any>(url);
   }
 }
