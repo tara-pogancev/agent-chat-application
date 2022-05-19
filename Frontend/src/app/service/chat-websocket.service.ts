@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { ApplicationUser } from '../model/application-user';
 import { ChatService } from './chat.service';
 import { HostModel } from '../model/host';
+import { ReturnStatement } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root',
@@ -25,27 +26,33 @@ export class ChatWebsocketService {
 
     this.messages = <Subject<Message>>wsService.connect(this.ws_url).pipe(
       map((response: MessageEvent) => {
-        if (false) {
+        let responseString: string = response.data;
+        if (
+          responseString.startsWith('LOGIN') ||
+          responseString.startsWith('LOGOUT') ||
+          responseString.startsWith('REGISTRATION')
+        ) {
           console.log('Safely ignore.');
         } else {
-          console.log(response.data);
-          //let data = JSON.parse(response.data);
-          // return data;
-          return new Message();
+          let data = JSON.parse(response.data);
+          return data;
         }
+        return;
       })
     );
 
     this.activeUsers = <Subject<ApplicationUser>>(
       wsService.connect(this.ws_url).pipe(
         map((response: MessageEvent) => {
-          if (false) {
-            console.log('Safely ignore.');
+          let responseString: string = response.data;
+          if (responseString.startsWith('LOGIN')) {
+            return new ApplicationUser('Active', 'Somebody logged in!', null);
+          } else if (responseString.startsWith('LOGOUT')) {
+            return new ApplicationUser('Inctive', 'Somebody logged off!', null);
           } else {
-            console.log(response.data);
-            //let data = JSON.parse(response.data);
-            return new ApplicationUser('active', 'a', null);
+            console.log('Safely ignore.');
           }
+          return;
         })
       )
     );
@@ -53,13 +60,17 @@ export class ChatWebsocketService {
     this.registeredUsers = <Subject<ApplicationUser>>(
       wsService.connect(this.ws_url).pipe(
         map((response: MessageEvent) => {
-          if (false) {
-            console.log('Safely ignore.');
+          let responseString: string = response.data;
+          if (responseString.startsWith('LOGOUT')) {
+            return new ApplicationUser(
+              'Registered',
+              'Somebody registered!',
+              null
+            );
           } else {
-            console.log(response.data);
-            //let data = JSON.parse(response.data);
-            return new ApplicationUser('registered', 'a', null);
+            console.log('Safely ignore.');
           }
+          return;
         })
       )
     );

@@ -14,10 +14,10 @@ public class ChatMessage implements Serializable {
 	 */
 	public static final long serialVersionUID = 1L;
 	public List<User> recievers = new ArrayList<>();
-	public String sender;
+	public String sender = "";
 	public Date date = new Date();
-	public String subject;
-	public String content;
+	public String subject = "";
+	public String content = "";
 	
 	public List<User> getReciever() {
 		return recievers;
