@@ -44,16 +44,15 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 
 	@Override
 	public void sendMessageToAllActive(ChatMessage message) {
-		System.out.println("hello");
-		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "tara");
-		System.out.println("hello");
+		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, message.getSender());
 		AgentMessage agentMsg = new AgentMessage();
-		agentMsg.userArgs.put("receiver", "tara");
-		agentMsg.userArgs.put("command", "NEW_MESSAGE");
+		agentMsg.userArgs.put("receiver", message.getSender());
+		agentMsg.userArgs.put("command", "NEW_GROUP_MESSAGE");
+		agentMsg.userArgs.put("sender", message.getSender());		
+		agentMsg.userArgs.put("subject", message.getSubject());
 		agentMsg.userArgs.put("content", message.getContent());
 		
-		messageManager.post(agentMsg);
-		
+		messageManager.post(agentMsg);		
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Message } from 'src/app/model/message';
+import { ChatService } from 'src/app/service/chat.service';
 
 @Component({
   selector: 'new-group-message-page',
@@ -11,7 +12,7 @@ export class NewGroupMessagePageComponent implements OnInit {
   message: Message = new Message();
   messageForm = new FormGroup({});
 
-  constructor() {
+  constructor(private chatService: ChatService) {
     this.messageForm = new FormGroup({
       subject: new FormControl(null, Validators.required),
       content: new FormControl(null, Validators.required),
@@ -20,5 +21,20 @@ export class NewGroupMessagePageComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  submit() {}
+  submit() {
+    if (this.messageForm.valid) {
+      let msg = new Message(
+        [],
+        this.chatService.getActiveUsername()!,
+        new Date(),
+        this.messageForm.controls.subject.value,
+        this.messageForm.controls.content.value
+      );
+      this.chatService.sendMessageToAlActive(msg).subscribe((data) => {
+        //this.messageForm.controls.subject.setValue(null);
+        //this.messageForm.controls.content.setValue(null);
+        alert('Group message sent!');
+      });
+    }
+  }
 }

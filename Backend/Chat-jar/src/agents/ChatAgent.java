@@ -11,6 +11,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 
+
 import chatmanager.ChatManagerRemote;
 import messagemanager.MessageManagerRemote;
 import models.ChatMessage;
@@ -27,7 +28,7 @@ public class ChatAgent implements Agent {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String agentId;
-	private List<ChatMessage> clientMessages = new ArrayList<>();
+	private List<ChatMessage> clientMessages = new ArrayList<>();	
 
 	@EJB
 	private ChatManagerRemote chatManager;
@@ -42,55 +43,37 @@ public class ChatAgent implements Agent {
 	public void postConstruct() {
 	}
 
-	//private List<String> chatClients = new ArrayList<String>();
-
 	protected MessageManagerRemote msm() {
 		return (MessageManagerRemote) JNDILookup.lookUp(JNDILookup.MessageManagerLookup, MessageManagerRemote.class);
 	}
 
 	@Override
 	public void handleMessage(Message message) {
-		TextMessage tmsg = (TextMessage) message;
+		TextMessage tmsg = (TextMessage) message;		
 
 		String receiver;
 		try {
 			receiver = (String) tmsg.getObjectProperty("receiver");
 			if (agentId.equals(receiver)) {
 				String option = "";
-				String response = "";
-				try {
-					
+				try {					
 					option = (String) tmsg.getObjectProperty("command");
-					switch (option) {					
-					case "LOG_IN":
-						/*
-						username = (String) tmsg.getObjectProperty("username");
-						password = (String) tmsg.getObjectProperty("password");
-						result = chatManager.login(username, password);
-
-						response = "LOG_IN!Logged in: " + (result ? "Yes!" : "No!");
-						break;
-						*/
-					case "GET_LOGGEDIN":
-						response = "LOGGEDIN!";
-						List<User> users = chatManager.loggedInUsers();
-						for (User u : users) {
-							response += u.toString() + "|";
-						}
-						break;
-					case "NEW_MESSAGE":
-						String content = (String) tmsg.getObjectProperty("content");	
-						response = "New message: " + content;
+					switch (option) {	
+					case "NEW_GROUP_MESSAGE":
+						ChatMessage chatMessage = new ChatMessage();
+						chatMessage.setSender((String) tmsg.getObjectProperty("sender"));
+						chatMessage.setSubject((String) tmsg.getObjectProperty("subject"));
+						chatMessage.setContent((String) tmsg.getObjectProperty("content"));
+						
+						System.out.println("New group message: " + chatMessage.getContent());
+						clientMessages.add(chatMessage);
+						ws.sendMessageToAllActive(chatMessage);
 						break;
 
-					case "x":
-						break;
 					default:
-						response = "ERROR! Option: " + option + " does not exist.";
+						System.out.println( "ERROR! Option: " + option + " does not exist.");
 						break;
 					}
-					System.out.println(response);
-					ws.onMessage("tara", response);
 					
 				} catch (JMSException e) {
 					e.printStackTrace();

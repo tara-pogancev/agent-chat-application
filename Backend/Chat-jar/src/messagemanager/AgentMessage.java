@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import models.ChatMessage;
+
 public class AgentMessage implements Serializable {
 	/**
 	 * 

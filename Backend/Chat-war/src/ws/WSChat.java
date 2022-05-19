@@ -37,66 +37,56 @@ public class WSChat {
 		t.printStackTrace();
 	}
 
-	public void onMessage(String username, String message) {
+	public void sendMessage(String username, ChatMessage message) {
 		Session session = sessions.get(username);
-		if (session != null) {
-			ChatMessage msg = new ChatMessage();
-			msg.setContent(message);
-			msg.setSubject("sub");
-			msg.setSender("ja sama sebi");
-			sendMessage(session, msg);
-		} else {
-			System.out.println("Message delivery failure: Looks like " + username + " is offline.");
-		}
-
-	}
-
-	public void onMessage(String message) {
-		sessions.values().forEach(session -> sendMessage(session, message));
-	}
-
-	public void sendMessage(Session session, String message) {
 		if (session != null && session.isOpen()) {
 			try {
-				for (Session s : sessions.values()) {
-					session.getBasicRemote().sendText(message);
-				}
+				session.getBasicRemote().sendText(message.toJson());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		} 
+		} else {
+			System.out.println("Message delivery failure: Looks like " + session.getId() + " is offline.");
+		}
 	}
 	
-	public void sendMessage(Session session, ChatMessage message) {
-		if (session != null && session.isOpen()) {
-			try {
-				for (Session s : sessions.values()) {
+
+	public void sendMessageToAllActive(ChatMessage message) {
+		for (Session session: sessions.values()) {
+			if (session != null && session.isOpen()) {
+				try {
 					session.getBasicRemote().sendText(message.toJson());
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
-		}
+			System.out.println("Message delivery failure: Looks like " + session.getId() + " is offline.");
+		}			
 	}
 
 	public void notifyNewRegistration(String username) {
 		for (Session session: sessions.values()) {
-			try {
-				session.getBasicRemote().sendText("REGISTRATION&" + username);
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (session != null && session.isOpen()) {
+				try {
+					session.getBasicRemote().sendText("REGISTRATION&" + username);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}		
 	}
 	
 	public void notifyNewLogin(String username) {
 		for (Session session: sessions.values()) {
-			try {
-				session.getBasicRemote().sendText("LOGIN&" + username);
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (session != null && session.isOpen()) {
+				try {
+					session.getBasicRemote().sendText("LOGIN&" + username);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}		
 	}
+
 
 }

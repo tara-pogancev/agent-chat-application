@@ -27,6 +27,12 @@ public class ChatManagerBean implements ChatManagerRemote, ChatManagerLocal {
 	 * Default constructor.
 	 */
 	public ChatManagerBean() {
+		User u1 = new User ("tara", "123", null);
+		User u2 = new User ("zack", "123", null);
+		User u3 = new User ("sephiroth", "123", null);		
+		registered.add(u1);
+		registered.add(u2);
+		registered.add(u3);				
 	}
 
 	@Override

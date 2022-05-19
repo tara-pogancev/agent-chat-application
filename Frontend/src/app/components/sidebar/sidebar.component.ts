@@ -9,16 +9,16 @@ import { ChatService } from 'src/app/service/chat.service';
 })
 export class SidebarComponent implements OnInit {
   currentPage?: string = '';
+  username: string = 'AgentChat';
 
   constructor(private router: Router, private chatService: ChatService) {}
 
   ngOnInit(): void {
-    console.log(this.router.url);
+    this.username = this.chatService.getActiveUsername()!.toUpperCase();
     this.currentPage = this.router.url.substring(1);
   }
 
   redirect() {
-    console.log(this.currentPage);
     this.router.navigate([this.currentPage]);
   }
 

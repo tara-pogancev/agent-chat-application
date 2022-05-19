@@ -18,17 +18,8 @@ export class MessagesPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.chatWsService.messages.subscribe((msg) => {
-      console.log('Response from websocket: ');
-      console.log(msg);
       this.messages.push(msg);
     });
   }
 
-  sendMessage() {
-    this.chatService
-      .sendMessageToAlActive(new Message([], 'tara2', new Date(), 'ok', 'OKK'))
-      .subscribe((data) => {
-        console.log('Something was sent.');
-      });
-  }
 }
