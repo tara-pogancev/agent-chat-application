@@ -35,9 +35,9 @@ public class AuthRestLocalBean implements AuthRestLocal {
 	
 	@Override
 	public Response register(User user) {
-		agentManager.getAgentByIdOrStartNew(JNDILookup.SystemAgentLookup, "sys");
+		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "SYSTEM_AGENT");
 		AgentMessage agentMsg = new AgentMessage();
-		agentMsg.userArgs.put("receiver", "sys");
+		agentMsg.userArgs.put("receiver", "SYSTEM_AGENT");
 		agentMsg.userArgs.put("command", "LOGOUT");
 		agentMsg.userArgs.put("username", user.username);		
 		
@@ -51,9 +51,9 @@ public class AuthRestLocalBean implements AuthRestLocal {
 
 	@Override
 	public Response login(User user) {
-		agentManager.getAgentByIdOrStartNew(JNDILookup.SystemAgentLookup, "sys");
+		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "SYSTEM_AGENT");
 		AgentMessage agentMsg = new AgentMessage();
-		agentMsg.userArgs.put("receiver", "sys");
+		agentMsg.userArgs.put("receiver", "SYSTEM_AGENT");
 		agentMsg.userArgs.put("command", "LOGOUT");
 		agentMsg.userArgs.put("username", user.username);		
 		

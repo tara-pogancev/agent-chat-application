@@ -69,9 +69,9 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 
 	@Override
 	public void logOut(String username) {
-		agentManager.getAgentByIdOrStartNew(JNDILookup.SystemAgentLookup, "sys");
+		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "SYSTEM_AGENT");
 		AgentMessage agentMsg = new AgentMessage();
-		agentMsg.userArgs.put("receiver", "sys");
+		agentMsg.userArgs.put("receiver", "SYSTEM_AGENT");
 		agentMsg.userArgs.put("command", "LOGOUT");
 		agentMsg.userArgs.put("username", username);
 		

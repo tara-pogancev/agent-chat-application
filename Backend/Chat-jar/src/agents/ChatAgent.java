@@ -55,9 +55,25 @@ public class ChatAgent implements Agent {
 			receiver = (String) tmsg.getObjectProperty("receiver");
 			if (agentId.equals(receiver)) {
 				String option = "";
+				String username = "";
 				try {					
 					option = (String) tmsg.getObjectProperty("command");
 					switch (option) {	
+					case "LOGIN":
+						username = (String) tmsg.getObjectProperty("username");
+						ws.notifyNewLogin(username);					
+						break;
+						
+					case "REGISTER":
+						username = (String) tmsg.getObjectProperty("username");
+						ws.notifyNewRegistration(username);	
+						break;
+						
+					case "LOGOUT":
+						username = (String) tmsg.getObjectProperty("username");
+						ws.closeSessionOnLogOut(username);
+						break;
+					
 					case "NEW_GROUP_MESSAGE":
 						ChatMessage chatMessage = new ChatMessage();
 						chatMessage.setSender((String) tmsg.getObjectProperty("sender"));

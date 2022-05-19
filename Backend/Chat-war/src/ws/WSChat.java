@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -17,6 +18,7 @@ import javax.websocket.server.ServerEndpoint;
 import models.ChatMessage;
 
 @Singleton
+@LocalBean
 @ServerEndpoint("/ws/{username}")
 public class WSChat {
 	
