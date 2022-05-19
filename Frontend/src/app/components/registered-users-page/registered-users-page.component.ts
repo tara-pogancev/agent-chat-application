@@ -1,7 +1,9 @@
+import { trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { ApplicationUser } from 'src/app/model/application-user';
 import { ChatWebsocketService } from 'src/app/service/chat-websocket.service';
 import { ChatService } from 'src/app/service/chat.service';
+import { ChatPageComponent } from '../chat-page/chat-page.component';
 
 @Component({
   selector: 'registered-users-page',
@@ -10,6 +12,7 @@ import { ChatService } from 'src/app/service/chat.service';
 })
 export class RegisteredUsersPageComponent implements OnInit {
   users: ApplicationUser[] = [];
+  loading: Boolean = true;
 
   constructor(
     private chatService: ChatService,
@@ -17,12 +20,20 @@ export class RegisteredUsersPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.chatService.getRegisteredUsers().subscribe();
-
     this.chatWsService.registeredUsers.subscribe((msg) => {
       if (msg != undefined) {
         this.users.push(msg);
       }
     });
+
+    if (ChatPageComponent.hasConnection) {
+      this.chatService.getRegisteredUsers().subscribe();
+      this.loading = false;
+    } else {
+      setTimeout(() => {
+        this.chatService.getRegisteredUsers().subscribe();
+        this.loading = false;
+      }, 400);
+    }
   }
 }

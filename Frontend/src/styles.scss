@@ -114,3 +114,9 @@ hr {
 .main-container {
   -ms-overflow-style: none !important;
 }
+
+mat-spinner {
+  transform: scale(0.4) !important;
+  margin-top: -24px;
+  margin-bottom: -40px;
+}

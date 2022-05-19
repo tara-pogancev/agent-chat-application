@@ -1,19 +1,24 @@
 import { Injectable } from '@angular/core';
 import { Observable, Observer, Subject } from 'rxjs';
+import { ChatPageComponent } from '../components/chat-page/chat-page.component';
+import { ConnectionService } from './connection.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WebsocketService {
-  constructor() {}
+  constructor(private connectionService: ConnectionService) {}
 
   private subject: Subject<MessageEvent> | undefined;
 
   public connect(url: string): Subject<MessageEvent> {
     if (!this.subject) {
       this.subject = this.create(url);
-      console.log('Successfully connected: ' + url);
-    } 
+      setTimeout(() => {
+        ChatPageComponent.hasConnection = true;
+        console.log('Successfully connected to WebSocket.');
+      }, 500);
+    }
     return this.subject;
   }
 

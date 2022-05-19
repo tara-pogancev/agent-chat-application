@@ -31,8 +31,8 @@ export class NewGroupMessagePageComponent implements OnInit {
         this.messageForm.controls.content.value
       );
       this.chatService.sendMessageToAlActive(msg).subscribe((data) => {
-        this.messageForm.controls.subject.setValue(null);
-        this.messageForm.controls.content.setValue(null);
+        this.messageForm.controls.subject.markAsPristine();
+        this.messageForm.controls.content.markAsPristine();
         alert('Group message sent!');
       });
     }

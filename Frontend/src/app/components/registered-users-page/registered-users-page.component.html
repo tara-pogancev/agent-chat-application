@@ -1,7 +1,7 @@
 <div class="page-container pt-5 px-5">
   <div class="container">
     <h1>All registered users ({{ users.length }})</h1>
-
+    <mat-spinner *ngIf="loading"></mat-spinner>
     <mat-chip-list>
       <mat-chip color="primary" selected *ngFor="let user of users">{{
         user.username | uppercase

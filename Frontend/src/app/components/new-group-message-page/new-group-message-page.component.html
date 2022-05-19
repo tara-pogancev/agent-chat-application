@@ -13,7 +13,14 @@
           <textarea matInput formControlName="content"></textarea>
         </mat-form-field>
         <div class="is-flex is-flex-direction-row-reverse">
-          <button mat-raised-button color="primary" type="submit">Send</button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!messageForm.valid"
+          >
+            Send
+          </button>
         </div>
       </div>
     </form>

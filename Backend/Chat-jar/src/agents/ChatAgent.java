@@ -82,11 +82,12 @@ public class ChatAgent implements Agent {
 						chatMessage.setSender((String) tmsg.getObjectProperty("sender"));
 						chatMessage.setSubject((String) tmsg.getObjectProperty("subject"));
 						chatMessage.setContent((String) tmsg.getObjectProperty("content"));
+						String msgReceiver = (String) tmsg.getObjectProperty("msgReceiver");
 						
-						chatManager.saveNewMessage(chatMessage, receiver);
+						chatManager.saveNewMessage(chatMessage, msgReceiver);
 						
 						System.out.println("New message: " + chatMessage.getContent());
-						ws.sendMessage(receiver, chatMessage);
+						ws.sendMessage(msgReceiver, chatMessage);
 						break;
 
 					
