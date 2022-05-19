@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ChatService } from 'src/app/service/chat.service';
 
 @Component({
   selector: 'sidebar',
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
 export class SidebarComponent implements OnInit {
   currentPage?: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private chatService: ChatService) {}
 
   ngOnInit(): void {
     console.log(this.router.url);
@@ -22,6 +23,6 @@ export class SidebarComponent implements OnInit {
   }
 
   logout() {
-    alert('logout');
+    this.chatService.logOut(this.chatService.getActiveUsername()!);
   }
 }

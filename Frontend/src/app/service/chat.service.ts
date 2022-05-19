@@ -35,6 +35,14 @@ export class ChatService {
     );
   }
 
+  getActiveUsername() {
+    if (this.isUserActive()) {
+      return sessionStorage.getItem('activeUsername');
+    } else {
+      return null;
+    }
+  }
+
   getActiveUsers() {
     const url = this.url + 'users/loggedIn';
     return this._http.get<any>(url);

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ApplicationUser } from 'src/app/model/application-user';
 import { Message } from 'src/app/model/message';
 import { ChatWebsocketService } from 'src/app/service/chat-websocket.service';
 import { ChatService } from 'src/app/service/chat.service';
