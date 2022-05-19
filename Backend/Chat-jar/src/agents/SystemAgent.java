@@ -1,8 +1,5 @@
 package agents;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Remote;
@@ -11,24 +8,22 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 
-
 import chatmanager.ChatManagerRemote;
 import messagemanager.MessageManagerRemote;
-import models.ChatMessage;
+import models.User;
 import util.JNDILookup;
 import ws.WSChat;
 
 @Stateful
 @Remote(Agent.class)
-public class ChatAgent implements Agent {
+public class SystemAgent implements Agent {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private String agentId;
-	private List<ChatMessage> clientMessages = new ArrayList<>();	
-
+	
 	@EJB
 	private ChatManagerRemote chatManager;
 	
@@ -37,7 +32,7 @@ public class ChatAgent implements Agent {
 	
 	@EJB
 	private WSChat ws;
-
+	
 	@PostConstruct
 	public void postConstruct() {
 	}
@@ -45,7 +40,7 @@ public class ChatAgent implements Agent {
 	protected MessageManagerRemote msm() {
 		return (MessageManagerRemote) JNDILookup.lookUp(JNDILookup.MessageManagerLookup, MessageManagerRemote.class);
 	}
-
+	
 	@Override
 	public void handleMessage(Message message) {
 		TextMessage tmsg = (TextMessage) message;		
@@ -57,16 +52,21 @@ public class ChatAgent implements Agent {
 				String option = "";
 				try {					
 					option = (String) tmsg.getObjectProperty("command");
+					User user = new User();
 					switch (option) {	
-					case "NEW_GROUP_MESSAGE":
-						ChatMessage chatMessage = new ChatMessage();
-						chatMessage.setSender((String) tmsg.getObjectProperty("sender"));
-						chatMessage.setSubject((String) tmsg.getObjectProperty("subject"));
-						chatMessage.setContent((String) tmsg.getObjectProperty("content"));
+					case "LOGIN":
+						user.setUsername((String) tmsg.getObjectProperty("username"));
+						ws.notifyNewLogin(user.username);					
+						break;
 						
-						System.out.println("New group message: " + chatMessage.getContent());
-						clientMessages.add(chatMessage);
-						ws.sendMessageToAllActive(chatMessage);
+					case "REGISTER":
+						user.setUsername((String) tmsg.getObjectProperty("username"));
+						ws.notifyNewRegistration(user.username);	
+						break;
+						
+					case "LOGOUT":
+						user.setUsername((String) tmsg.getObjectProperty("username"));
+						ws.closeSessionOnLogOut(user.username);
 						break;
 
 					default:
@@ -82,30 +82,30 @@ public class ChatAgent implements Agent {
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
-	public String init(String id) {
-		agentId = id;
+	public String init(String agentId) {
+		agentId = "sys";
 		cachedAgents.addRunningAgent(agentId, this);
-		System.out.println("New agent initiated: " + id);
+		System.out.println("New SYSTEM AGENT initiated: " + agentId);
 		return agentId;
 	}
-
+	
 	@Override
 	public String getAgentId() {
 		return agentId;
 	}
-
+	
 	public void setAgentId(String agentId) {
 		this.agentId = agentId;
 	}
 
-	public List<ChatMessage> getClientMessages() {
-		return clientMessages;
-	}
+	
 
-	public void setClientMessages(List<ChatMessage> clientMessages) {
-		this.clientMessages = clientMessages;
-	}
-		
+
+
+
+
+
+
 }

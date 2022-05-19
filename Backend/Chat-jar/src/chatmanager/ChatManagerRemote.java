@@ -15,6 +15,6 @@ public interface ChatManagerRemote {
 
 	public List<String> loggedInUsers();
 
-	public void logOut(String username);
+	public boolean logOut(String username);
 
 }

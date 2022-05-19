@@ -20,7 +20,6 @@ public class CachedAgents implements CachedAgentsRemote{
 	 * Default constructor.
 	 */
 	public CachedAgents() {
-
 		runningAgents = new HashMap<>();
 	}
 

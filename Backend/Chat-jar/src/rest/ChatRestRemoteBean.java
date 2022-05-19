@@ -14,7 +14,6 @@ import chatmanager.ChatManagerRemote;
 import messagemanager.AgentMessage;
 import messagemanager.MessageManagerRemote;
 import models.ChatMessage;
-import models.User;
 import util.JNDILookup;
 
 @Stateless
@@ -34,7 +33,7 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 
 	@Override
 	public void getLoggedInUsers() {
-		agentManager.getLoggedInUsers(this);
+		// TODO Auto-generated method stub		
 	}
 
 	@Override
@@ -70,7 +69,16 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 
 	@Override
 	public void logOut(String username) {
-		chatManager.logOut(username);		
+		agentManager.getAgentByIdOrStartNew(JNDILookup.SystemAgentLookup, "sys");
+		AgentMessage agentMsg = new AgentMessage();
+		agentMsg.userArgs.put("receiver", "sys");
+		agentMsg.userArgs.put("command", "LOGOUT");
+		agentMsg.userArgs.put("username", username);
+		
+		Boolean response = chatManager.logOut(username);	
+		if (response) {
+			messageManager.post(agentMsg);	
+		}
 	}
 
 }

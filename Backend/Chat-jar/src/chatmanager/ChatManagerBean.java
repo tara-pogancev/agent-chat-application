@@ -16,9 +16,6 @@ import ws.WSChat;
 @Singleton
 @LocalBean
 public class ChatManagerBean implements ChatManagerRemote {
-	
-	//@EJB
-	//private WSChat ws;
 
 	private List<User> registered = new ArrayList<User>();
 	private List<String> loggedIn = new ArrayList<String>();
@@ -40,8 +37,7 @@ public class ChatManagerBean implements ChatManagerRemote {
 		if (registered.stream().anyMatch(u->u.getUsername().equals(user.getUsername()))) {
 			return false;
 		} else {
-			registered.add(user);
-			//ws.notifyNewRegistration(user.username);
+			registered.add(user);			
 			return true;
 		}
 	}
@@ -52,7 +48,6 @@ public class ChatManagerBean implements ChatManagerRemote {
 		if(exists) {			
 			if (!isUserActive(username))  {
 				loggedIn.add(username);
-				//ws.notifyNewLogin(username);
 				return true;
 			}
 		}
@@ -65,13 +60,14 @@ public class ChatManagerBean implements ChatManagerRemote {
 	}
 
 	@Override
-	public void logOut(String username) {
+	public boolean logOut(String username) {
 		if (isUserActive(username)) {
 			loggedIn.remove(username);
-			//ws.closeSessionOnLogOut(username);
-			System.out.println("LogOut - " + username + ".");
-		}
-		
+			System.out.println("--- REGISTER: " + username + " ---");
+			return true;
+		} else {
+			return false;
+		}		
 	}
 	
 	private boolean isUserActive(String username) {
@@ -79,8 +75,7 @@ public class ChatManagerBean implements ChatManagerRemote {
 			if (activeUsername.equals(username)) {
 				return true;
 			}
-		}
-		
+		}		
 		return false;
 	}
 
