@@ -3,22 +3,9 @@
     <h1>Currently active users ({{ users.length }})</h1>
 
     <mat-chip-list>
-      <mat-chip color="primary" selected>One fish</mat-chip>
-      <mat-chip color="primary" selected>Two fish</mat-chip>
-      <mat-chip color="primary" selected>One fish</mat-chip>
-      <mat-chip color="primary" selected>Two fish</mat-chip>
-      <mat-chip color="primary" selected>One fish</mat-chip>
-      <mat-chip color="primary" selected>Two fish</mat-chip>
-      <mat-chip color="primary" selected>One fish</mat-chip>
-      <mat-chip color="primary" selected>Two fish</mat-chip>
-      <mat-chip color="primary" selected>One fish</mat-chip>
-      <mat-chip color="primary" selected>Two fish</mat-chip>
-      <mat-chip color="primary" selected>One fish</mat-chip>
-      <mat-chip color="primary" selected>Two fish</mat-chip>
-      <mat-chip color="primary" selected>One fish</mat-chip>
-      <mat-chip color="primary" selected>Two fish</mat-chip>
-      <mat-chip color="primary" selected>One fish</mat-chip>
-      <mat-chip color="primary" selected>Two fish</mat-chip>
+      <mat-chip color="primary" selected *ngFor="let user of users">{{
+        user.username | uppercase
+      }}</mat-chip>
     </mat-chip-list>
   </div>
 </div>

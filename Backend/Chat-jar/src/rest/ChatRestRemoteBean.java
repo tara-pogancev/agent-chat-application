@@ -32,13 +32,23 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 	private AgentManagerRemote agentManager = JNDILookup.lookUp(JNDILookup.AgentManagerLookup, AgentManagerBean.class);
 
 	@Override
-	public void getLoggedInUsers() {
-		// TODO Auto-generated method stub		
+	public void getLoggedInUsers(String username) {
+		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, username);
+		AgentMessage agentMsg = new AgentMessage();
+		agentMsg.userArgs.put("receiver", username);
+		agentMsg.userArgs.put("command", "GET_ACTIVE_USERS");
+		
+		messageManager.post(agentMsg);		
 	}
 
 	@Override
-	public void getRegisteredUsers() {
-		// TODO Auto-generated method stub		
+	public void getRegisteredUsers(String username) {
+		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, username);
+		AgentMessage agentMsg = new AgentMessage();
+		agentMsg.userArgs.put("receiver", username);
+		agentMsg.userArgs.put("command", "GET_REGISTERED_USERS");
+		
+		messageManager.post(agentMsg);			
 		
 	}
 
@@ -57,13 +67,26 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 
 	@Override
 	public void sendMessage(ChatMessage message) {
-		// TODO Auto-generated method stub
+		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, message.getReciever().get(0).username);
+		AgentMessage agentMsg = new AgentMessage();
+		agentMsg.userArgs.put("receiver", message.getReciever().get(0).username);
+		agentMsg.userArgs.put("command", "NEW_MESSAGE");
+		agentMsg.userArgs.put("sender", message.getSender());		
+		agentMsg.userArgs.put("subject", message.getSubject());
+		agentMsg.userArgs.put("content", message.getContent());
+		
+		messageManager.post(agentMsg);	
 		
 	}
 
 	@Override
 	public void getUsersMessages(String username) {
-		// TODO Auto-generated method stub
+		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, username);
+		AgentMessage agentMsg = new AgentMessage();
+		agentMsg.userArgs.put("receiver", username);
+		agentMsg.userArgs.put("command", "GET_MESSAGES");
+		
+		messageManager.post(agentMsg);	
 		
 	}
 

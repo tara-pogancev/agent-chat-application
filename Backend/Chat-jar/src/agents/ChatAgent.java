@@ -11,10 +11,12 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 
+import com.google.gson.Gson;
 
 import chatmanager.ChatManagerRemote;
 import messagemanager.MessageManagerRemote;
 import models.ChatMessage;
+import models.User;
 import util.JNDILookup;
 import ws.WSChat;
 
@@ -27,7 +29,6 @@ public class ChatAgent implements Agent {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String agentId;
-	private List<ChatMessage> clientMessages = new ArrayList<>();	
 
 	@EJB
 	private ChatManagerRemote chatManager;
@@ -56,6 +57,8 @@ public class ChatAgent implements Agent {
 			if (agentId.equals(receiver)) {
 				String option = "";
 				String username = "";
+				ChatMessage chatMessage = new ChatMessage();
+				
 				try {					
 					option = (String) tmsg.getObjectProperty("command");
 					switch (option) {	
@@ -73,15 +76,59 @@ public class ChatAgent implements Agent {
 						username = (String) tmsg.getObjectProperty("username");
 						ws.closeSessionOnLogOut(username);
 						break;
-					
-					case "NEW_GROUP_MESSAGE":
-						ChatMessage chatMessage = new ChatMessage();
+						
+					case "NEW_MESSAGE":
+						chatMessage = new ChatMessage();
 						chatMessage.setSender((String) tmsg.getObjectProperty("sender"));
 						chatMessage.setSubject((String) tmsg.getObjectProperty("subject"));
 						chatMessage.setContent((String) tmsg.getObjectProperty("content"));
 						
+						chatManager.saveNewMessage(chatMessage, receiver);
+						
+						System.out.println("New message: " + chatMessage.getContent());
+						ws.sendMessage(receiver, chatMessage);
+						break;
+
+					
+					case "NEW_GROUP_MESSAGE":
+						chatMessage = new ChatMessage();
+						chatMessage.setSender((String) tmsg.getObjectProperty("sender"));
+						chatMessage.setSubject((String) tmsg.getObjectProperty("subject"));
+						chatMessage.setContent((String) tmsg.getObjectProperty("content"));
+						
+						for (String groupReceiver: chatManager.getActiveUsers()) {
+							chatManager.saveNewMessage(chatMessage, groupReceiver);
+						}
+						
 						System.out.println("New group message: " + chatMessage.getContent());
-						clientMessages.add(chatMessage);
+						ws.sendMessageToAllActive(chatMessage);
+						break;
+						
+					case "GET_ACTIVE_USERS":					
+						List<String> activeUsers = chatManager.getActiveUsers();
+						for (String activeUser: activeUsers) {
+							ws.sendMessage(receiver, "LOGIN&"+activeUser);
+						}
+						break;
+						
+					case "GET_REGISTERED_USERS":
+						List<String> registeredUsers = chatManager.getActiveUsers();
+						for (String registeredUser: registeredUsers) {
+							ws.sendMessage(receiver, "REGISTRATION&"+registeredUser);
+						}
+						break;
+						
+					case "GET_MESSAGES":
+						chatMessage = new ChatMessage();
+						chatMessage.setSender((String) tmsg.getObjectProperty("sender"));
+						chatMessage.setSubject((String) tmsg.getObjectProperty("subject"));
+						chatMessage.setContent((String) tmsg.getObjectProperty("content"));
+						
+						for (String groupReceiver: chatManager.getActiveUsers()) {
+							chatManager.saveNewMessage(chatMessage, groupReceiver);
+						}
+						
+						System.out.println("New group message: " + chatMessage.getContent());
 						ws.sendMessageToAllActive(chatMessage);
 						break;
 
@@ -114,14 +161,6 @@ public class ChatAgent implements Agent {
 
 	public void setAgentId(String agentId) {
 		this.agentId = agentId;
-	}
-
-	public List<ChatMessage> getClientMessages() {
-		return clientMessages;
-	}
-
-	public void setClientMessages(List<ChatMessage> clientMessages) {
-		this.clientMessages = clientMessages;
 	}
 		
 }

@@ -1,12 +1,16 @@
 package chatmanager;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
+import models.ChatMessage;
 import models.User;
 import ws.WSChat;
 
@@ -19,6 +23,7 @@ public class ChatManagerBean implements ChatManagerRemote {
 
 	private List<User> registered = new ArrayList<User>();
 	private List<String> loggedIn = new ArrayList<String>();
+	private List<ChatMessage> messages = new ArrayList<>();
 	
 	/**
 	 * Default constructor.
@@ -29,12 +34,38 @@ public class ChatManagerBean implements ChatManagerRemote {
 		User u3 = new User ("sephiroth", "123", null);		
 		registered.add(u1);
 		registered.add(u2);
-		registered.add(u3);				
+		registered.add(u3);			
+			
+		
+		ChatMessage c1 = new ChatMessage();
+		c1.setReciever(registered);
+		c1.setSender("zack");
+		c1.setSubject("Good Morning!");
+		c1.setDate(new Date(2022, 1, 3));
+		c1.setContent("Lorem ipsum dolor sit amet, consectetur adipiscing elit. In elit justo, venenatis vel tincidunt ac, fermentum id est. Donec eget faucibus tellus. Aliquam erat volutpat. Nullam vitae sapien ut orci interdum venenatis. Praesent id varius velit, sed imperdiet risus. Nulla porttitor quam dolor. Curabitur eu mattis neque. Nunc consectetur, quam a cursus aliquet, enim nibh aliquet massa, eu vulputate dolor metus vitae orci.\r\n"  
+				 );
+		ChatMessage c2 = new ChatMessage();
+		c1.setReciever(registered);
+		c1.setSender("zack");
+		c1.setSubject("Good Morning!");
+		c1.setDate(new Date(2022, 2, 4));
+		c1.setContent("Nam sed posuere tellus. Praesent sit amet convallis orci. Mauris ipsum arcu, lobortis quis felis at, lacinia consequat ex. Nullam tempus enim a odio laoreet, sit amet auctor nisi mattis. Mauris tortor velit, egestas a leo sit amet, volutpat tristique ipsum. Cras eget vulputate nunc. "  
+				);		
+		ChatMessage c3 = new ChatMessage();
+		c1.setReciever(registered);
+		c1.setSender("zack");
+		c1.setSubject("Good Morning!");
+		c1.setDate(new Date(2022, 3, 5));
+		c1.setContent("Ut imperdiet et risus eu luctus. Suspendisse vel ultrices tortor, in faucibus nulla. Proin aliquam rhoncus fringilla. Nulla enim ligula, maximus ac enim vitae, iaculis pulvinar turpis. Duis vulputate enim id ante pellentesque consectetur. Curabitur rutrum ex eu enim viverra sagittis. Sed scelerisque sollicitudin finibus. Fusce bibendum fringilla risus gravida sollicitudin"  
+				);
+		messages.add(c1);
+		messages.add(c2);
+		messages.add(c3);
 	}
 
 	@Override
 	public boolean register(User user) {
-		if (registered.stream().anyMatch(u->u.getUsername().equals(user.getUsername()))) {
+		if (registered.stream().anyMatch(u->u.getUsername().equals(user.getUsername())) || user.username.equals("SYSTEM_AGENT")) {
 			return false;
 		} else {
 			registered.add(user);			
@@ -55,7 +86,7 @@ public class ChatManagerBean implements ChatManagerRemote {
 	}
 
 	@Override
-	public List<String> loggedInUsers() {
+	public List<String> getActiveUsers() {
 		return loggedIn;
 	}
 
@@ -77,6 +108,38 @@ public class ChatManagerBean implements ChatManagerRemote {
 			}
 		}		
 		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getRegisteredUsers() {
+		return (List<String>) registered.stream().map(u -> u.getUsername());
+	}
+
+	@Override
+	public List<ChatMessage> getMessagesByUser(String username) {
+		List<ChatMessage> retVal = new ArrayList<ChatMessage>();
+		for (ChatMessage msg : messages) {
+			if (msg.recievers.stream().anyMatch(u -> u.getUsername().equals(username))) {
+				retVal.add(msg);
+			}
+		}
+		return retVal;
+	}
+
+	@Override
+	public void saveNewMessage(ChatMessage chatMessage) {
+		messages.add(chatMessage);
+		
+	}
+
+	@Override
+	public void saveNewMessage(ChatMessage chatMessage, String groupReceiver) {
+		User receiver = registered.stream().filter(u->u.getUsername().equals(groupReceiver)).findFirst().orElse(null);
+		if (receiver != null) {
+			chatMessage.recievers.add(receiver);
+			messages.add(chatMessage);
+		}		
 	}
 
 }

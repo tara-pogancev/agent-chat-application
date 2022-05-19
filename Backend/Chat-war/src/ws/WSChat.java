@@ -2,6 +2,7 @@ package ws;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -110,6 +111,19 @@ public class WSChat {
 			}
 		}		
 	}
+	
+	public void sendMessage(String receiver, String message) {
+		Session session = sessions.get(receiver);
+		if (session != null && session.isOpen()) {
+			try {
+				session.getBasicRemote().sendText(message);
+			} catch (IOException e) {				
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Message delivery failure: Looks like " +  getUsernameFromSession(session.getId()) + " is offline.");
+		}
+	}		
 	
 	private String getUsernameFromSession(String sessionId) {
 	    for (Entry<String, Session> entry : sessions.entrySet()) {

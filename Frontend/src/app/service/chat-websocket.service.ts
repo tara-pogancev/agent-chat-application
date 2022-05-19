@@ -45,10 +45,11 @@ export class ChatWebsocketService {
       wsService.connect(this.ws_url).pipe(
         map((response: MessageEvent) => {
           let responseString: string = response.data;
+          let username: string = responseString.split('&')[1];
           if (responseString.startsWith('LOGIN')) {
-            return new ApplicationUser('Active', 'Somebody logged in!', null);
+            return new ApplicationUser(username, 'LOGIN', null);
           } else if (responseString.startsWith('LOGOUT')) {
-            return new ApplicationUser('Inctive', 'Somebody logged off!', null);
+            return new ApplicationUser(username, 'LOGOUT', null);
           } else {
             console.log('ACTIVE USERS: Safely ignore.');
             return;

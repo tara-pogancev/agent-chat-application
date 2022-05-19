@@ -44,12 +44,12 @@ export class ChatService {
   }
 
   getActiveUsers() {
-    const url = this.url + 'users/loggedIn';
+    const url = this.url + 'users/loggedIn/' + this.getActiveUsername()!;
     return this._http.get<any>(url);
   }
 
   getRegisteredUsers() {
-    const url = this.url + 'users/registered';
+    const url = this.url + 'users/registered/' + this.getActiveUsername()!;
     return this._http.get<any>(url);
   }
 
@@ -63,8 +63,8 @@ export class ChatService {
     return this._http.post<any>(url, message);
   }
 
-  getUsersMessages(username: String) {
-    const url = this.url + 'messages/' + username;
+  getUsersMessages() {
+    const url = this.url + 'messages/' + this.getActiveUsername()!;
     return this._http.get<any>(url);
   }
 

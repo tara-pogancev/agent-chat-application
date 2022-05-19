@@ -16,12 +16,14 @@ public interface ChatRestRemote {
 
 	// AGENTS	
 	@GET
-	@Path("/users/loggedIn")
-	public void getLoggedInUsers();
+	@Path("/users/loggedIn/{userId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getLoggedInUsers(@PathParam("userId") String username);
 	
 	@GET
-	@Path("/users/registered")
-	public void getRegisteredUsers();
+	@Path("/users/registered/{userId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getRegisteredUsers(@PathParam("userId") String username);
 
 	@POST
 	@Path("/messages/all")
