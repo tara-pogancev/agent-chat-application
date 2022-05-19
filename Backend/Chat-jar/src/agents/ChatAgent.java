@@ -1,5 +1,6 @@
 package agents;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -11,7 +12,6 @@ import javax.jms.Message;
 import javax.jms.TextMessage;
 
 import chatmanager.ChatManagerRemote;
-import messagemanager.AgentMessage;
 import messagemanager.MessageManagerRemote;
 import models.ChatMessage;
 import models.User;
@@ -27,17 +27,19 @@ public class ChatAgent implements Agent {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String agentId;
+	private List<ChatMessage> clientMessages = new ArrayList<>();
 
 	@EJB
 	private ChatManagerRemote chatManager;
+	
 	@EJB
 	private CachedAgentsRemote cachedAgents;
+	
 	@EJB
 	private WSChat ws;
 
 	@PostConstruct
 	public void postConstruct() {
-		System.out.println("Created Chat Agent.");
 	}
 
 	//private List<String> chatClients = new ArrayList<String>();
@@ -59,22 +61,16 @@ public class ChatAgent implements Agent {
 				try {
 					
 					option = (String) tmsg.getObjectProperty("command");
-					switch (option) {
-					case "REGISTER":
-						String username = (String) tmsg.getObjectProperty("username");
-						String password = (String) tmsg.getObjectProperty("password");
-	
-						boolean result = chatManager.register(new User(username, password));
-
-						response = "REGISTER!Registered: " + (result ? "Yes!" : "No!");
-						break;
+					switch (option) {					
 					case "LOG_IN":
+						/*
 						username = (String) tmsg.getObjectProperty("username");
 						password = (String) tmsg.getObjectProperty("password");
 						result = chatManager.login(username, password);
 
 						response = "LOG_IN!Logged in: " + (result ? "Yes!" : "No!");
 						break;
+						*/
 					case "GET_LOGGEDIN":
 						response = "LOGGEDIN!";
 						List<User> users = chatManager.loggedInUsers();
@@ -90,11 +86,11 @@ public class ChatAgent implements Agent {
 					case "x":
 						break;
 					default:
-						response = "ERROR!Option: " + option + " does not exist.";
+						response = "ERROR! Option: " + option + " does not exist.";
 						break;
 					}
 					System.out.println(response);
-					ws.onMessage("s", response);
+					ws.onMessage("tara", response);
 					
 				} catch (JMSException e) {
 					e.printStackTrace();
@@ -106,9 +102,10 @@ public class ChatAgent implements Agent {
 	}
 
 	@Override
-	public String init() {
-		agentId = "chat";
+	public String init(String id) {
+		agentId = id;
 		cachedAgents.addRunningAgent(agentId, this);
+		System.out.println("New agent initiated: " + id);
 		return agentId;
 	}
 
@@ -120,6 +117,13 @@ public class ChatAgent implements Agent {
 	public void setAgentId(String agentId) {
 		this.agentId = agentId;
 	}
-	
-	
+
+	public List<ChatMessage> getClientMessages() {
+		return clientMessages;
+	}
+
+	public void setClientMessages(List<ChatMessage> clientMessages) {
+		this.clientMessages = clientMessages;
+	}
+		
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationUser } from 'src/app/model/application-user';
 import { Message } from 'src/app/model/message';
+import { ChatWebsocketService } from 'src/app/service/chat-websocket.service';
 import { ChatService } from 'src/app/service/chat.service';
 
 @Component({
@@ -11,10 +12,13 @@ import { ChatService } from 'src/app/service/chat.service';
 export class MessagesPageComponent implements OnInit {
   messages: Message[] = [];
 
-  constructor(private chatService: ChatService) {}
+  constructor(
+    private chatService: ChatService,
+    private chatWsService: ChatWebsocketService
+  ) {}
 
   ngOnInit(): void {
-    this.chatService.messages.subscribe((msg) => {
+    this.chatWsService.messages.subscribe((msg) => {
       console.log('Response from websocket: ');
       console.log(msg);
       this.messages.push(msg);
@@ -22,10 +26,6 @@ export class MessagesPageComponent implements OnInit {
   }
 
   sendMessage() {
-    this.chatService.messages.next(
-      new Message([], 'tara2', new Date(), 'ok', 'OKK')
-    );
-
     this.chatService
       .sendMessage(new Message([], 'tara2', new Date(), 'ok', 'OKK'))
       .subscribe((data) => {

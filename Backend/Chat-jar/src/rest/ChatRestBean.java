@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 
 import agentmanager.AgentManagerBean;
 import agentmanager.AgentManagerRemote;
+import chatmanager.ChatManagerRemote;
 import messagemanager.AgentMessage;
 import messagemanager.MessageManagerRemote;
 import models.ChatMessage;
@@ -19,21 +20,19 @@ public class ChatRestBean implements ChatRest {
 	@EJB
 	private MessageManagerRemote messageManager;
 	
+	@EJB
+	private ChatManagerRemote chatManager;
+	
 	private AgentManagerRemote agentManager = JNDILookup.lookUp(JNDILookup.AgentManagerLookup, AgentManagerBean.class);
+
 	
 	@Override
-	public void register(User user) {
-		AgentMessage message = new AgentMessage();
-		message.userArgs.put("receiver", "chat");
-		message.userArgs.put("command", "REGISTER");
-		message.userArgs.put("username", user.getUsername());
-		message.userArgs.put("password", user.getPassword());
-		
-		messageManager.post(message);
+	public boolean register(User user) {
+		return chatManager.register(new User(user.username, user.password, null));
 	}
 
 	@Override
-	public void login(User user) {
+	public boolean login(User user) {
 		AgentMessage message = new AgentMessage();
 		message.userArgs.put("receiver", "chat");
 		message.userArgs.put("command", "LOG_IN");
@@ -41,6 +40,7 @@ public class ChatRestBean implements ChatRest {
 		message.userArgs.put("password", user.getPassword());
 		
 		messageManager.post(message);
+		return true;
 	}
 
 	@Override
@@ -53,14 +53,39 @@ public class ChatRestBean implements ChatRest {
 	}
 
 	@Override
-	public void sendMessageToAll(ChatMessage message) {	
-		agentManager.startAgent(JNDILookup.ChatAgentLookup);
+	public void getregisteredUsers() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendMessageToAllActive(ChatMessage message) {
+		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "tara");
 		AgentMessage agentMsg = new AgentMessage();
-		agentMsg.userArgs.put("receiver", "chat");
+		agentMsg.userArgs.put("receiver", "tara");
 		agentMsg.userArgs.put("command", "NEW_MESSAGE");
-		agentMsg.userArgs.put("content", message.content);
+		agentMsg.userArgs.put("content", message.getContent());
 		
 		messageManager.post(agentMsg);
+		
+	}
+
+	@Override
+	public void sendMessage(ChatMessage message) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getUsersMessages(String username) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void logOut(String username) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -79,4 +79,24 @@ public class WSChat {
 		}
 	}
 
+	public void notifyNewRegistration(String username) {
+		for (Session session: sessions.values()) {
+			try {
+				session.getBasicRemote().sendText("REGISTRATION&" + username);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}		
+	}
+	
+	public void notifyNewLogin(String username) {
+		for (Session session: sessions.values()) {
+			try {
+				session.getBasicRemote().sendText("LOGIN&" + username);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}		
+	}
+
 }
