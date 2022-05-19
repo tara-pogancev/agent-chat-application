@@ -1,6 +1,8 @@
-<div class="max-width-700">
-  <div *ngIf="message.subject != ''">
-    <div class="is-flex is-flex-direction-row is-justify-content-space-between">
+<div class="max-width-700 msg-container">
+  <div *ngIf="message.subject != ''" class="msg-container stretch-width">
+    <div
+      class="is-flex is-flex-direction-row is-justify-content-space-between stretch-width"
+    >
       <div>
         <div class="is-flex is-justify-content-space-between stretch-width">
           <h1>{{ message.subject }}</h1>
@@ -14,7 +16,7 @@
       </div>
     </div>
 
-    <p class="has-text-justified">
+    <p class="has-text-justified stretch-width">
       {{ message.content }}
     </p>
   </div>

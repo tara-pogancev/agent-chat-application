@@ -32,12 +32,12 @@ export class ChatWebsocketService {
           responseString.startsWith('LOGOUT') ||
           responseString.startsWith('REGISTRATION')
         ) {
-          console.log('Safely ignore.');
+          console.log('MESSAGES: Safely ignore.');
+          return;
         } else {
           let data = JSON.parse(response.data);
           return data;
         }
-        return;
       })
     );
 
@@ -50,9 +50,9 @@ export class ChatWebsocketService {
           } else if (responseString.startsWith('LOGOUT')) {
             return new ApplicationUser('Inctive', 'Somebody logged off!', null);
           } else {
-            console.log('Safely ignore.');
+            console.log('ACTIVE USERS: Safely ignore.');
+            return;
           }
-          return;
         })
       )
     );
@@ -68,9 +68,9 @@ export class ChatWebsocketService {
               null
             );
           } else {
-            console.log('Safely ignore.');
+            console.log('REGISTERED USERS: Safely ignore.');
+            return;
           }
-          return;
         })
       )
     );

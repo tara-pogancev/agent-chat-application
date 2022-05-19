@@ -18,8 +18,9 @@ export class MessagesPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.chatWsService.messages.subscribe((msg) => {
-      this.messages.push(msg);
+      if (msg != undefined) {
+        this.messages.push(msg);
+      }
     });
   }
-
 }
