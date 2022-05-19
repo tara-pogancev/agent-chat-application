@@ -67,8 +67,9 @@ public class WSChat {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			} else {
+				System.out.println("Message delivery failure: Looks like " + getUsernameFromSession(session.getId()) + " is offline.");
 			}
-			System.out.println("Message delivery failure: Looks like " + getUsernameFromSession(session.getId()) + " is offline.");
 		}			
 	}
 
