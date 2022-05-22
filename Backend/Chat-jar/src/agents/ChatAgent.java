@@ -141,7 +141,6 @@ public class ChatAgent implements Agent {
 	public String init(String id) {
 		agentId = id;
 		cachedAgents.addRunningAgent(agentId, this);
-		System.out.println("New agent initiated: " + id);
 		return agentId;
 	}
 

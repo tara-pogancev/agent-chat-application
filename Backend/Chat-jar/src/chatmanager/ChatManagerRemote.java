@@ -24,6 +24,9 @@ public interface ChatManagerRemote {
 	
 	public void saveNewMessage(ChatMessage chatMessage);
 
-	public void saveNewMessage(ChatMessage chatMessage, String groupReceiver);	
+	public void saveNewMessage(ChatMessage chatMessage, String groupReceiver);
+
+	public void forceLogout(String username);
+
 
 }

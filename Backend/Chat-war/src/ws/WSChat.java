@@ -2,11 +2,11 @@ package ws;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
 import javax.websocket.OnClose;
@@ -16,7 +16,11 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import agentmanager.AgentManagerBean;
+import agentmanager.AgentManagerRemote;
+import chatmanager.ChatManagerRemote;
 import models.ChatMessage;
+import util.JNDILookup;
 
 @Singleton
 @LocalBean
@@ -24,22 +28,32 @@ import models.ChatMessage;
 public class WSChat {
 	
 	private Map<String, Session> sessions = new HashMap<String, Session>();
+	
+	private AgentManagerRemote agentManager = JNDILookup.lookUp(JNDILookup.AgentManagerLookup, AgentManagerBean.class);
+	
+	@EJB
+	private ChatManagerRemote chatManager;
 
 	@OnOpen
 	public void onOpen(@PathParam("username") String username, Session session) {
 		sessions.put(username, session);
+		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, username);
 		System.out.println("Opened WebSocket: " + username);
 	}
 
 	@OnClose
 	public void onClose(@PathParam("username") String username, Session session) {
 		sessions.remove(username);
-		System.out.println("Closed WebSocket: " + username);
+		agentManager.stopAgent(username);
+		chatManager.forceLogout(username);
+		System.out.println("Closed WebSocket and agent: " + username);
 	}
 
 	@OnError
 	public void onError(@PathParam("username") String username, Session session, Throwable t) {
 		sessions.remove(username);
+		agentManager.stopAgent(username);
+		chatManager.forceLogout(username);
 		System.out.println("ERROR: Websocket aborted by the host.");
 	}
 	

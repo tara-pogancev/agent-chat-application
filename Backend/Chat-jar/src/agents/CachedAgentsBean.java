@@ -12,14 +12,14 @@ import javax.ejb.Singleton;
 @Singleton
 @LocalBean
 @Remote(CachedAgentsRemote.class)
-public class CachedAgents implements CachedAgentsRemote{
+public class CachedAgentsBean implements CachedAgentsRemote{
 
 	HashMap<String, Agent> runningAgents;
 
 	/**
 	 * Default constructor.
 	 */
-	public CachedAgents() {
+	public CachedAgentsBean() {
 		runningAgents = new HashMap<>();
 	}
 
@@ -32,5 +32,15 @@ public class CachedAgents implements CachedAgentsRemote{
 	public void addRunningAgent(String key, Agent agent) {
 		runningAgents.put(key, agent);
 	}
+
+	@Override
+	public void stopAgent(String username) {
+		runningAgents.remove(username);
+	}
+
+	@Override
+	public HashMap<String, Agent> getAll() {
+		return runningAgents;
+	}	
 
 }

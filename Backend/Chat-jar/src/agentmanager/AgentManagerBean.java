@@ -38,10 +38,17 @@ public class AgentManagerBean implements AgentManagerRemote {
 		if (getAgentById(id) == null) {
 			Agent agent = (Agent) JNDILookup.lookUp(name, Agent.class);
 			agent.init(id);
+			System.out.println("New agent initiated: " + id + ". Currently running: " + cachedAgents.getAll().size() + "." );
 			return agent;
 		} else {
 			return getAgentById(id);
 		}
+	}
+
+	@Override
+	public void stopAgent(String username) {
+		cachedAgents.stopAgent(username);
+		System.out.println("Stopped agent: " + username + ". Currently running: " + cachedAgents.getAll().size() + "." );
 	}
 
 }

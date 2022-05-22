@@ -38,24 +38,28 @@ public class ChatManagerBean implements ChatManagerRemote {
 		registered.add(u1);
 		registered.add(u2);
 		registered.add(u3);			
-			
+		
+		List<User> startingUsers = new ArrayList<>();
+		startingUsers.add(u1);
+		startingUsers.add(u2);
+		startingUsers.add(u3);				
 		
 		ChatMessage c1 = new ChatMessage();
-		c1.setReciever(registered);
+		c1.setReciever(startingUsers);
 		c1.setSender("tara");
 		c1.setDate(new SimpleDateFormat("dd/MM/yyyy").parse("02/02/2022"));
 		c1.setSubject("Good Evening!");
 		c1.setContent("Lorem ipsum dolor sit amet, consectetur adipiscing elit. In elit justo, venenatis vel tincidunt ac, fermentum id est. Donec eget faucibus tellus. Aliquam erat volutpat. Nullam vitae sapien ut orci interdum venenatis. Praesent id varius velit, sed imperdiet risus. Nulla porttitor quam dolor. Curabitur eu mattis neque. Nunc consectetur, quam a cursus aliquet, enim nibh aliquet massa, eu vulputate dolor metus vitae orci.\r\n"  
 				 );
 		ChatMessage c2 = new ChatMessage();
-		c2.setReciever(registered);
+		c2.setReciever(startingUsers);
 		c2.setSender("zack");
 		c2.setDate(new SimpleDateFormat("dd/MM/yyyy").parse("03/03/2022"));
 		c2.setSubject("Good Morning!");
 		c2.setContent("Nam sed posuere tellus. Praesent sit amet convallis orci. Mauris ipsum arcu, lobortis quis felis at, lacinia consequat ex. Nullam tempus enim a odio laoreet, sit amet auctor nisi mattis. Mauris tortor velit, egestas a leo sit amet, volutpat tristique ipsum. Cras eget vulputate nunc. "  
 				);		
 		ChatMessage c3 = new ChatMessage();
-		c3.setReciever(registered);
+		c3.setReciever(startingUsers);
 		c3.setSender("sephiroth");
 		c3.setDate(new SimpleDateFormat("dd/MM/yyyy").parse("24/04/2022"));
 		c3.setSubject("How do you do?");
@@ -97,7 +101,7 @@ public class ChatManagerBean implements ChatManagerRemote {
 	public boolean logOut(String username) {
 		if (isUserActive(username)) {
 			loggedIn.remove(username);
-			System.out.println("--- REGISTER: " + username + " ---");
+			System.out.println("--- LOGOUT: " + username + " ---");
 			return true;
 		} else {
 			return false;
@@ -146,6 +150,14 @@ public class ChatManagerBean implements ChatManagerRemote {
 			chatMessage.recievers.add(receiver);
 			messages.add(chatMessage);
 		}		
+	}
+
+	@Override
+	public void forceLogout(String username) {
+		if (isUserActive(username)) {
+			loggedIn.remove(username);
+			System.out.println("--- LOGOUT: " + username + " ---");
+		}	
 	}
 
 }

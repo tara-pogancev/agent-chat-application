@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
 import { Message } from '../model/message';
-import { WebsocketService } from './websocket.service';
-import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { ApplicationUser } from '../model/application-user';
 

@@ -26,7 +26,7 @@ public abstract class JNDILookup {
 		try {
 			Context context = new InitialContext();
 
-			System.out.println("Looking up: " + name);
+			// System.out.println("Looking up: " + name);
 			bean = (T) context.lookup(name);
 
 			context.close();
