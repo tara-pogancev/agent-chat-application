@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -24,7 +25,7 @@ public class ChatManagerBean implements ChatManagerRemote {
 
 	private List<User> registered = new ArrayList<User>();
 	private List<User> loggedIn = new ArrayList<User>();
-	private Map<String, User> loggedInRemote = new HashMap<String, User>();
+	private Map<String, String> loggedInRemote = new HashMap<String, String>();
 	private List<ChatMessage> messages = new ArrayList<>();
 	
 	@EJB
@@ -184,7 +185,7 @@ public class ChatManagerBean implements ChatManagerRemote {
 
 	@Override
 	public void addFromRemoteActive(User user, Host host) {
-		loggedInRemote.put(host.alias, user);
+		loggedInRemote.put(user.username, host.alias);
 		ws.notifyNewLogin(user.username);
 	}
 
@@ -196,7 +197,20 @@ public class ChatManagerBean implements ChatManagerRemote {
 
 	@Override
 	public void removeFromRemoteActive(User user) {
-		// TODO Auto-generated method stub
+		loggedInRemote.remove(user.username);		
+		ws.notifyLogOut(user.username);
+	}
+
+	@Override
+	public void logOutFromNode(String alias) {
+		Iterator<Map.Entry<String, String>> iterator = loggedInRemote.entrySet().iterator();
+		while (iterator.hasNext()) {
+			 Map.Entry<String, String> entry = iterator.next();
+			 if (entry.getValue().equals(alias)) {
+				 ws.notifyLogOut(entry.getKey());
+				 iterator.remove();
+			 }
+		}
 		
 	}
 

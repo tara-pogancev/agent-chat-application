@@ -37,5 +37,7 @@ public interface ChatManagerRemote {
 
 	public List<User> getActiveUsers();
 
+	public void logOutFromNode(String alias);
+
 
 }
