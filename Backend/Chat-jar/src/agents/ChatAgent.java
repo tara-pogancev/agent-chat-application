@@ -95,7 +95,7 @@ public class ChatAgent implements Agent {
 						chatMessage.setSubject((String) tmsg.getObjectProperty("subject"));
 						chatMessage.setContent((String) tmsg.getObjectProperty("content"));
 						
-						for (String groupReceiver: chatManager.getActiveUsers()) {
+						for (String groupReceiver: chatManager.getActiveUsernames()) {
 							chatManager.saveNewMessage(chatMessage, groupReceiver);
 						}
 						
@@ -104,7 +104,7 @@ public class ChatAgent implements Agent {
 						break;
 						
 					case "GET_ACTIVE_USERS":					
-						List<String> activeUsers = chatManager.getActiveUsers();
+						List<String> activeUsers = chatManager.getActiveUsernames();
 						for (String activeUser: activeUsers) {
 							ws.sendMessage(receiver, "LOGIN&"+activeUser);
 						}

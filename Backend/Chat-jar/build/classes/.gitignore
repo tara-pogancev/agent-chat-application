@@ -2,9 +2,8 @@
 /agentmanager/
 /agents/
 /chatmanager/
+/connectionmanager/
 /messagemanager/
 /models/
 /preferences/
 /rest/
-/util/
-/connectionmanager/

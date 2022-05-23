@@ -10,11 +10,17 @@ import models.User;
 @Remote
 public interface ChatManagerRemote {
 
-	public boolean login(String username, String password);
+	public boolean login(String username, String password);	
+
+	public void addFromRemoteActive(User user);
+	
+	public void addFromRemoteRegistered(User user);
+	
+	public void removeFromRemoteActive(User user);
 
 	public boolean register(User user);
 
-	public List<String> getActiveUsers();	
+	public List<String> getActiveUsernames();	
 
 	public List<String> getRegisteredUsers();
 
@@ -27,6 +33,8 @@ public interface ChatManagerRemote {
 	public void saveNewMessage(ChatMessage chatMessage, String groupReceiver);
 
 	public void forceLogout(String username);
+
+	public List<User> getActiveUsers();
 
 
 }

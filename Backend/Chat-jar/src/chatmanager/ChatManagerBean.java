@@ -1,10 +1,13 @@
 package chatmanager;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -12,7 +15,9 @@ import javax.ejb.Singleton;
 
 import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
+import connectionmanager.ConnectionRestBean;
 import models.ChatMessage;
+import models.Host;
 import models.User;
 import ws.WSChat;
 
@@ -24,17 +29,22 @@ import ws.WSChat;
 public class ChatManagerBean implements ChatManagerRemote {
 
 	private List<User> registered = new ArrayList<User>();
-	private List<String> loggedIn = new ArrayList<String>();
+	private List<User> loggedIn = new ArrayList<User>();
 	private List<ChatMessage> messages = new ArrayList<>();
+	
+	@EJB
+	private WSChat ws;
 	
 	/**
 	 * Default constructor.
 	 * @throws ParseException 
 	 */
 	public ChatManagerBean() throws ParseException {
-		User u1 = new User ("tara", "123", null);
-		User u2 = new User ("zack", "123", null);
-		User u3 = new User ("sephiroth", "123", null);		
+		Host masterHost = new Host("master", getMasterNodeAddress());
+		
+		User u1 = new User ("tara", "123", masterHost);
+		User u2 = new User ("zack", "123", masterHost);
+		User u3 = new User ("sephiroth", "123", masterHost);		
 		registered.add(u1);
 		registered.add(u2);
 		registered.add(u3);			
@@ -85,22 +95,41 @@ public class ChatManagerBean implements ChatManagerRemote {
 		boolean exists = registered.stream().anyMatch(u->u.getUsername().equals(username) && u.getPassword().equals(password));
 		if(exists) {			
 			if (!isUserActive(username))  {
-				loggedIn.add(username);
+				loggedIn.add(getRegisteredByUsername(username));
 				return true;
 			}
 		}
 		return false;
 	}
+	
+	private User getRegisteredByUsername(String username) {
+		for (User user : registered) {
+			if (user.username.equals(username)) {
+				return user;
+			}
+		} 
+		
+		return null;
+	}
 
 	@Override
-	public List<String> getActiveUsers() {
+	public List<String> getActiveUsernames() {
+		List<String> usernames = new ArrayList<>();
+		for (User user: loggedIn) {
+			usernames.add(user.username);
+		}
+		return usernames;
+	}
+	
+	@Override
+	public List<User> getActiveUsers() {
 		return loggedIn;
 	}
 
 	@Override
 	public boolean logOut(String username) {
 		if (isUserActive(username)) {
-			loggedIn.remove(username);
+			loggedIn.removeIf(u -> u.username.equals(username));
 			System.out.println("--- LOGOUT: " + username + " ---");
 			return true;
 		} else {
@@ -109,7 +138,7 @@ public class ChatManagerBean implements ChatManagerRemote {
 	}
 	
 	private boolean isUserActive(String username) {
-		for (String activeUsername : loggedIn) {
+		for (String activeUsername : getActiveUsernames()) {
 			if (activeUsername.equals(username)) {
 				return true;
 			}
@@ -155,9 +184,40 @@ public class ChatManagerBean implements ChatManagerRemote {
 	@Override
 	public void forceLogout(String username) {
 		if (isUserActive(username)) {
-			loggedIn.remove(username);
+			loggedIn.removeIf(u -> u.username.equals(username));
 			System.out.println("--- LOGOUT: " + username + " ---");
 		}	
+	}
+	
+	private String getMasterNodeAddress() {
+		try {
+			InputStream fileInput  = ConnectionRestBean.class.getClassLoader().getResourceAsStream("../preferences/connection.properties");
+			Properties connectionProperties = new Properties();
+			connectionProperties.load(fileInput);
+			fileInput.close();
+			return "http://" + connectionProperties.getProperty("master_node") + ":8080"; 
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public void addFromRemoteActive(User user) {
+		loggedIn.add(user);
+		ws.notifyNewLogin(user.username);
+	}
+
+	@Override
+	public void addFromRemoteRegistered(User user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeFromRemoteActive(User user) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
