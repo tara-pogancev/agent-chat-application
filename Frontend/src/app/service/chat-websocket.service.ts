@@ -5,8 +5,6 @@ import { WebsocketService } from './websocket.service';
 import { map } from 'rxjs/operators';
 import { ApplicationUser } from '../model/application-user';
 import { ChatService } from './chat.service';
-import { HostModel } from '../model/host';
-import { ReturnStatement } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root',
@@ -47,9 +45,9 @@ export class ChatWebsocketService {
           let responseString: string = response.data;
           let username: string = responseString.split('&')[1];
           if (responseString.startsWith('LOGIN')) {
-            return new ApplicationUser(username, 'LOGIN', null);
+            return new ApplicationUser(username, 'LOGIN');
           } else if (responseString.startsWith('LOGOUT')) {
-            return new ApplicationUser(username, 'LOGOUT', null);
+            return new ApplicationUser(username, 'LOGOUT');
           } else {
             console.log('ACTIVE USERS: Safely ignore.');
             return;
@@ -64,7 +62,7 @@ export class ChatWebsocketService {
           let responseString: string = response.data;
           let username: string = responseString.split('&')[1];
           if (responseString.startsWith('REGISTRATION')) {
-            return new ApplicationUser(username, 'LOGOUT', null);
+            return new ApplicationUser(username, 'LOGOUT');
           } else {
             console.log('REGISTERED USERS: Safely ignore.');
             return;

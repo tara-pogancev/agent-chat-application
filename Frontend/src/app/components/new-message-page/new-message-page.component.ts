@@ -54,8 +54,7 @@ export class NewMessagePageComponent implements OnInit {
       );
       let receiver = new ApplicationUser(
         this.messageForm.controls.reciever.value,
-        '',
-        null
+        ''
       );
       msg.recievers.push(receiver);
 
