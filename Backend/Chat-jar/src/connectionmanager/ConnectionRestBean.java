@@ -204,7 +204,7 @@ public class ConnectionRestBean implements ConnectionRest {
 	@Override
 	public void addLoggedInList(List<User> activeUsers) {
 		for (User user : activeUsers) {
-			chatManager.addFromRemoteActive(user);
+			chatManager.addFromRemoteActive(user, localNode);
 		}		
 	}
 

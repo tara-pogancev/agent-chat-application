@@ -1,6 +1,5 @@
 package agents;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -11,12 +10,9 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 
-import com.google.gson.Gson;
-
 import chatmanager.ChatManagerRemote;
 import messagemanager.MessageManagerRemote;
 import models.ChatMessage;
-import models.User;
 import util.JNDILookup;
 import ws.WSChat;
 

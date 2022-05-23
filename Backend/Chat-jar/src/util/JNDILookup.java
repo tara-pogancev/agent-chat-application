@@ -21,6 +21,7 @@ public abstract class JNDILookup {
 	public static final String ChatAgentLookup = JNDIPathChat + ChatAgent.class.getSimpleName() + "!"
 			+ Agent.class.getName() + "?stateful";
 
+	@SuppressWarnings("unchecked")
 	public static <T> T lookUp(String name, Class<T> c) {
 		T bean = null;
 		try {

@@ -41,7 +41,7 @@ public class AuthRestLocalBean implements AuthRestLocal {
 		agentMsg.userArgs.put("command", "REGISTER");
 		agentMsg.userArgs.put("username", user.username);		
 		
-		boolean response = chatManager.register(new User(user.username, user.password, null));
+		boolean response = chatManager.register(new User(user.username, user.password));
 		if (response) {
 			System.out.println("--- REGISTER: " + user.username + " ---");
 			messageManager.post(agentMsg);	

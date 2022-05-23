@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Remote;
 
 import models.ChatMessage;
+import models.Host;
 import models.User;
 
 @Remote
@@ -12,7 +13,7 @@ public interface ChatManagerRemote {
 
 	public boolean login(String username, String password);	
 
-	public void addFromRemoteActive(User user);
+	public void addFromRemoteActive(User user, Host host);
 	
 	public void addFromRemoteRegistered(User user);
 	

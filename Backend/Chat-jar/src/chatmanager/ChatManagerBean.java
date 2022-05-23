@@ -1,21 +1,15 @@
 package chatmanager;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
-
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
-import connectionmanager.ConnectionRestBean;
 import models.ChatMessage;
 import models.Host;
 import models.User;
@@ -30,6 +24,7 @@ public class ChatManagerBean implements ChatManagerRemote {
 
 	private List<User> registered = new ArrayList<User>();
 	private List<User> loggedIn = new ArrayList<User>();
+	private Map<String, User> loggedInRemote = new HashMap<String, User>();
 	private List<ChatMessage> messages = new ArrayList<>();
 	
 	@EJB
@@ -39,12 +34,10 @@ public class ChatManagerBean implements ChatManagerRemote {
 	 * Default constructor.
 	 * @throws ParseException 
 	 */
-	public ChatManagerBean() throws ParseException {
-		Host masterHost = new Host("master", getMasterNodeAddress());
-		
-		User u1 = new User ("tara", "123", masterHost);
-		User u2 = new User ("zack", "123", masterHost);
-		User u3 = new User ("sephiroth", "123", masterHost);		
+	public ChatManagerBean() throws ParseException {		
+		User u1 = new User ("tara", "123");
+		User u2 = new User ("zack", "123");
+		User u3 = new User ("sephiroth", "123");		
 		registered.add(u1);
 		registered.add(u2);
 		registered.add(u3);			
@@ -188,23 +181,10 @@ public class ChatManagerBean implements ChatManagerRemote {
 			System.out.println("--- LOGOUT: " + username + " ---");
 		}	
 	}
-	
-	private String getMasterNodeAddress() {
-		try {
-			InputStream fileInput  = ConnectionRestBean.class.getClassLoader().getResourceAsStream("../preferences/connection.properties");
-			Properties connectionProperties = new Properties();
-			connectionProperties.load(fileInput);
-			fileInput.close();
-			return "http://" + connectionProperties.getProperty("master_node") + ":8080"; 
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
 
 	@Override
-	public void addFromRemoteActive(User user) {
-		loggedIn.add(user);
+	public void addFromRemoteActive(User user, Host host) {
+		loggedInRemote.put(host.alias, user);
 		ws.notifyNewLogin(user.username);
 	}
 
