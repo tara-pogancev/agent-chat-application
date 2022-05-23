@@ -9,7 +9,7 @@ public class User implements Serializable {
 	 */
 	public static final long serialVersionUID = 1L;
 	public String username;
-	public String password;
+	public String password;	
 
 	public String getUsername() {
 		return username;

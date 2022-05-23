@@ -25,7 +25,7 @@ public class ChatManagerBean implements ChatManagerRemote {
 
 	private List<User> registered = new ArrayList<User>();
 	private List<User> loggedIn = new ArrayList<User>();
-	private Map<String, String> loggedInRemote = new HashMap<String, String>();
+	private List<User> loggedInRemote = new ArrayList<User>();	// Password acts as a HOST field
 	private List<ChatMessage> messages = new ArrayList<>();
 	
 	@EJB
@@ -184,34 +184,32 @@ public class ChatManagerBean implements ChatManagerRemote {
 	}
 
 	@Override
-	public void addFromRemoteActive(User user, Host host) {
-		loggedInRemote.put(user.username, host.alias);
+	public void addFromRemoteActive(User user) {
+		System.out.println("Remote user logged in: " + user.username);
+		loggedInRemote.add(new User(user.username, user.password));
 		ws.notifyNewLogin(user.username);
 	}
 
 	@Override
-	public void addFromRemoteRegistered(User user) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void removeFromRemoteActive(User user) {
-		loggedInRemote.remove(user.username);		
-		ws.notifyLogOut(user.username);
+	public void removeFromRemoteActive(String username) {
+		loggedInRemote.removeIf(u -> u.username.equals(username));		
+		ws.notifyLogOut(username);
+		System.out.println("Remote user logged out: " + username);
 	}
 
 	@Override
 	public void logOutFromNode(String alias) {
-		Iterator<Map.Entry<String, String>> iterator = loggedInRemote.entrySet().iterator();
-		while (iterator.hasNext()) {
-			 Map.Entry<String, String> entry = iterator.next();
-			 if (entry.getValue().equals(alias)) {
-				 ws.notifyLogOut(entry.getKey());
-				 iterator.remove();
-			 }
+		for (User u: loggedInRemote) {
+			if (u.password.equals(alias)) {
+				ws.notifyLogOut(u.username);
+			}
 		}
 		
+		loggedInRemote.removeIf(u -> u.password.equals(alias));
 	}
 
+	@Override
+	public List<User> getLoggedInRemote() {
+		return loggedInRemote;
+	}
 }

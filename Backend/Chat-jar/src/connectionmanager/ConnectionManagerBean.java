@@ -1,8 +1,9 @@
 package connectionmanager;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-
+import java.util.Map;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
@@ -74,7 +75,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 			nodeCluster.add(getMasterAlias());
 			nodeCluster.removeIf(n -> n.equals(localNode.getAlias()));
 			resteasyClient.close();
-			System.out.println("*** Handshake successful. Number of connected nodes: " + nodeCluster.size());
+			System.out.println("\n*** Handshake successful. Number of connected nodes: " + nodeCluster.size() + "\n");
 		}
 	}
 
@@ -89,7 +90,6 @@ public class ConnectionManagerBean implements ConnectionManager {
 		}
 	}
 	
-
 	private String getNodeAlias() {		
 		return System.getProperty("jboss.node.name");
 	}
@@ -133,7 +133,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 	private void heartbeat() {
 		System.out.println("*** Heartbeat protocol initiated");
 		for(String node : nodeCluster) {
-			System.out.println("Pinging node with alias: " + node);
+			System.out.println("*** Pinging node with alias: " + node);
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -141,11 +141,11 @@ public class ConnectionManagerBean implements ConnectionManager {
 						ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 						ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
 						ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
-						boolean ping = rest.ping();
-						System.out.println("Node: " + node + " is well and alive.");
+						rest.ping();
+						System.out.println("*** Node: " + node + " is well and alive.");
 						resteasyClient.close();
 					} catch (Exception e) {
-						System.out.println("Node: " + node + " died. Notifying other nodes.");
+						System.out.println("*** Node: " + node + " died. Notifying other nodes.");
 						nodeCluster.remove(node);
 						notifyNodesShutDown(node);
 					}
@@ -175,14 +175,19 @@ public class ConnectionManagerBean implements ConnectionManager {
 			@Override
 			public void run() {
 				// HANDSHAKE [4] - Master returns all other logged in users to the baby node
+				// Master should already have the complete list!
+				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
+				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + nodeAlias + "/Chat-war/api/connection");
+				ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+				for (String username : chatManager.getActiveUsernames()) {
+					User userToAdd = new User(username, localNode.getAlias());
+					rest.addLoggedInFromRemote(userToAdd);
+				}
 				
-//				for (String tempNode: nodeCluster) {					
-//					ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
-//					ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + tempNode + "/Chat-war/api/connection");
-//					ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
-//					rest.syncLoggedIn(node);
-//					resteasyClient.close();
-//				}
+				for (User user : chatManager.getLoggedInRemote()) {
+					rest.addLoggedInFromRemote(user);
+				}
+				resteasyClient.close();
 			}
 		}).start();
 		
@@ -202,7 +207,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 			ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 			ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + targetNode + "/Chat-war/api/connection");
 			ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
-			rest.addLoggedInList(chatManager.getActiveUsers());
+			// rest.addLoggedInList(chatManager.getActiveUsernames());
 			resteasyClient.close();
 		}
 	}
@@ -217,14 +222,16 @@ public class ConnectionManagerBean implements ConnectionManager {
 
 	@Override
 	public boolean ping() {
-		System.out.println(localNode.getAlias() + ": PING!");
+		System.out.println("*** PINGED!");
+		System.out.println("*** Just to let you know I have: " + chatManager.getActiveUsernames().size() + " local users, and "
+				+ chatManager.getLoggedInRemote().size() + " remote users active.");
 		return true;
 	}
 
 	@Override
-	public void addLoggedInList(List<User> activeUsers) {
-		for (User user : activeUsers) {
-			chatManager.addFromRemoteActive(user, localNode);
-		}		
+	public void addLoggedInFromRemote(User user) {
+		System.out.println("Adding username: " + user.username + ", alias: " + user.password);
+		chatManager.addFromRemoteActive(user);
 	}
+
 }

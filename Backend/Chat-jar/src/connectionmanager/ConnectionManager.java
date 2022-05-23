@@ -1,6 +1,7 @@
 package connectionmanager;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -51,8 +52,9 @@ public interface ConnectionManager {
 	public boolean ping();
 
 	@POST
+	@Path("/user/loggedIn")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addLoggedInList(List<User> activeUsers);
-	
+	public void addLoggedInFromRemote(User user);
+
 }

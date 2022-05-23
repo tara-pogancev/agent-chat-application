@@ -1,6 +1,7 @@
 package chatmanager;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Remote;
 
@@ -13,11 +14,9 @@ public interface ChatManagerRemote {
 
 	public boolean login(String username, String password);	
 
-	public void addFromRemoteActive(User user, Host host);
-	
-	public void addFromRemoteRegistered(User user);
-	
-	public void removeFromRemoteActive(User user);
+	public void addFromRemoteActive(User user);
+		
+	public void removeFromRemoteActive(String username);
 
 	public boolean register(User user);
 
@@ -38,6 +37,7 @@ public interface ChatManagerRemote {
 	public List<User> getActiveUsers();
 
 	public void logOutFromNode(String alias);
-
+	
+	public List<User> getLoggedInRemote();
 
 }
