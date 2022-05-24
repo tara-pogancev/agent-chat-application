@@ -61,7 +61,7 @@ public class ChatAgent implements Agent {
 					switch (option) {	
 					case "LOGIN":
 						username = (String) tmsg.getObjectProperty("username");
-						ws.notifyNewLogin(username);
+						// ws.notifyNewLogin(username);
 						break;
 						
 					case "REGISTER":
@@ -79,11 +79,12 @@ public class ChatAgent implements Agent {
 						chatMessage.setSender((String) tmsg.getObjectProperty("sender"));
 						chatMessage.setSubject((String) tmsg.getObjectProperty("subject"));
 						chatMessage.setContent((String) tmsg.getObjectProperty("content"));
+						chatMessage.setReciever((String) tmsg.getObjectProperty("target"));
 						
-						chatManager.saveNewMessage(chatMessage, receiver);
+						chatManager.saveNewMessage(chatMessage);
 						
-						System.out.println("New message: " + chatMessage.getContent());
-						ws.sendMessage(receiver, chatMessage);
+						// System.out.println("New message: " + chatMessage.getContent());
+						ws.sendMessage(chatMessage.reciever, chatMessage);
 						break;
 					
 					case "NEW_GROUP_MESSAGE":
@@ -93,14 +94,16 @@ public class ChatAgent implements Agent {
 						chatMessage.setContent((String) tmsg.getObjectProperty("content"));
 						
 						for (String groupReceiver: chatManager.getActiveUsernames()) {
-							chatManager.saveNewMessage(chatMessage, groupReceiver);
+							chatMessage.setReciever(groupReceiver);
+							chatManager.saveNewMessage(chatMessage);
 						}
 						
 						for (User groupReceiver: chatManager.getLoggedInRemote()) {
-							chatManager.saveNewMessage(chatMessage, groupReceiver.getUsername());
+							chatMessage.setReciever(groupReceiver.getUsername());
+							chatManager.saveNewMessage(chatMessage);
 						}
 						
-						System.out.println("New group message: " + chatMessage.getContent());
+						// System.out.println("New group message: " + chatMessage.getContent());
 						ws.sendMessageToAllActive(chatMessage);
 						break;
 						
@@ -116,7 +119,7 @@ public class ChatAgent implements Agent {
 						break;
 						
 					case "GET_REGISTERED_USERS":
-						List<String> registeredUsers = chatManager.getRegisteredUsers();
+						List<String> registeredUsers = chatManager.getRegisteredUsernames();
 						for (String registeredUser: registeredUsers) {
 							ws.sendMessage(receiver, "REGISTRATION&"+registeredUser);
 						}

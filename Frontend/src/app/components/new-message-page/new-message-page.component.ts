@@ -50,19 +50,13 @@ export class NewMessagePageComponent implements OnInit {
   submit() {
     if (this.messageForm.valid) {
       let msg = new Message(
-        [],
+        this.messageForm.controls.reciever.value,
         this.chatService.getActiveUsername()!,
         new Date(),
         this.messageForm.controls.subject.value,
         this.messageForm.controls.content.value
       );
-      let receiver = new ApplicationUser(
-        this.messageForm.controls.reciever.value,
-        ''
-      );
-      msg.recievers.push(receiver);
 
-      console.log(receiver);
       this.chatService.sendMessage(msg).subscribe((data) => {
         this.messageForm.controls.reciever.setValue(this.users[0].username);
         this.messageForm.controls.content.markAsPristine();

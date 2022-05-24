@@ -22,7 +22,7 @@ public interface ChatManagerRemote {
 
 	public List<String> getActiveUsernames();	
 
-	public List<String> getRegisteredUsers();
+	public List<String> getRegisteredUsernames();
 
 	public boolean logOut(String username);
 	
@@ -31,10 +31,6 @@ public interface ChatManagerRemote {
 	public void saveNewMessageFromRemote(ChatMessage chatMessage);
 	
 	public void saveNewMessage(ChatMessage chatMessage);
-
-	public void saveNewMessage(ChatMessage chatMessage, String groupReceiver);
-
-	public void forceLogout(String username);
 
 	public List<User> getActiveUsers();
 
@@ -48,4 +44,5 @@ public interface ChatManagerRemote {
 	
 	public void sendLogoutToNetwork(String username);
 
+	public void forceLogin(String username);
 }

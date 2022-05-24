@@ -13,18 +13,18 @@ public class ChatMessage implements Serializable {
 	 * For code simplicity, DTO === model 
 	 */
 	public static final long serialVersionUID = 1L;
-	public List<User> recievers = new ArrayList<>();
+	public String reciever = "";
 	public String sender = "";
 	public Date date = new Date();
 	public String subject = "";
 	public String content = "";
 	
-	public List<User> getReciever() {
-		return recievers;
+	public String getReciever() {
+		return reciever;
 	}
 	
-	public void setReciever(List<User> reciever) {
-		this.recievers = reciever;
+	public void setReciever(String reciever) {
+		this.reciever = reciever;
 	}
 	
 	public String getSender() {
@@ -65,9 +65,9 @@ public class ChatMessage implements Serializable {
 	
 	public ChatMessage() {}
 
-	public ChatMessage(List<User> recievers, String sender, Date date, String subject, String content) {
+	public ChatMessage(String reciever, String sender, Date date, String subject, String content) {
 		super();
-		this.recievers = recievers;
+		this.reciever = reciever;
 		this.sender = sender;
 		this.date = date;
 		this.subject = subject;

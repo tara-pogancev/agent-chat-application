@@ -24,7 +24,7 @@ export class NewGroupMessagePageComponent implements OnInit {
   submit() {
     if (this.messageForm.valid) {
       let msg = new Message(
-        [],
+        '',
         this.chatService.getActiveUsername()!,
         new Date(),
         this.messageForm.controls.subject.value,

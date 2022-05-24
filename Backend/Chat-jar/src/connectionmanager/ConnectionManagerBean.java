@@ -242,9 +242,9 @@ public class ConnectionManagerBean implements ConnectionManager {
 
 	@Override
 	public void notifyAllNewMessage(ChatMessage msg) {
-		System.out.println("*** Forwarding new message to server from " + msg.getSender());
 		for (String node: nodeCluster) {
 			if (!node.equals(localNode.getAlias())) {
+				System.out.println("*** Forwarding new message to server from " + msg.getSender());
 				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
 				ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
