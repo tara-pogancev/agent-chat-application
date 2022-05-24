@@ -71,10 +71,22 @@ public interface ConnectionManager {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void addChatMessageFromRemote(ChatMessage msg);
 	
+	@POST
+	@Path("/notify/message")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public void notifyAllNewMessage(ChatMessage msg);
 	
+	@POST
+	@Path("/notify/login")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public void notifyAllNewLogin(String user);
 	
+	@POST
+	@Path("/notify/logout")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public void notifyAllLogout(String user);
 
 }
