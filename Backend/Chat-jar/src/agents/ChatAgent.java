@@ -62,7 +62,6 @@ public class ChatAgent implements Agent {
 					case "LOGIN":
 						username = (String) tmsg.getObjectProperty("username");
 						ws.notifyNewLogin(username);
-						chatManager.sendLoginToNetwork(username);
 						break;
 						
 					case "REGISTER":
@@ -73,7 +72,6 @@ public class ChatAgent implements Agent {
 					case "LOGOUT":
 						username = (String) tmsg.getObjectProperty("username");
 						ws.closeSessionOnLogOut(username);
-						chatManager.sendLogoutToNetwork(username);
 						break;
 						
 					case "NEW_MESSAGE":

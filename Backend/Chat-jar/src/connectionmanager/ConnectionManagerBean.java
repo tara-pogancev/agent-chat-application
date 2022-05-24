@@ -13,7 +13,6 @@ import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
 import javax.ejb.Remote;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
@@ -25,10 +24,7 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
@@ -231,7 +227,6 @@ public class ConnectionManagerBean implements ConnectionManager {
 
 	@Override
 	public void addLoggedInFromRemote(User user) {
-		System.out.println("Adding username: " + user.username + ", alias: " + user.password);
 		chatManager.addFromRemoteActive(user);
 	}
 
