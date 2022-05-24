@@ -177,6 +177,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + nodeAlias + "/Chat-war/api/connection");
 				ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
 				for (String username : chatManager.getActiveUsernames()) {
+					System.out.println("Sending user to remote!");
 					User userToAdd = new User(username, localNode.getAlias());
 					rest.addLoggedInFromRemote(userToAdd);
 				}
@@ -226,6 +227,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 
 	@Override
 	public void addLoggedInFromRemote(User user) {
+		System.out.println("recieved user from remote: " + user.username);
 		chatManager.addLoggedInFromRemote(user);
 	}
 
