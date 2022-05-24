@@ -10,6 +10,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import models.ChatMessage;
 import models.Host;
 import models.User;
 
@@ -56,5 +58,25 @@ public interface ConnectionManager {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void addLoggedInFromRemote(User user);
+	
+	@DELETE
+	@Path("/user/loggedIn")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void removeLoggedInFromRemote(User user);
+	
+	@POST
+	@Path("/message")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void addChatMessageFromRemote(ChatMessage msg);
+	
+	public void notifyAllNewMessage(ChatMessage msg);
+	
+	public void notifyAllNewLogin(String user);
+	
+	public void notifyAllLogout(String user);
+
+	public Object getMasterAlias();
 
 }

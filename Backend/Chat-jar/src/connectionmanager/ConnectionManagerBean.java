@@ -35,6 +35,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import chatmanager.ChatManagerRemote;
+import models.ChatMessage;
 import models.Host;
 import models.User;
 import ws.WSChat;
@@ -94,7 +95,8 @@ public class ConnectionManagerBean implements ConnectionManager {
 		return System.getProperty("jboss.node.name");
 	}
 		
-	private String getMasterAlias() {
+	@Override
+	public String getMasterAlias() {
 		try {
 			InputStream fileInput  = ConnectionManagerBean.class.getClassLoader().getResourceAsStream("../preferences/connection.properties");
 			Properties connectionProperties = new Properties();
@@ -232,6 +234,36 @@ public class ConnectionManagerBean implements ConnectionManager {
 	public void addLoggedInFromRemote(User user) {
 		System.out.println("Adding username: " + user.username + ", alias: " + user.password);
 		chatManager.addFromRemoteActive(user);
+	}
+
+	@Override
+	public void removeLoggedInFromRemote(User user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addChatMessageFromRemote(ChatMessage msg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void notifyAllNewMessage(ChatMessage msg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void notifyAllNewLogin(String user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void notifyAllLogout(String user) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

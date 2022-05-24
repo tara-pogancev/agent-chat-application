@@ -13,6 +13,7 @@ import javax.jms.TextMessage;
 import chatmanager.ChatManagerRemote;
 import messagemanager.MessageManagerRemote;
 import models.ChatMessage;
+import models.User;
 import util.JNDILookup;
 import ws.WSChat;
 
@@ -60,7 +61,8 @@ public class ChatAgent implements Agent {
 					switch (option) {	
 					case "LOGIN":
 						username = (String) tmsg.getObjectProperty("username");
-						ws.notifyNewLogin(username);					
+						ws.notifyNewLogin(username);
+						chatManager.sendLoginToNetwork(username);
 						break;
 						
 					case "REGISTER":
@@ -71,6 +73,7 @@ public class ChatAgent implements Agent {
 					case "LOGOUT":
 						username = (String) tmsg.getObjectProperty("username");
 						ws.closeSessionOnLogOut(username);
+						chatManager.sendLogoutToNetwork(username);
 						break;
 						
 					case "NEW_MESSAGE":
@@ -101,8 +104,12 @@ public class ChatAgent implements Agent {
 						
 					case "GET_ACTIVE_USERS":					
 						List<String> activeUsers = chatManager.getActiveUsernames();
+						List<User> activeUsersRemote = chatManager.getLoggedInRemote();
 						for (String activeUser: activeUsers) {
 							ws.sendMessage(receiver, "LOGIN&"+activeUser);
+						}
+						for (User activeUser: activeUsersRemote) {
+							ws.sendMessage(receiver, "LOGIN&"+activeUser.getUsername());
 						}
 						break;
 						

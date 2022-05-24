@@ -48,8 +48,7 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 		agentMsg.userArgs.put("receiver", username);
 		agentMsg.userArgs.put("command", "GET_REGISTERED_USERS");
 		
-		messageManager.post(agentMsg);			
-		
+		messageManager.post(agentMsg);				
 	}
 
 	@Override
@@ -75,8 +74,7 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 		agentMsg.userArgs.put("subject", message.getSubject());
 		agentMsg.userArgs.put("content", message.getContent());
 		
-		messageManager.post(agentMsg);	
-		
+		messageManager.post(agentMsg);			
 	}
 
 	@Override
@@ -86,8 +84,7 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 		agentMsg.userArgs.put("receiver", username);
 		agentMsg.userArgs.put("command", "GET_MESSAGES");
 		
-		messageManager.post(agentMsg);	
-		
+		messageManager.post(agentMsg);			
 	}
 
 	@Override

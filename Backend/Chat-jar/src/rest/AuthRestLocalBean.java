@@ -57,12 +57,16 @@ public class AuthRestLocalBean implements AuthRestLocal {
 		agentMsg.userArgs.put("command", "LOGIN");
 		agentMsg.userArgs.put("username", user.username);		
 		
-		boolean response = chatManager.login(user.username, user.password);
-		if (response) {
+		String response = chatManager.login(user.username, user.password);
+		if (response.equals("ok")) {
 			System.out.println("--- LOGIN: " + user.username + " ---");
 			messageManager.post(agentMsg);	
+			return Response.status(Status.OK).entity(response).build();
+		} else if (response.equals("invalid")) {
+			return Response.status(Status.NOT_FOUND).entity(response).build();
+		} else {
+			return Response.status(Status.CONFLICT).entity(response).build();
 		}
-		return Response.status(Status.OK).entity(response).build();
 	}
 
 }

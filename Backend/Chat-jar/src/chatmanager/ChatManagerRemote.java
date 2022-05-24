@@ -12,7 +12,7 @@ import models.User;
 @Remote
 public interface ChatManagerRemote {
 
-	public boolean login(String username, String password);	
+	public String login(String username, String password);	
 
 	public void addFromRemoteActive(User user);
 		
@@ -39,5 +39,11 @@ public interface ChatManagerRemote {
 	public void logOutFromNode(String alias);
 	
 	public List<User> getLoggedInRemote();
+	
+	public void sendMessageToNetwork(ChatMessage chatMessage);
+	
+	public void sendLoginToNetwork(String username);
+	
+	public void sendLogoutToNetwork(String username);
 
 }
