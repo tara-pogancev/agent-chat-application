@@ -308,6 +308,9 @@ public class ChatManagerBean implements ChatManagerRemote {
 			messages.add(c33);
 			
 			System.out.println("Master node data imported.");
+		} else {
+			User u4 = new User ("test", "123");		
+			registered.add(u4);
 		}
 	}
 
