@@ -190,16 +190,10 @@ public class ChatManagerBean implements ChatManagerRemote {
 
 	@Override
 	public void saveNewMessage(ChatMessage chatMessage, String groupReceiver) {
-		User receiver = registered.stream().filter(u->u.getUsername().equals(groupReceiver)).findFirst().orElse(null);
-		if (receiver != null) {
-			chatMessage.recievers.add(receiver);
-			messages.add(chatMessage);
-		} else {
-			// The message was meant for remote	
-			receiver = new User(groupReceiver, "remote");
-			chatMessage.recievers.add(receiver);
-			sendMessageToNetwork(chatMessage);
-		}
+		User receiver = new User(groupReceiver, "receiver");
+		chatMessage.recievers.add(receiver);
+		messages.add(chatMessage);
+		sendMessageToNetwork(chatMessage);		
 	}
 
 	@Override
