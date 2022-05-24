@@ -237,7 +237,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 
 	@Override
 	public void addChatMessageFromRemote(ChatMessage msg) {
-		chatManager.saveNewMessage(msg);
+		chatManager.saveNewMessageFromRemote(msg);
 	}
 
 	@Override

@@ -28,6 +28,8 @@ public interface ChatManagerRemote {
 	
 	public List<ChatMessage> getMessagesByUser(String username);
 	
+	public void saveNewMessageFromRemote(ChatMessage chatMessage);
+	
 	public void saveNewMessage(ChatMessage chatMessage);
 
 	public void saveNewMessage(ChatMessage chatMessage, String groupReceiver);

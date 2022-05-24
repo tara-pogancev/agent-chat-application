@@ -220,9 +220,9 @@ public class ChatManagerBean implements ChatManagerRemote {
 
 	@Override
 	public void removeFromRemoteActive(String username) {
+		System.out.println("Remote user logged out: " + username);
 		loggedInRemote.removeIf(u -> u.username.equals(username));		
 		ws.notifyLogOut(username);
-		System.out.println("Remote user logged out: " + username);
 	}
 
 	@Override
@@ -267,5 +267,12 @@ public class ChatManagerBean implements ChatManagerRemote {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public void saveNewMessageFromRemote(ChatMessage chatMessage) {
+		System.out.println("Recieved message from remote.");
+		messages.add(chatMessage);
+		ws.sendMessage(chatMessage.getReciever().get(0).getUsername(), chatMessage);		
 	}
 }
