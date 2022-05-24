@@ -1,6 +1,6 @@
 <div class="page-container">
   <div class="columns">
-    <div class="column is-4 is-flex is-flex-direction-column overflow-y">
+    <div class="column is-4 is-flex is-flex-direction-column overflow-y messages-display">
       <h1 class="is-light">All messages ({{ messages.length }})</h1>
       <mat-spinner *ngIf="loading"></mat-spinner>
       <p class="is-light mt-5" *ngIf="messages.length == 0 && !loading">

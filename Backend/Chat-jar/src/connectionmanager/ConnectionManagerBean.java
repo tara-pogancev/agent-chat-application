@@ -126,7 +126,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 		chatManager.logOutFromNode(alias);
 	}
 	
-	@Schedule(hour = "*", minute="*/2", persistent=false)
+	@Schedule(hour = "*", minute="*/4", persistent=false)
 	private void heartbeat() {
 		System.out.println("*** Heartbeat protocol initiated");
 		for(String node : nodeCluster) {
@@ -142,9 +142,19 @@ public class ConnectionManagerBean implements ConnectionManager {
 						System.out.println("*** Node: " + node + " is well and alive.");
 						resteasyClient.close();
 					} catch (Exception e) {
-						System.out.println("*** Node: " + node + " died. Notifying other nodes.");
-						nodeCluster.remove(node);
-						notifyNodesShutDown(node);
+						System.out.println("*** Node: " + node + " didn't respond. Trying again.");
+						try {
+							ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
+							ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
+							ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+							rest.ping();
+							System.out.println("*** Node: " + node + " is well and alive.");
+							resteasyClient.close();
+						} catch (Exception e1) {
+							System.out.println("*** Node: " + node + " died. Notifying other nodes.");
+							nodeCluster.remove(node);
+							notifyNodesShutDown(node);
+						}												
 					}
 				}				
 			}).start();
@@ -177,7 +187,6 @@ public class ConnectionManagerBean implements ConnectionManager {
 				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + nodeAlias + "/Chat-war/api/connection");
 				ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
 				for (String username : chatManager.getActiveUsernames()) {
-					System.out.println("Sending user to remote!");
 					User userToAdd = new User(username, localNode.getAlias());
 					rest.addLoggedInFromRemote(userToAdd);
 				}
@@ -199,17 +208,6 @@ public class ConnectionManagerBean implements ConnectionManager {
 	}
 
 	@Override
-	public void syncLoggedIn(String targetNode) {
-		if (!targetNode.equals(localNode.alias)) {
-			ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
-			ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + targetNode + "/Chat-war/api/connection");
-			ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
-			// rest.addLoggedInList(chatManager.getActiveUsernames());
-			resteasyClient.close();
-		}
-	}
-
-	@Override
 	public void addNewNode(String nodeAlias) {
 		if (!nodeAlias.equals(localNode.getAlias())) {
 			System.out.println("** Adding new node: " + nodeAlias);
@@ -227,7 +225,6 @@ public class ConnectionManagerBean implements ConnectionManager {
 
 	@Override
 	public void addLoggedInFromRemote(User user) {
-		System.out.println("recieved user from remote: " + user.username);
 		chatManager.addLoggedInFromRemote(user);
 	}
 

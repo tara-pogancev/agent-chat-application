@@ -35,12 +35,6 @@ public interface ConnectionManager {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public List<String> getNodes();
 	
-	@POST
-	@Path("/users/loggedIn")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void syncLoggedIn(String targetNode);
-	
 	@DELETE
 	@Path("/node")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -54,13 +48,13 @@ public interface ConnectionManager {
 	public boolean ping();
 
 	@POST
-	@Path("/user/loggedIn")
+	@Path("/users/loggedIn")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void addLoggedInFromRemote(User user);
 	
 	@DELETE
-	@Path("/user/loggedIn")
+	@Path("/users/loggedIn")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void removeLoggedInFromRemote(String user);

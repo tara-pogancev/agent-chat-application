@@ -25,3 +25,10 @@
 .mat-spinner circle {
   stroke: rgba(255, 255, 255, 0.75) !important;
 }
+
+.messages-display {
+  min-width: 300px;
+  max-width: 600px;
+  overflow-x: auto;
+  resize: horizontal;
+}
