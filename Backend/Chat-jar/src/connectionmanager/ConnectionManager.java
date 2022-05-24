@@ -77,6 +77,4 @@ public interface ConnectionManager {
 	
 	public void notifyAllLogout(String user);
 
-	public Object getMasterAlias();
-
 }

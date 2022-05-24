@@ -95,7 +95,6 @@ public class ConnectionManagerBean implements ConnectionManager {
 		return System.getProperty("jboss.node.name");
 	}
 		
-	@Override
 	public String getMasterAlias() {
 		try {
 			InputStream fileInput  = ConnectionManagerBean.class.getClassLoader().getResourceAsStream("../preferences/connection.properties");
