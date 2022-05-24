@@ -126,7 +126,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 		chatManager.logOutFromNode(alias);
 	}
 	
-	@Schedule(hour = "*", minute="*/4", persistent=false)
+	@Schedule(hour = "*", minute="*/1", persistent=false)
 	private void heartbeat() {
 		System.out.println("*** Heartbeat protocol initiated");
 		for(String node : nodeCluster) {
