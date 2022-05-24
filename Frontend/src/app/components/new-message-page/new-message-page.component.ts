@@ -28,17 +28,21 @@ export class NewMessagePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.chatWsService.registeredUsers.subscribe((msg) => {
+    this.chatWsService.activeUsers.subscribe((msg) => {
       if (msg != undefined) {
-        this.users.push(msg);
+        if (msg.password == 'LOGIN' && !this.userExists(msg.username)) {
+          this.users.push(msg);
+        } else if (msg.password == 'LOGOUT') {
+          this.removeUser(msg.username);
+        }
       }
     });
 
     if (ChatPageComponent.hasConnection) {
-      this.chatService.getRegisteredUsers().subscribe();
+      this.chatService.getActiveUsers().subscribe();
     } else {
       setTimeout(() => {
-        this.chatService.getRegisteredUsers().subscribe();
+        this.chatService.getActiveUsers().subscribe();
       }, 400);
     }
   }
@@ -65,6 +69,23 @@ export class NewMessagePageComponent implements OnInit {
         this.messageForm.controls.subject.markAsPristine();
         alert('Message sent!');
       });
+    }
+  }
+
+  userExists(username: string): boolean {
+    for (let user of this.users) {
+      if (user.username == username) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  removeUser(username: string) {
+    for (var i = 0; i < this.users.length; i++) {
+      if (this.users[i].username == username) {
+        this.users.splice(i, 1);
+      }
     }
   }
 }

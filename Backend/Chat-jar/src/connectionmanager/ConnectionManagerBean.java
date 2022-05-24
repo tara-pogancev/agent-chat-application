@@ -242,6 +242,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 
 	@Override
 	public void notifyAllNewMessage(ChatMessage msg) {
+		System.out.println("*** Forwarding new message to server from " + msg.getSender());
 		for (String node: nodeCluster) {
 			if (!node.equals(localNode.getAlias())) {
 				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();

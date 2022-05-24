@@ -96,6 +96,10 @@ public class ChatAgent implements Agent {
 							chatManager.saveNewMessage(chatMessage, groupReceiver);
 						}
 						
+						for (User groupReceiver: chatManager.getLoggedInRemote()) {
+							chatManager.saveNewMessage(chatMessage, groupReceiver.getUsername());
+						}
+						
 						System.out.println("New group message: " + chatMessage.getContent());
 						ws.sendMessageToAllActive(chatMessage);
 						break;
