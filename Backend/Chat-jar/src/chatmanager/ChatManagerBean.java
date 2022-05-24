@@ -185,8 +185,7 @@ public class ChatManagerBean implements ChatManagerRemote {
 
 	@Override
 	public void saveNewMessage(ChatMessage chatMessage) {
-		messages.add(chatMessage);
-		// TODO Auto-generated method stub				
+		messages.add(chatMessage);			
 	}
 
 	@Override
@@ -196,8 +195,9 @@ public class ChatManagerBean implements ChatManagerRemote {
 			chatMessage.recievers.add(receiver);
 			messages.add(chatMessage);
 		} else {
-			// The message was meant for remote
-			// TODO Auto-generated method stub		
+			// The message was meant for remote	
+			receiver = new User(groupReceiver, "remote");
+			chatMessage.recievers.add(receiver);
 			sendMessageToNetwork(chatMessage);
 		}
 	}
@@ -243,7 +243,7 @@ public class ChatManagerBean implements ChatManagerRemote {
 
 	@Override
 	public void sendMessageToNetwork(ChatMessage chatMessage) {
-		// TODO Auto-generated method stub		
+		connectionManager.notifyAllNewMessage(chatMessage);
 	}
 
 	@Override

@@ -237,14 +237,20 @@ public class ConnectionManagerBean implements ConnectionManager {
 
 	@Override
 	public void addChatMessageFromRemote(ChatMessage msg) {
-		// TODO Auto-generated method stub
-		
+		chatManager.saveNewMessage(msg);
 	}
 
 	@Override
 	public void notifyAllNewMessage(ChatMessage msg) {
-		// TODO Auto-generated method stub
-		
+		for (String node: nodeCluster) {
+			if (!node.equals(localNode.getAlias())) {
+				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
+				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
+				ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+				rest.addChatMessageFromRemote(msg);
+				resteasyClient.close();
+			}
+		}		
 	}
 
 	@Override
