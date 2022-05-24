@@ -237,9 +237,8 @@ public class ConnectionManagerBean implements ConnectionManager {
 	}
 
 	@Override
-	public void removeLoggedInFromRemote(User user) {
-		// TODO Auto-generated method stub
-		
+	public void removeLoggedInFromRemote(String user) {
+		chatManager.removeFromRemoteActive(user);
 	}
 
 	@Override
@@ -256,14 +255,29 @@ public class ConnectionManagerBean implements ConnectionManager {
 
 	@Override
 	public void notifyAllNewLogin(String user) {
-		// TODO Auto-generated method stub
-		
+		User userToAdd = new User(user, localNode.getAlias());
+		for (String node: nodeCluster) {
+			if (!node.equals(localNode.getAlias())) {
+				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
+				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
+				ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+				rest.addLoggedInFromRemote(userToAdd);
+				resteasyClient.close();
+			}
+		}		
 	}
 
 	@Override
 	public void notifyAllLogout(String user) {
-		// TODO Auto-generated method stub
-		
+		for (String node: nodeCluster) {
+			if (!node.equals(localNode.getAlias())) {
+				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
+				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
+				ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+				rest.removeLoggedInFromRemote(user);
+				resteasyClient.close();
+			}
+		}	
 	}
 
 }

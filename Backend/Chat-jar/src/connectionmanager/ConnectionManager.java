@@ -63,7 +63,7 @@ public interface ConnectionManager {
 	@Path("/user/loggedIn")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void removeLoggedInFromRemote(User user);
+	public void removeLoggedInFromRemote(String user);
 	
 	@POST
 	@Path("/message")
