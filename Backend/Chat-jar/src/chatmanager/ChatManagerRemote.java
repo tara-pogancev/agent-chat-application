@@ -14,7 +14,7 @@ public interface ChatManagerRemote {
 
 	public String login(String username, String password);	
 
-	public void addFromRemoteActive(User user);
+	public void addLoggedInFromRemote(User user);
 		
 	public void removeFromRemoteActive(String username);
 
@@ -44,5 +44,4 @@ public interface ChatManagerRemote {
 	
 	public void sendLogoutToNetwork(String username);
 
-	public void forceLogin(String username);
 }

@@ -38,7 +38,6 @@ public class WSChat {
 	public void onOpen(@PathParam("username") String username, Session session) {
 		sessions.put(username, session);
 		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, username);
-		chatManager.forceLogin(username);
 		System.out.println("Opened WebSocket: " + username);
 	}
 
@@ -46,7 +45,7 @@ public class WSChat {
 	public void onClose(@PathParam("username") String username, Session session) {
 		sessions.remove(username);
 		agentManager.stopAgent(username);
-		chatManager.logOut(username);
+		// chatManager.logOut(username);
 		System.out.println("Closed WebSocket and agent: " + username);
 	}
 

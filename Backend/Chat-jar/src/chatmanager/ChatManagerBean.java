@@ -51,18 +51,13 @@ public class ChatManagerBean implements ChatManagerRemote {
 	}
 	
 	@Override
-	public void forceLogin(String username) {
-		loggedIn.add(getRegisteredByUsername(username));
-		ws.notifyNewLogin(username);
-		sendLoginToNetwork(username);		
-	}
-
-	@Override
 	public String login(String username, String password) {
 		boolean exists = registered.stream().anyMatch(u->u.getUsername().equals(username) && u.getPassword().equals(password));
 		if(exists) {			
 			if (!isUserActive(username))  {
-				forceLogin(username);
+				loggedIn.add(getRegisteredByUsername(username));
+				ws.notifyNewLogin(username);
+				sendLoginToNetwork(username);	
 				return "ok";
 			}
 			return "error";
@@ -167,7 +162,7 @@ public class ChatManagerBean implements ChatManagerRemote {
 	}
 
 	@Override
-	public void addFromRemoteActive(User user) {
+	public void addLoggedInFromRemote(User user) {
 		System.out.println("Remote user logged in: " + user.username);
 		loggedInRemote.add(new User(user.username, user.password));
 		ws.notifyNewLogin(user.username);
@@ -289,14 +284,14 @@ public class ChatManagerBean implements ChatManagerRemote {
 			c31.setContent("Ut imperdiet et risus eu luctus. Suspendisse vel ultrices tortor, in faucibus nulla. Proin aliquam rhoncus fringilla. Nulla enim ligula, maximus ac enim vitae, iaculis pulvinar turpis. Duis vulputate enim id ante pellentesque consectetur. Curabitur rutrum ex eu enim viverra sagittis. Sed scelerisque sollicitudin finibus. Fusce bibendum fringilla risus gravida sollicitudin"  
 					);
 			ChatMessage c32 = new ChatMessage();
-			c32.setReciever("zack");
+			c32.setReciever("sephiroth");
 			c32.setSender("sephiroth");
 			c32.setDate(new SimpleDateFormat("dd/MM/yyyy").parse("24/04/2022"));
 			c32.setSubject("How do you do?");
 			c32.setContent("Ut imperdiet et risus eu luctus. Suspendisse vel ultrices tortor, in faucibus nulla. Proin aliquam rhoncus fringilla. Nulla enim ligula, maximus ac enim vitae, iaculis pulvinar turpis. Duis vulputate enim id ante pellentesque consectetur. Curabitur rutrum ex eu enim viverra sagittis. Sed scelerisque sollicitudin finibus. Fusce bibendum fringilla risus gravida sollicitudin"  
 					);
 			ChatMessage c33 = new ChatMessage();
-			c33.setReciever("zack");
+			c33.setReciever("tara");
 			c33.setSender("sephiroth");
 			c33.setDate(new SimpleDateFormat("dd/MM/yyyy").parse("24/04/2022"));
 			c33.setSubject("How do you do?");

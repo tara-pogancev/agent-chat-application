@@ -156,7 +156,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 		// MASTER NODE FUNCTION
 		// HANDSHAKE [1] - New node notifies master
 		System.out.println("** Registering new node: " + nodeAlias);
-		nodeCluster.add(nodeAlias);
+		addNewNode(nodeAlias);
 		for (String tempNode: nodeCluster) {
 			// HANDSHAKE [2] - Master notifies others
 			if (!tempNode.equals(nodeAlias)) {
@@ -188,7 +188,6 @@ public class ConnectionManagerBean implements ConnectionManager {
 			}
 		}).start();
 		
-
 		// HANDSHAKE [3] - Master returns all nodes
 		return getNodes();
 	}
@@ -227,7 +226,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 
 	@Override
 	public void addLoggedInFromRemote(User user) {
-		chatManager.addFromRemoteActive(user);
+		chatManager.addLoggedInFromRemote(user);
 	}
 
 	@Override
