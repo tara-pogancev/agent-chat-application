@@ -6,8 +6,10 @@ import javax.ejb.MessageDriven;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 
 import agents.Agent;
+import agents.AgentId;
 import agents.CachedAgentsRemote;
 
 /**
@@ -17,7 +19,6 @@ import agents.CachedAgentsRemote;
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
 		@ActivationConfigProperty(propertyName = "destination", propertyValue = "jms/topic/publicTopic") })
 public class MDBConsumer implements MessageListener {
-
 
 	@EJB
 	private CachedAgentsRemote cachedAgents;
@@ -32,11 +33,14 @@ public class MDBConsumer implements MessageListener {
 	 * @see MessageListener#onMessage(Message)
 	 */
 	public void onMessage(Message message) {
-		String receiver;
 		try {
-			receiver = (String) message.getObjectProperty("receiver");
-			Agent agent = (Agent) cachedAgents.getRunningAgents().get(receiver);
-			agent.handleMessage(message);
+			ACLMessage agentMessage = (ACLMessage) ((ObjectMessage) message).getObject();
+			for (AgentId receiver : agentMessage.getRecievers()) {
+				Agent agent = (Agent) cachedAgents.getById(receiver);
+				if (agent != null) {
+					agent.handleMessage(agentMessage);
+				}
+			}
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}

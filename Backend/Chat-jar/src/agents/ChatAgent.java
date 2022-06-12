@@ -11,6 +11,7 @@ import javax.jms.Message;
 import javax.jms.TextMessage;
 
 import chatmanager.ChatManagerRemote;
+import messagemanager.ACLMessage;
 import messagemanager.MessageManagerRemote;
 import models.ChatMessage;
 import models.User;
@@ -25,14 +26,14 @@ public class ChatAgent implements Agent {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String agentId;
+	private AgentId agentId;
 
 	@EJB
 	private ChatManagerRemote chatManager;
-	
+
 	@EJB
 	private CachedAgentsRemote cachedAgents;
-	
+
 	@EJB
 	private WSChat ws;
 
@@ -45,120 +46,100 @@ public class ChatAgent implements Agent {
 	}
 
 	@Override
-	public void handleMessage(Message message) {
-		TextMessage tmsg = (TextMessage) message;		
+	public void handleMessage(ACLMessage message) {
+		String option = "";
+		String username = "";
+		ChatMessage chatMessage = new ChatMessage();
 
-		String receiver;
-		try {
-			receiver = (String) tmsg.getObjectProperty("receiver");
-			if (agentId.equals(receiver)) {
-				String option = "";
-				String username = "";
-				ChatMessage chatMessage = new ChatMessage();
-				
-				try {					
-					option = (String) tmsg.getObjectProperty("command");
-					switch (option) {	
-					case "LOGIN":
-						username = (String) tmsg.getObjectProperty("username");
-						// ws.notifyNewLogin(username);
-						break;
-						
-					case "REGISTER":
-						username = (String) tmsg.getObjectProperty("username");
-						ws.notifyNewRegistration(username);	
-						break;
-						
-					case "LOGOUT":
-						username = (String) tmsg.getObjectProperty("username");
-						ws.closeSessionOnLogOut(username);
-						break;
-						
-					case "NEW_MESSAGE":
-						chatMessage = new ChatMessage();
-						chatMessage.setSender((String) tmsg.getObjectProperty("sender"));
-						chatMessage.setSubject((String) tmsg.getObjectProperty("subject"));
-						chatMessage.setContent((String) tmsg.getObjectProperty("content"));
-						chatMessage.setReciever((String) tmsg.getObjectProperty("target"));
-						
-						chatManager.saveNewMessage(chatMessage);
-						
-						// System.out.println("New message: " + chatMessage.getContent());
-						ws.sendMessage(chatMessage.reciever, chatMessage);
-						break;
-					
-					case "NEW_GROUP_MESSAGE":
-						chatMessage = new ChatMessage();
-						chatMessage.setSender((String) tmsg.getObjectProperty("sender"));
-						chatMessage.setSubject((String) tmsg.getObjectProperty("subject"));
-						chatMessage.setContent((String) tmsg.getObjectProperty("content"));
-						
-						for (String groupReceiver: chatManager.getActiveUsernames()) {
-							chatMessage.setReciever(groupReceiver);
-							chatManager.saveNewMessage(chatMessage);
-						}
-						
-						for (User groupReceiver: chatManager.getLoggedInRemote()) {
-							chatMessage.setReciever(groupReceiver.getUsername());
-							chatManager.saveNewMessage(chatMessage);
-						}
-						
-						// System.out.println("New group message: " + chatMessage.getContent());
-						ws.sendMessageToAllActive(chatMessage);
-						break;
-						
-					case "GET_ACTIVE_USERS":					
-						List<String> activeUsers = chatManager.getActiveUsernames();
-						List<User> activeUsersRemote = chatManager.getLoggedInRemote();
-						for (String activeUser: activeUsers) {
-							ws.sendMessage(receiver, "LOGIN&"+activeUser);
-						}
-						for (User activeUser: activeUsersRemote) {
-							ws.sendMessage(receiver, "LOGIN&"+activeUser.getUsername());
-						}
-						break;
-						
-					case "GET_REGISTERED_USERS":
-						List<String> registeredUsers = chatManager.getRegisteredUsernames();
-						for (String registeredUser: registeredUsers) {
-							ws.sendMessage(receiver, "REGISTRATION&"+registeredUser);
-						}
-						break;
-						
-					case "GET_MESSAGES":
-						for (ChatMessage userChatMessage : chatManager.getMessagesByUser(receiver)) {
-							ws.sendMessage(receiver, userChatMessage);
-						}
-						break;
+		switch (message.getPerformative()) {
+		case LOGIN:
+			username = message.getContent();
+			// ws.notifyNewLogin(username);
+			break;
 
-					default:
-						System.out.println( "ERROR! Option: " + option + " does not exist.");
-						break;
-					}
-					
-				} catch (JMSException e) {
-					e.printStackTrace();
-				}
+		case REGISTER:
+			username = message.getContent();
+			ws.notifyNewRegistration(username);
+			break;
+
+		case LOGOUT:
+			username = message.getContent();
+			ws.closeSessionOnLogOut(username);
+			break;
+
+		case SEND_MESSAGE:
+			chatMessage = new ChatMessage();
+			chatMessage.setSender((String) message.getUserArgs().get("sender"));
+			chatMessage.setSubject((String) message.getUserArgs().get("subject"));
+			chatMessage.setContent((String) message.getUserArgs().get("content"));
+			chatMessage.setReciever((String) message.getUserArgs().get("target"));
+
+			chatManager.saveNewMessage(chatMessage);
+
+			ws.sendMessage(chatMessage.reciever, chatMessage);
+			break;
+
+		case SEND_GROUP_MESSAGE:
+			chatMessage = new ChatMessage();
+			chatMessage.setSender((String) message.getUserArgs().get("sender"));
+			chatMessage.setSubject((String) message.getUserArgs().get("subject"));
+			chatMessage.setContent((String) message.getUserArgs().get("content"));
+
+			for (String groupReceiver : chatManager.getActiveUsernames()) {
+				chatMessage.setReciever(groupReceiver);
+				chatManager.saveNewMessage(chatMessage);
 			}
-		} catch (JMSException e) {
-			e.printStackTrace();
+
+			for (User groupReceiver : chatManager.getLoggedInRemote()) {
+				chatMessage.setReciever(groupReceiver.getUsername());
+				chatManager.saveNewMessage(chatMessage);
+			}
+
+			ws.sendMessageToAllActive(chatMessage);
+			break;
+
+		case GET_ACTIVE_USERS:
+			username = message.getContent();
+			List<String> activeUsers = chatManager.getActiveUsernames();
+			List<User> activeUsersRemote = chatManager.getLoggedInRemote();
+			for (String activeUser : activeUsers) {
+				ws.sendMessage(username, "LOGIN&" + activeUser);
+			}
+			for (User activeUser : activeUsersRemote) {
+				ws.sendMessage(username, "LOGIN&" + activeUser.getUsername());
+			}
+			break;
+
+		case GET_REGISTERED_USERS:
+			username = message.getContent();
+			List<String> registeredUsers = chatManager.getRegisteredUsernames();
+			for (String registeredUser : registeredUsers) {
+				ws.sendMessage(username, "REGISTRATION&" + registeredUser);
+			}
+			break;
+
+		case GET_MESSAGES:
+			username = message.getContent();
+			for (ChatMessage userChatMessage : chatManager.getMessagesByUser(username)) {
+				ws.sendMessage(username, userChatMessage);
+			}
+			break;
+
+		default:
+			System.out.println("ERROR! Option: " + option + " not defined for this agent.");
+			break;
 		}
 	}
 
 	@Override
-	public String init(String id) {
-		agentId = id;
-		cachedAgents.addRunningAgent(agentId, this);
+	public AgentId init(AgentId agentId) {
+		this.agentId = agentId;
+		cachedAgents.addRunningAgent(this);
 		return agentId;
 	}
 
 	@Override
-	public String getAgentId() {
+	public AgentId getAgentId() {
 		return agentId;
 	}
-
-	public void setAgentId(String agentId) {
-		this.agentId = agentId;
-	}
-		
 }

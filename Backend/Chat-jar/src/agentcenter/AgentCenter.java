@@ -1,4 +1,4 @@
-package connectionmanager;
+package agentcenter;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +15,7 @@ import models.ChatMessage;
 import models.Host;
 import models.User;
 
-public interface ConnectionManager {
+public interface AgentCenter {
 	
 	@POST
 	@Path("/register")
@@ -82,5 +82,7 @@ public interface ConnectionManager {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void notifyAllLogout(String user);
+	
+	public Host getHost();
 
 }

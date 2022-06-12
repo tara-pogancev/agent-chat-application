@@ -9,6 +9,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
 /**
@@ -44,21 +45,21 @@ public class MessageManagerBean implements MessageManagerRemote {
 		}
 	}
 
-	public void post(AgentMessage msg) {
+	public void post(ACLMessage msg) {
 		try {
-			defaultProducer.send(createTextMessage(msg));
+			defaultProducer.send(createJMSMessage(msg));
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private Message createTextMessage(AgentMessage amsg) {
-		Message msg = null ;
+	private Message createJMSMessage(ACLMessage amsg) {
+		ObjectMessage msg = null;
 		try {
-			msg = session.createTextMessage();
-			for(String property : amsg.userArgs.keySet()) {
-				msg.setObjectProperty(property, amsg.userArgs.get(property));
-			}
+			msg = session.createObjectMessage(amsg);	
+//			for(String property : amsg.userArgs.keySet()) {
+//				msg.setObjectProperty(property, amsg.userArgs.get(property));
+//			}
 			return msg;
 		} catch (JMSException e) {
 			e.printStackTrace();

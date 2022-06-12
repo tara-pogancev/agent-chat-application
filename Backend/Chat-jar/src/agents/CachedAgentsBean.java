@@ -1,6 +1,8 @@
 package agents;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Remote;
@@ -12,35 +14,37 @@ import javax.ejb.Singleton;
 @Singleton
 @LocalBean
 @Remote(CachedAgentsRemote.class)
-public class CachedAgentsBean implements CachedAgentsRemote{
+public class CachedAgentsBean implements CachedAgentsRemote {
 
-	HashMap<String, Agent> runningAgents;
+	Set<Agent> runningAgents;
 
 	/**
 	 * Default constructor.
 	 */
 	public CachedAgentsBean() {
-		runningAgents = new HashMap<>();
+		runningAgents = new HashSet<Agent>();
 	}
 
 	@Override
-	public HashMap<String, Agent> getRunningAgents() {
+	public Set<Agent>  getRunningAgents() {
 		return runningAgents;
 	}
 
 	@Override
-	public void addRunningAgent(String key, Agent agent) {
-		runningAgents.put(key, agent);
+	public void addRunningAgent(Agent agent) {
+		runningAgents.add(agent);
 	}
 
 	@Override
-	public void stopAgent(String username) {
-		runningAgents.remove(username);
+	public void stopAgent(AgentId agentId) {
+		Agent toRemove = getById(agentId);
+		if (toRemove != null) {
+			runningAgents.remove(toRemove);
+		}
 	}
 
 	@Override
-	public HashMap<String, Agent> getAll() {
-		return runningAgents;
-	}	
-
+	public Agent getById(AgentId agentId) {
+		return runningAgents.stream().filter(a -> a.getAgentId().equals(agentId)).findFirst().orElse(null);
+	}
 }

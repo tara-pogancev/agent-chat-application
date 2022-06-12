@@ -1,4 +1,4 @@
-package connectionmanager;
+package agentcenter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -38,9 +38,9 @@ import ws.WSChat;
 
 @Singleton
 @Startup
-@Remote(ConnectionManager.class)
+@Remote(AgentCenter.class)
 @Path("/connection")
-public class ConnectionManagerBean implements ConnectionManager {
+public class AgentCenterBean implements AgentCenter {
 	
 	private Host localNode;
 	private List<String> nodeCluster = new ArrayList<>();
@@ -66,7 +66,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 			// HANDSHAKE [0]
 			ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 			ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + getMasterAlias() + "/Chat-war/api/connection");
-			ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+			AgentCenter rest = rtarget.proxy(AgentCenter.class);
 			// HANDSHAKE [1] - New node notifies master
 			nodeCluster = rest.registerNewNode(localNode.getAlias());
 			nodeCluster.add(getMasterAlias());
@@ -93,7 +93,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 		
 	public String getMasterAlias() {
 		try {
-			InputStream fileInput  = ConnectionManagerBean.class.getClassLoader().getResourceAsStream("../preferences/connection.properties");
+			InputStream fileInput  = AgentCenterBean.class.getClassLoader().getResourceAsStream("../preferences/connection.properties");
 			Properties connectionProperties = new Properties();
 			connectionProperties.load(fileInput);
 			fileInput.close();
@@ -113,7 +113,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 		for (String node: nodeCluster) {
 			ResteasyClient client = new ResteasyClientBuilder().build();
 			ResteasyWebTarget rtarget = client.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
-			ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+			AgentCenter rest = rtarget.proxy(AgentCenter.class);
 			rest.deleteNode(alias);
 			client.close();
 		}
@@ -137,7 +137,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 					try {
 						ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 						ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
-						ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+						AgentCenter rest = rtarget.proxy(AgentCenter.class);
 						rest.ping();
 						System.out.println("*** Node: " + node + " is well and alive.");
 						resteasyClient.close();
@@ -146,7 +146,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 						try {
 							ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 							ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
-							ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+							AgentCenter rest = rtarget.proxy(AgentCenter.class);
 							rest.ping();
 							System.out.println("*** Node: " + node + " is well and alive.");
 							resteasyClient.close();
@@ -172,7 +172,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 			if (!tempNode.equals(nodeAlias)) {
 				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + tempNode + "/Chat-war/api/connection");
-				ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+				AgentCenter rest = rtarget.proxy(AgentCenter.class);
 				rest.addNewNode(nodeAlias);
 				resteasyClient.close();
 			}
@@ -185,7 +185,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 				// Master should already have the complete list!
 				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + nodeAlias + "/Chat-war/api/connection");
-				ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+				AgentCenter rest = rtarget.proxy(AgentCenter.class);
 				for (String username : chatManager.getActiveUsernames()) {
 					User userToAdd = new User(username, localNode.getAlias());
 					rest.addLoggedInFromRemote(userToAdd);
@@ -245,7 +245,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 				System.out.println("*** Forwarding new message to server from " + msg.getSender());
 				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
-				ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+				AgentCenter rest = rtarget.proxy(AgentCenter.class);
 				rest.addChatMessageFromRemote(msg);
 				resteasyClient.close();
 			}
@@ -259,7 +259,7 @@ public class ConnectionManagerBean implements ConnectionManager {
 			if (!node.equals(localNode.getAlias())) {
 				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
-				ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+				AgentCenter rest = rtarget.proxy(AgentCenter.class);
 				rest.addLoggedInFromRemote(userToAdd);
 				resteasyClient.close();
 			}
@@ -272,11 +272,16 @@ public class ConnectionManagerBean implements ConnectionManager {
 			if (!node.equals(localNode.getAlias())) {
 				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
-				ConnectionManager rest = rtarget.proxy(ConnectionManager.class);
+				AgentCenter rest = rtarget.proxy(AgentCenter.class);
 				rest.removeLoggedInFromRemote(user);
 				resteasyClient.close();
 			}
 		}	
+	}
+
+	@Override
+	public Host getHost() {
+		return localNode;
 	}
 
 }

@@ -10,9 +10,12 @@ import javax.ws.rs.core.MediaType;
 
 import agentmanager.AgentManagerBean;
 import agentmanager.AgentManagerRemote;
+import agents.Agent;
+import agents.AgentTypeEnum;
 import chatmanager.ChatManagerRemote;
-import messagemanager.AgentMessage;
+import messagemanager.ACLMessage;
 import messagemanager.MessageManagerRemote;
+import messagemanager.PerformativeEnum;
 import models.ChatMessage;
 import util.JNDILookup;
 
@@ -33,30 +36,33 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 
 	@Override
 	public void getLoggedInUsers(String username) {
-		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, username);
-		AgentMessage agentMsg = new AgentMessage();
-		agentMsg.userArgs.put("receiver", username);
-		agentMsg.userArgs.put("command", "GET_ACTIVE_USERS");
+		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, username, AgentTypeEnum.CHAT_AGENT);
+		ACLMessage agentMsg = new ACLMessage();
+		agentMsg.getRecievers().add(agent.getAgentId());		
+		agentMsg.setPerformative(PerformativeEnum.GET_ACTIVE_USERS);
+		agentMsg.setContent(username);	
 		
 		messageManager.post(agentMsg);		
 	}
 
 	@Override
 	public void getRegisteredUsers(String username) {
-		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, username);
-		AgentMessage agentMsg = new AgentMessage();
-		agentMsg.userArgs.put("receiver", username);
-		agentMsg.userArgs.put("command", "GET_REGISTERED_USERS");
+		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, username, AgentTypeEnum.CHAT_AGENT);
+		ACLMessage agentMsg = new ACLMessage();
+		agentMsg.getRecievers().add(agent.getAgentId());
+		agentMsg.setPerformative(PerformativeEnum.GET_REGISTERED_USERS);
+		agentMsg.setContent(username);	
 		
 		messageManager.post(agentMsg);				
 	}
 
 	@Override
 	public void sendMessageToAllActive(ChatMessage message) {
-		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, message.getSender());
-		AgentMessage agentMsg = new AgentMessage();
-		agentMsg.userArgs.put("receiver", message.getSender());
-		agentMsg.userArgs.put("command", "NEW_GROUP_MESSAGE");
+		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, message.getSender(), AgentTypeEnum.CHAT_AGENT);
+		ACLMessage agentMsg = new ACLMessage();
+		agentMsg.getRecievers().add(agent.getAgentId());
+		agentMsg.setPerformative(PerformativeEnum.SEND_GROUP_MESSAGE);
+		agentMsg.userArgs.put("target", message.getReciever());	
 		agentMsg.userArgs.put("sender", message.getSender());		
 		agentMsg.userArgs.put("subject", message.getSubject());
 		agentMsg.userArgs.put("content", message.getContent());
@@ -66,10 +72,10 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 
 	@Override
 	public void sendMessage(ChatMessage message) {
-		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, message.getSender());
-		AgentMessage agentMsg = new AgentMessage();
-		agentMsg.userArgs.put("receiver", message.getSender());
-		agentMsg.userArgs.put("command", "NEW_MESSAGE");
+		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, message.getSender(), AgentTypeEnum.CHAT_AGENT);
+		ACLMessage agentMsg = new ACLMessage();
+		agentMsg.getRecievers().add(agent.getAgentId());
+		agentMsg.setPerformative(PerformativeEnum.SEND_MESSAGE);
 		agentMsg.userArgs.put("target", message.getReciever());	
 		agentMsg.userArgs.put("sender", message.getSender());		
 		agentMsg.userArgs.put("subject", message.getSubject());
@@ -80,21 +86,22 @@ public class ChatRestRemoteBean implements ChatRestRemote {
 
 	@Override
 	public void getUsersMessages(String username) {
-		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, username);
-		AgentMessage agentMsg = new AgentMessage();
-		agentMsg.userArgs.put("receiver", username);
-		agentMsg.userArgs.put("command", "GET_MESSAGES");
+		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, username, AgentTypeEnum.CHAT_AGENT);
+		ACLMessage agentMsg = new ACLMessage();
+		agentMsg.getRecievers().add(agent.getAgentId());
+		agentMsg.setPerformative(PerformativeEnum.GET_MESSAGES);
+		agentMsg.setContent(username);	
 		
 		messageManager.post(agentMsg);			
 	}
 
 	@Override
 	public void logOut(String username) {
-		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "SYSTEM_AGENT");
-		AgentMessage agentMsg = new AgentMessage();
-		agentMsg.userArgs.put("receiver", "SYSTEM_AGENT");
-		agentMsg.userArgs.put("command", "LOGOUT");
-		agentMsg.userArgs.put("username", username);
+		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "SYSTEM_AGENT", AgentTypeEnum.CHAT_AGENT);
+		ACLMessage agentMsg = new ACLMessage();
+		agentMsg.getRecievers().add(agent.getAgentId());
+		agentMsg.setPerformative(PerformativeEnum.LOGOUT);
+		agentMsg.setContent(username);
 		
 		Boolean response = chatManager.logOut(username);	
 		if (response) {

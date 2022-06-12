@@ -18,6 +18,7 @@ import javax.websocket.server.ServerEndpoint;
 
 import agentmanager.AgentManagerBean;
 import agentmanager.AgentManagerRemote;
+import agents.AgentTypeEnum;
 import chatmanager.ChatManagerRemote;
 import models.ChatMessage;
 import util.JNDILookup;
@@ -26,25 +27,25 @@ import util.JNDILookup;
 @LocalBean
 @ServerEndpoint("/ws/{username}")
 public class WSChat {
-	
+
 	private Map<String, Session> sessions = new HashMap<String, Session>();
-	
+
 	private AgentManagerRemote agentManager = JNDILookup.lookUp(JNDILookup.AgentManagerLookup, AgentManagerBean.class);
-	
+
 	@EJB
 	private ChatManagerRemote chatManager;
 
 	@OnOpen
 	public void onOpen(@PathParam("username") String username, Session session) {
 		sessions.put(username, session);
-		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, username);
+		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, username, AgentTypeEnum.CHAT_AGENT);
 		System.out.println("Opened WebSocket: " + username);
 	}
 
 	@OnClose
 	public void onClose(@PathParam("username") String username, Session session) {
 		sessions.remove(username);
-		agentManager.stopAgent(username);
+		agentManager.stopLocalAgent(username, AgentTypeEnum.CHAT_AGENT);
 		// chatManager.logOut(username);
 		System.out.println("Closed WebSocket and agent: " + username);
 	}
@@ -52,11 +53,11 @@ public class WSChat {
 	@OnError
 	public void onError(@PathParam("username") String username, Session session, Throwable t) {
 		sessions.remove(username);
-		agentManager.stopAgent(username);
+		agentManager.stopLocalAgent(username, AgentTypeEnum.CHAT_AGENT);
 		chatManager.logOut(username);
 		System.out.println("ERROR: Websocket aborted by the host.");
 	}
-	
+
 	public void closeSessionOnLogOut(String username) {
 		sessions.remove(username);
 		this.notifyLogOut(username);
@@ -67,17 +68,16 @@ public class WSChat {
 		if (session != null && session.isOpen()) {
 			try {
 				session.getBasicRemote().sendText(message.toJson());
-			} catch (IOException e) {				
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("Message delivery failure: Looks like " +  username + " is offline.");
+			System.out.println("Message delivery failure: Looks like " + username + " is offline.");
 		}
 	}
-	
 
 	public void sendMessageToAllActive(ChatMessage message) {
-		for (Session session: sessions.values()) {
+		for (Session session : sessions.values()) {
 			if (session != null && session.isOpen()) {
 				try {
 					session.getBasicRemote().sendText(message.toJson());
@@ -85,13 +85,14 @@ public class WSChat {
 					e.printStackTrace();
 				}
 			} else {
-				System.out.println("Message delivery failure: Looks like " + getUsernameFromSession(session.getId()) + " is offline.");
+				System.out.println("Message delivery failure: Looks like " + getUsernameFromSession(session.getId())
+						+ " is offline.");
 			}
-		}			
+		}
 	}
 
 	public void notifyNewRegistration(String username) {
-		for (Session session: sessions.values()) {
+		for (Session session : sessions.values()) {
 			if (session != null && session.isOpen()) {
 				try {
 					session.getBasicRemote().sendText("REGISTRATION&" + username);
@@ -99,11 +100,11 @@ public class WSChat {
 					e.printStackTrace();
 				}
 			}
-		}		
+		}
 	}
-	
+
 	public void notifyNewLogin(String username) {
-		for (Session session: sessions.values()) {
+		for (Session session : sessions.values()) {
 			if (session != null && session.isOpen()) {
 				try {
 					session.getBasicRemote().sendText("LOGIN&" + username);
@@ -111,11 +112,11 @@ public class WSChat {
 					e.printStackTrace();
 				}
 			}
-		}		
+		}
 	}
-	
+
 	public void notifyLogOut(String username) {
-		for (Session session: sessions.values()) {
+		for (Session session : sessions.values()) {
 			if (session != null && session.isOpen()) {
 				try {
 					session.getBasicRemote().sendText("LOGOUT&" + username);
@@ -123,28 +124,28 @@ public class WSChat {
 					e.printStackTrace();
 				}
 			}
-		}		
+		}
 	}
-	
+
 	public void sendMessage(String receiver, String message) {
 		Session session = sessions.get(receiver);
 		if (session != null && session.isOpen()) {
 			try {
 				session.getBasicRemote().sendText(message);
-			} catch (IOException e) {				
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("Message delivery failure: Looks like " +  receiver + " is offline.");
+			System.out.println("Message delivery failure: Looks like " + receiver + " is offline.");
 		}
-	}		
-	
+	}
+
 	private String getUsernameFromSession(String sessionId) {
-	    for (Entry<String, Session> entry : sessions.entrySet()) {
-	        if (Objects.equals(sessionId, entry.getValue().getId())) {
-	            return entry.getKey();
-	        }
-	    }
+		for (Entry<String, Session> entry : sessions.entrySet()) {
+			if (Objects.equals(sessionId, entry.getValue().getId())) {
+				return entry.getKey();
+			}
+		}
 		return "null";
 	}
 

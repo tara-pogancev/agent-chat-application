@@ -5,21 +5,20 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
 
-import connectionmanager.ConnectionManager;
-import connectionmanager.ConnectionManagerBean;
+import agentcenter.AgentCenter;
+import agentcenter.AgentCenterBean;
+import agentmanager.AgentManagerBean;
+import agentmanager.AgentManagerRemote;
 import models.ChatMessage;
-import models.Host;
 import models.User;
+import util.JNDILookup;
 import ws.WSChat;
 
 /**
@@ -38,7 +37,9 @@ public class ChatManagerBean implements ChatManagerRemote {
 	private WSChat ws;
 	
 	@EJB
-	private ConnectionManager connectionManager;
+	private AgentCenter agentCenter;
+	
+	private AgentManagerRemote agentManager = JNDILookup.lookUp(JNDILookup.AgentManagerLookup, AgentManagerBean.class);
 	
 	@Override
 	public boolean register(User user) {
@@ -183,22 +184,22 @@ public class ChatManagerBean implements ChatManagerRemote {
 
 	@Override
 	public void sendMessageToNetwork(ChatMessage chatMessage) {
-		connectionManager.notifyAllNewMessage(chatMessage);
+		agentCenter.notifyAllNewMessage(chatMessage);
 	}
 
 	@Override
 	public void sendLoginToNetwork(String username) {
-		connectionManager.notifyAllNewLogin(username);		
+		agentCenter.notifyAllNewLogin(username);		
 	}
 
 	@Override
 	public void sendLogoutToNetwork(String username) {
-		connectionManager.notifyAllLogout(username);			
+		agentCenter.notifyAllLogout(username);			
 	}
 	
 	private String getMasterAlias() {
 		try {
-			InputStream fileInput  = ConnectionManagerBean.class.getClassLoader().getResourceAsStream("../preferences/connection.properties");
+			InputStream fileInput  = AgentCenterBean.class.getClassLoader().getResourceAsStream("../preferences/connection.properties");
 			Properties connectionProperties = new Properties();
 			connectionProperties.load(fileInput);
 			fileInput.close();

@@ -3,12 +3,13 @@ package agents;
 import java.io.Serializable;
 
 import javax.ejb.Remote;
-import javax.jms.Message;
+import messagemanager.ACLMessage;
 
 @Remote
 public interface Agent extends Serializable {
-
-	public String init(String agentId);
-	public void handleMessage(Message message);
-	public String getAgentId();
+	
+	public AgentId init(AgentId agentId);
+	public void handleMessage(ACLMessage message);
+	public AgentId getAgentId();
+	
 }

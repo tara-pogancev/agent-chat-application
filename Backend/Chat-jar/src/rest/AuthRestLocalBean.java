@@ -12,9 +12,12 @@ import javax.ws.rs.core.Response.Status;
 
 import agentmanager.AgentManagerBean;
 import agentmanager.AgentManagerRemote;
+import agents.Agent;
+import agents.AgentTypeEnum;
 import chatmanager.ChatManagerRemote;
-import messagemanager.AgentMessage;
+import messagemanager.ACLMessage;
 import messagemanager.MessageManagerRemote;
+import messagemanager.PerformativeEnum;
 import models.User;
 import util.JNDILookup;
 
@@ -35,11 +38,11 @@ public class AuthRestLocalBean implements AuthRestLocal {
 	
 	@Override
 	public Response register(User user) {
-		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "SYSTEM_AGENT");
-		AgentMessage agentMsg = new AgentMessage();
-		agentMsg.userArgs.put("receiver", "SYSTEM_AGENT");
-		agentMsg.userArgs.put("command", "REGISTER");
-		agentMsg.userArgs.put("username", user.username);		
+		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "SYSTEM_AGENT", AgentTypeEnum.CHAT_AGENT);
+		ACLMessage agentMsg = new ACLMessage();
+		agentMsg.getRecievers().add(agent.getAgentId());
+		agentMsg.setPerformative(PerformativeEnum.REGISTER);
+		agentMsg.setContent(user.username);	
 		
 		boolean response = chatManager.register(new User(user.username, user.password));
 		if (response) {
@@ -51,11 +54,11 @@ public class AuthRestLocalBean implements AuthRestLocal {
 
 	@Override
 	public Response login(User user) {
-		agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "SYSTEM_AGENT");
-		AgentMessage agentMsg = new AgentMessage();
-		agentMsg.userArgs.put("receiver", "SYSTEM_AGENT");
-		agentMsg.userArgs.put("command", "LOGIN");
-		agentMsg.userArgs.put("username", user.username);		
+		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "SYSTEM_AGENT", AgentTypeEnum.CHAT_AGENT);
+		ACLMessage agentMsg = new ACLMessage();
+		agentMsg.getRecievers().add(agent.getAgentId());
+		agentMsg.setPerformative(PerformativeEnum.LOGIN);
+		agentMsg.setContent(user.username);		
 		
 		String response = chatManager.login(user.username, user.password);
 		if (response.equals("ok")) {

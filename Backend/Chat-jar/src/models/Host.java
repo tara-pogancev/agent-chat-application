@@ -38,5 +38,13 @@ public class Host implements Serializable{
 		this.alias = alias;
 		this.address = address;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		Host host = (Host)obj;
+		return host.getAddress().equals(this.address) && host.getAlias().equals(this.getAlias());
+	}
+	
+	
 	
 }
