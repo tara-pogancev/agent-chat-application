@@ -149,4 +149,19 @@ public class WSChat {
 		return "null";
 	}
 
+	public void sendMessageToAllActive(String message) {
+		for (Session session : sessions.values()) {
+			if (session != null && session.isOpen()) {
+				try {
+					session.getBasicRemote().sendText(message);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println("Message delivery failure: Looks like " + getUsernameFromSession(session.getId())
+						+ " is offline.");
+			}
+		}		
+	}
+
 }

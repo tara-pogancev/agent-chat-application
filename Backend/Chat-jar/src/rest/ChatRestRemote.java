@@ -14,7 +14,6 @@ import models.ChatMessage;
 @Remote
 public interface ChatRestRemote {
 
-	// AGENTS	
 	@GET
 	@Path("/users/loggedIn/{userId}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -44,4 +43,5 @@ public interface ChatRestRemote {
 	@Path("/users/loggedIn/{userId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void logOut(@PathParam("userId") String username);
+	
 }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ActiveUsersPageComponent } from './components/active-users-page/active-users-page.component';
+import { AgentCenterPageComponent } from './components/agent-center-page/agent-center-page.component';
 import { ChatPageComponent } from './components/chat-page/chat-page.component';
 import { ErrorPageComponent } from './components/error-page/error-page.component';
 import { LoginPageComponent } from './components/login-page/login-page.component';
@@ -22,6 +23,7 @@ const routes: Routes = [
       { path: 'new-group-message', component: NewGroupMessagePageComponent },
       { path: 'active-users', component: ActiveUsersPageComponent },
       { path: 'registered-users', component: RegisteredUsersPageComponent },
+      { path: 'agent-center', component: AgentCenterPageComponent },
     ],
   },
   { path: 'login', component: LoginPageComponent, canActivate: [UnAuthGuard] },

@@ -1,6 +1,6 @@
 <div class="sidebar-container stretch-height">
   <div class="p-5 has-text-centered title-backdrop">
-    <h1>{{username}}</h1>
+    <h1>{{ username }}</h1>
   </div>
   <div>
     <mat-button-toggle-group
@@ -30,6 +30,11 @@
         value="registered-users"
         [disabled]="currentPage == 'registered-users'"
         >Registered users</mat-button-toggle
+      >
+      <mat-button-toggle
+        value="agent-center"
+        [disabled]="currentPage == 'agent-center'"
+        >✨ Agent center ✨</mat-button-toggle
       >
     </mat-button-toggle-group>
   </div>

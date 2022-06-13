@@ -9,24 +9,25 @@ import java.util.Map;
 import agents.AgentId;
 
 public class ACLMessage implements Serializable {
+	
 	/**
-	 * 
+	 * For code simplicity, DTO === model 
 	 */
-	private static final long serialVersionUID = 4750922547689000321L;
+	public static final long serialVersionUID = 4750922547689000321L;
 	public Map<String, Serializable> userArgs = new HashMap<>();
-	private PerformativeEnum performative;
-	private AgentId sender;
-	private List<AgentId> recievers = new ArrayList<>();
-	private AgentId replyTo;
-	private String content;
-	private Object contentObj;
-	private String language;
-	private String encoding;
-	private String ontology;
-	private String conversationId;
-	private String replyWith;
-	private String inReplyTo;
-	private Long replyBy;	
+	public PerformativeEnum performative;
+	public AgentId sender;
+	public List<AgentId> recievers = new ArrayList<>();
+	public AgentId replyTo;
+	public String content;
+	public Object contentObj;
+	public String language;
+	public String encoding;
+	public String ontology;
+	public String conversationId;
+	public String replyWith;
+	public String inReplyTo;
+	public Long replyBy;	
 	
 	public ACLMessage() {
 		super();

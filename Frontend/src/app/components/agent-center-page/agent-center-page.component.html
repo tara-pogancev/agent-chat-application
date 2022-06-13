@@ -1,0 +1,18 @@
+<div class="page-container pt-5 px-5">
+  <div class="columns">
+    <div class="column">
+      <div class="container">
+        <h1>Currently running agents ({{ agents.length }})</h1>
+        <mat-spinner *ngIf="loading"></mat-spinner>
+        <mat-chip-list>
+          <mat-chip color="primary" selected *ngFor="let agent of agents"
+            >{{ agent.type }}: <strong>{{ agent.name }}</strong
+            >, {{ agent.host }}</mat-chip
+          >
+        </mat-chip-list>
+      </div>
+    </div>
+    <div class="column">Second column</div>
+    <div class="column">Third column</div>
+  </div>
+</div>

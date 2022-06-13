@@ -28,7 +28,8 @@ export class ChatWebsocketService {
         if (
           responseString.startsWith('LOGIN') ||
           responseString.startsWith('LOGOUT') ||
-          responseString.startsWith('REGISTRATION')
+          responseString.startsWith('REGISTRATION') ||
+          responseString.startsWith('RUNNING_AGENT')
         ) {
           console.log('MESSAGES: Safely ignore.');
           return;

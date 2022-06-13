@@ -37,5 +37,12 @@ public enum PerformativeEnum {
 	GET_REGISTERED_USERS,
 	GET_MESSAGES,
 	
-
+	// Client-Agent Communication
+	GET_AGENT_TYPES, 
+	GET_RUNNING_AGENTS,
+	START_AGENT,
+	STOP_AGENT,
+	SEND_ACL_MESSAGE, 
+	GET_PERFORMATIVES
+	
 }

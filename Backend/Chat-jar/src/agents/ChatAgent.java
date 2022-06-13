@@ -110,7 +110,7 @@ public class ChatAgent implements Agent {
 			break;
 
 		default:
-			System.out.println("ERROR! Option: " + message.getPerformative().toString() + " not defined for this agent.");
+			System.out.println("ERROR! Option: " + message.getPerformative().toString() + " not defined for chat agent.");
 			break;
 		}
 	}

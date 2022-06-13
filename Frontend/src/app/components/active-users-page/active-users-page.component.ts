@@ -17,8 +17,7 @@ export class ActiveUsersPageComponent implements OnInit {
 
   constructor(
     private chatService: ChatService,
-    private chatWsService: ChatWebsocketService,
-    private connectionService: ConnectionService
+    private chatWsService: ChatWebsocketService
   ) {}
 
   ngOnInit(): void {

@@ -1,0 +1,18 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { ChatService } from './chat.service';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class SystemService {
+  url: string = 'http://localhost:8080/Chat-war/api/system/';
+
+  constructor(private _http: HttpClient, private chatService: ChatService) {}
+
+  getRunningAgents() {
+    const url =
+      this.url + 'agents/running/' + this.chatService.getActiveUsername()!;
+    return this._http.get<any>(url);
+  }
+}

@@ -19,6 +19,7 @@ import { RegisteredUsersPageComponent } from './components/registered-users-page
 import { MessagePreviewComponent } from './components/messages-page/message-preview/message-preview.component';
 import { MessagePreviewBoxComponent } from './components/messages-page/message-preview-box/message-preview-box.component';
 import { HttpClientModule } from '@angular/common/http';
+import { AgentCenterPageComponent } from './components/agent-center-page/agent-center-page.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { HttpClientModule } from '@angular/common/http';
     RegisteredUsersPageComponent,
     MessagePreviewComponent,
     MessagePreviewBoxComponent,
+    AgentCenterPageComponent,
   ],
   imports: [
     BrowserModule,
