@@ -7,6 +7,7 @@ import javax.naming.NamingException;
 import agentmanager.AgentManagerBean;
 import agentmanager.AgentManagerRemote;
 import agents.Agent;
+import agents.AuthAgent;
 import agents.ChatAgent;
 import agents.SystemAgent;
 import messagemanager.MessageManagerBean;
@@ -21,8 +22,10 @@ public abstract class JNDILookup {
 			+ MessageManagerRemote.class.getName();
 	public static final String ChatAgentLookup = JNDIPathChat + ChatAgent.class.getSimpleName() + "!"
 			+ Agent.class.getName() + "?stateful";
-//	public static final String SystemAgentLookup = JNDIPathChat + SystemAgent.class.getSimpleName() + "!"
-//			+ Agent.class.getName() + "?stateful";
+	public static final String AuthAgentLookup = JNDIPathChat + AuthAgent.class.getSimpleName() + "!"
+			+ Agent.class.getName() + "?stateful";
+	public static final String SystemAgentLookup = JNDIPathChat + SystemAgent.class.getSimpleName() + "!"
+			+ Agent.class.getName() + "?stateful";
 
 	@SuppressWarnings("unchecked")
 	public static <T> T lookUp(String name, Class<T> c) {

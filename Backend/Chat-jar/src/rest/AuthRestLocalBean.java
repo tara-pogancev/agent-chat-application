@@ -38,7 +38,7 @@ public class AuthRestLocalBean implements AuthRestLocal {
 	
 	@Override
 	public Response register(User user) {
-		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "SYSTEM_AGENT", AgentTypeEnum.CHAT_AGENT);
+		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.AuthAgentLookup, "AUTH_AGENT", AgentTypeEnum.AUTH_AGENT);
 		ACLMessage agentMsg = new ACLMessage();
 		agentMsg.getRecievers().add(agent.getAgentId());
 		agentMsg.setPerformative(PerformativeEnum.REGISTER);
@@ -54,7 +54,7 @@ public class AuthRestLocalBean implements AuthRestLocal {
 
 	@Override
 	public Response login(User user) {
-		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, "SYSTEM_AGENT", AgentTypeEnum.CHAT_AGENT);
+		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.AuthAgentLookup, "AUTH_AGENT", AgentTypeEnum.AUTH_AGENT);
 		ACLMessage agentMsg = new ACLMessage();
 		agentMsg.getRecievers().add(agent.getAgentId());
 		agentMsg.setPerformative(PerformativeEnum.LOGIN);

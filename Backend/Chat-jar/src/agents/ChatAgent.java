@@ -47,26 +47,10 @@ public class ChatAgent implements Agent {
 
 	@Override
 	public void handleMessage(ACLMessage message) {
-		String option = "";
 		String username = "";
 		ChatMessage chatMessage = new ChatMessage();
 
 		switch (message.getPerformative()) {
-		case LOGIN:
-			username = message.getContent();
-			// ws.notifyNewLogin(username);
-			break;
-
-		case REGISTER:
-			username = message.getContent();
-			ws.notifyNewRegistration(username);
-			break;
-
-		case LOGOUT:
-			username = message.getContent();
-			ws.closeSessionOnLogOut(username);
-			break;
-
 		case SEND_MESSAGE:
 			chatMessage = new ChatMessage();
 			chatMessage.setSender((String) message.getUserArgs().get("sender"));
@@ -126,7 +110,7 @@ public class ChatAgent implements Agent {
 			break;
 
 		default:
-			System.out.println("ERROR! Option: " + option + " not defined for this agent.");
+			System.out.println("ERROR! Option: " + message.getPerformative().toString() + " not defined for this agent.");
 			break;
 		}
 	}
