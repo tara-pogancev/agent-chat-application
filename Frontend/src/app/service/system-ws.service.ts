@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AgentModel } from '../model/agent-model';
+import { ApplicationUser } from '../model/application-user';
 import { ChatService } from './chat.service';
 import { WebsocketService } from './websocket.service';
 
@@ -12,6 +13,7 @@ export class SystemWsService {
   ws_url: string = 'ws://localhost:8080/Chat-war/ws/';
 
   public runningAgents: Subject<AgentModel>;
+  public performatives: Subject<String>;
 
   constructor(
     private wsService: WebsocketService,
@@ -36,6 +38,20 @@ export class SystemWsService {
           }
         })
       )
+    );
+
+    this.performatives = <Subject<String>>(
+      (<unknown>wsService.connect(this.ws_url).pipe(
+        map((response: MessageEvent) => {
+          let responseString: string = response.data;
+          if (responseString.startsWith('PERFORMATIVE')) {
+            return responseString.split('&')[1];
+          } else {
+            console.log('PERFORMATIVES: Safely ignore.');
+            return;
+          }
+        })
+      ))
     );
   }
 }

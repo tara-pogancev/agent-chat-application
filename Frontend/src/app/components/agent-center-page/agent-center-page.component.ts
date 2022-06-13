@@ -12,6 +12,7 @@ import { ChatPageComponent } from '../chat-page/chat-page.component';
 })
 export class AgentCenterPageComponent implements OnInit {
   agents: AgentModel[] = [];
+  performatives: String[] = [];
 
   loading: Boolean = true;
 
@@ -31,12 +32,20 @@ export class AgentCenterPageComponent implements OnInit {
       }
     });
 
+    this.systemWsService.performatives.subscribe((msg) => {
+      if (msg != undefined) {
+        this.performatives.push(msg);
+      }
+    });
+
     if (ChatPageComponent.hasConnection) {
       this.systemService.getRunningAgents().subscribe();
+      this.systemService.getPerformatives().subscribe();
       this.loading = false;
     } else {
       setTimeout(() => {
         this.systemService.getRunningAgents().subscribe();
+        this.systemService.getPerformatives().subscribe();
         this.loading = false;
       }, 400);
     }

@@ -12,7 +12,22 @@
         </mat-chip-list>
       </div>
     </div>
-    <div class="column">Second column</div>
+    <div class="column">
+      <div class="container">
+        <h1>Send ACL message</h1>
+        <mat-spinner *ngIf="loading"></mat-spinner>
+        <mat-form-field appearance="outline">
+          <mat-label>Select performative</mat-label>
+          <mat-select>
+            <mat-option
+              [value]="performative"
+              *ngFor="let performative of performatives"
+              >{{ performative }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
     <div class="column">Third column</div>
   </div>
 </div>

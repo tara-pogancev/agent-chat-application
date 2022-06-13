@@ -15,4 +15,9 @@ export class SystemService {
       this.url + 'agents/running/' + this.chatService.getActiveUsername()!;
     return this._http.get<any>(url);
   }
+
+  getPerformatives() {
+    const url = this.url + 'messages/' + this.chatService.getActiveUsername()!;
+    return this._http.get<any>(url);
+  }
 }
