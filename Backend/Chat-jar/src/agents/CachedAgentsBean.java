@@ -47,6 +47,7 @@ public class CachedAgentsBean implements CachedAgentsRemote {
 		Agent toRemove = getById(agentId);
 		if (toRemove != null) {
 			runningAgents.remove(toRemove);
+			ws.sendMessageToAllActive("RUNNING_AGENT_QUIT&" + agentId.getName() + "&" + agentId.getType().toString() + "&" + agentId.getHost().getAlias());
 		}
 	}
 

@@ -23,11 +23,11 @@ export class AgentCenterPageComponent implements OnInit {
   ngOnInit(): void {
     this.systemWsService.runningAgents.subscribe((agent) => {
       if (agent != undefined) {
-        if (!this.agentExists(agent)) {
+        if (!this.agentExists(agent) && agent.running) {
           this.agents.push(agent);
-        } // else if (agent.password == 'LOGOUT') {
-        // this.removeUser(agent.username);
-        // }
+        } else if (!agent.running) {
+          this.removeAgent(agent);
+        }
       }
     });
 

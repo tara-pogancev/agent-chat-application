@@ -28,6 +28,7 @@ export class SystemWsService {
             agent.name = responseString.split('&')[1];
             agent.type = responseString.split('&')[2];
             agent.host = responseString.split('&')[3];
+            agent.running = !responseString.startsWith('RUNNING_AGENT_QUIT');
             return agent;
           } else {
             console.log('RUNNING AGENTS: Safely ignore.');
