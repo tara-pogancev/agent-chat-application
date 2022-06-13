@@ -16,6 +16,31 @@
           <li *ngFor="let type of agentTypes">{{ type }}</li>
         </ol>
       </div>
+      <div class="container mt-5">
+        <h1>Start new agent</h1>
+        <mat-form-field appearance="outline">
+          <mat-label>Select agent type</mat-label>
+          <mat-select required [(ngModel)]="newAgentType">
+            <mat-option [value]="type" *ngFor="let type of agentTypes">{{
+              type
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Agent name</mat-label>
+          <input matInput required [(ngModel)]="newAgentName" />
+        </mat-form-field>
+        <div class="is-flex is-flex-direction-row-reverse">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="startAgent()"
+            [disabled]="newAgentName.trim() == '' || newAgentType.trim() == ''"
+          >
+            Start agent
+          </button>
+        </div>
+      </div>
     </div>
     <div class="column">
       <div class="container">
@@ -23,7 +48,7 @@
         <mat-spinner *ngIf="loading"></mat-spinner>
         <mat-form-field appearance="outline">
           <mat-label>Select performative</mat-label>
-          <mat-select>
+          <mat-select required>
             <mat-option
               [value]="performative"
               *ngFor="let performative of performatives"
@@ -31,6 +56,21 @@
             >
           </mat-select>
         </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Select local agent</mat-label>
+          <mat-select required>
+            <mat-option [value]="agent.name" *ngFor="let agent of agents">{{
+              agent.name
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Content</mat-label>
+          <textarea matInput formControlName="content" required></textarea>
+        </mat-form-field>
+        <div class="is-flex is-flex-direction-row-reverse">
+          <button mat-raised-button color="primary">Send</button>
+        </div>
       </div>
     </div>
     <div class="column">Third column</div>

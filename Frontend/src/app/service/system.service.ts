@@ -26,4 +26,9 @@ export class SystemService {
       this.url + 'agents/classes/' + this.chatService.getActiveUsername()!;
     return this._http.get<any>(url);
   }
+
+  startNewAgent(type: string, name: string) {
+    const url = this.url + 'agents/running/' + type + '/' + name;
+    return this._http.put<any>(url, null);
+  }
 }

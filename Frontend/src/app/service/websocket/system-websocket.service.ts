@@ -39,6 +39,7 @@ export class SystemWebsocketService {
             agent.name = responseString.split('&')[1];
             agent.type = responseString.split('&')[2];
             agent.host = responseString.split('&')[3];
+            agent.alias = responseString.split('&')[4];
             agent.running = !responseString.startsWith('RUNNING_AGENT_QUIT');
             retVal.type = 'RUNNING_AGENT';
             retVal.content = agent;

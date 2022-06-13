@@ -63,7 +63,8 @@ public class SystemAgent implements Agent  {
 		case GET_RUNNING_AGENTS:
 			username = message.getContent();
 			for (Agent agent : cachedAgents.getRunningAgents()) {
-				ws.sendMessage(username, "RUNNING_AGENT&" + agent.getAgentId().getName() + "&" + agent.getAgentId().getType().toString() + "&" + agent.getAgentId().getHost().getAlias());
+				ws.sendMessage(username, "RUNNING_AGENT&" + agent.getAgentId().getName() + "&" + agent.getAgentId().getType().toString() +
+						"&" + agent.getAgentId().getHost().getAlias() + "&" + agent.getAgentId().getHost().getAddress() );
 			}
 			break;
 //

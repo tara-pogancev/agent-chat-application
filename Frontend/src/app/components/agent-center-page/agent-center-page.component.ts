@@ -16,6 +16,10 @@ export class AgentCenterPageComponent implements OnInit {
 
   loading: Boolean = true;
 
+  // START NEW AGENT
+  newAgentType: string = '';
+  newAgentName: string = '';
+
   constructor(
     private systemService: SystemService,
     private systemWsService: SystemWebsocketService
@@ -78,6 +82,17 @@ export class AgentCenterPageComponent implements OnInit {
       ) {
         this.agents.splice(i, 1);
       }
+    }
+  }
+
+  startAgent() {
+    if (this.newAgentName.trim() != '' && this.newAgentType.trim()) {
+      this.systemService
+        .startNewAgent(this.newAgentType, this.newAgentName)
+        .subscribe((data) => {
+          this.newAgentName = ' ';
+          this.newAgentType = 'Sample name.';
+        });
     }
   }
 }

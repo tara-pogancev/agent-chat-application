@@ -9,3 +9,15 @@ strong {
   margin: 0 10px;
   font-size: 0.9rem;
 }
+
+mat-form-field {
+  width: 100%;
+}
+
+textarea {
+  min-height: 150px;
+}
+
+hr {
+  border: solid black 0.5px !important;
+}

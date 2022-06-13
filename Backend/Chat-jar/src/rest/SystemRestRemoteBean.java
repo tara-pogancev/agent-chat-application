@@ -58,7 +58,25 @@ public class SystemRestRemoteBean implements SystemRestRemote {
 
 	@Override
 	public void startAgent(String type, String name) {
-		// TODO Auto-generated method stub
+		AgentTypeEnum typeEnum = AgentTypeEnum.valueOf(type);
+		try {
+			switch (typeEnum) {
+			case AUTH_AGENT: 
+				Agent authAgent = agentManager.getAgentByIdOrStartNew(JNDILookup.AuthAgentLookup, name, typeEnum);
+				break;
+				
+			case CHAT_AGENT: 
+				Agent chatAgent = agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, name, typeEnum);
+				break;
+				
+			case SYSTEM_AGENT: 
+				Agent systemAgent = agentManager.getAgentByIdOrStartNew(JNDILookup.SystemAgentLookup, name, typeEnum);
+				break;				
+				
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		
 	}
 

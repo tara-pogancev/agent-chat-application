@@ -3,6 +3,7 @@ export class AgentModel {
     public name: string = '',
     public type: string = '',
     public host: string = '',
+    public alias: string = '',
     public running: boolean = true
   ) {}
 }
