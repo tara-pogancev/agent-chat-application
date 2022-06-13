@@ -20,4 +20,10 @@ export class SystemService {
     const url = this.url + 'messages/' + this.chatService.getActiveUsername()!;
     return this._http.get<any>(url);
   }
+
+  getAgentTypes() {
+    const url =
+      this.url + 'agents/classes/' + this.chatService.getActiveUsername()!;
+    return this._http.get<any>(url);
+  }
 }

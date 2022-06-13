@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AgentModel } from 'src/app/model/agent-model';
-import { ChatService } from 'src/app/service/chat.service';
-import { SystemWsService } from 'src/app/service/system-ws.service';
+import { SystemWebsocketService } from 'src/app/service/websocket/system-websocket.service';
 import { SystemService } from 'src/app/service/system.service';
 import { ChatPageComponent } from '../chat-page/chat-page.component';
 
@@ -13,39 +12,45 @@ import { ChatPageComponent } from '../chat-page/chat-page.component';
 export class AgentCenterPageComponent implements OnInit {
   agents: AgentModel[] = [];
   performatives: String[] = [];
+  agentTypes: String[] = [];
 
   loading: Boolean = true;
 
   constructor(
     private systemService: SystemService,
-    private systemWsService: SystemWsService
+    private systemWsService: SystemWebsocketService
   ) {}
 
   ngOnInit(): void {
-    this.systemWsService.runningAgents.subscribe((agent) => {
-      if (agent != undefined) {
-        if (!this.agentExists(agent) && agent.running) {
-          this.agents.push(agent);
-        } else if (!agent.running) {
-          this.removeAgent(agent);
+    this.systemWsService.systemMessages.subscribe((msg) => {
+      if (msg != undefined && msg.content != null) {
+        if (msg.type == 'RUNNING_AGENT') {
+          let agent = msg.content;
+          if (agent != undefined) {
+            if (!this.agentExists(agent) && agent.running) {
+              this.agents.push(agent);
+            } else if (!agent.running) {
+              this.removeAgent(agent);
+            }
+          }
+        } else if (msg.type == 'PERFORMATIVE') {
+          this.performatives.push(msg.content);
+        } else if (msg.type == 'AGENT_TYPE') {
+          this.agentTypes.push(msg.content);
         }
-      }
-    });
-
-    this.systemWsService.performatives.subscribe((msg) => {
-      if (msg != undefined) {
-        this.performatives.push(msg);
       }
     });
 
     if (ChatPageComponent.hasConnection) {
       this.systemService.getRunningAgents().subscribe();
       this.systemService.getPerformatives().subscribe();
+      this.systemService.getAgentTypes().subscribe();
       this.loading = false;
     } else {
       setTimeout(() => {
         this.systemService.getRunningAgents().subscribe();
         this.systemService.getPerformatives().subscribe();
+        this.systemService.getAgentTypes().subscribe();
         this.loading = false;
       }, 400);
     }

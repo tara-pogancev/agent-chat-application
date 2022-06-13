@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Message } from '../model/message';
-import { WebsocketService } from './websocket.service';
+import { Message } from '../../model/message';
+import { WebsocketService } from '../websocket.service';
 import { map } from 'rxjs/operators';
-import { ApplicationUser } from '../model/application-user';
-import { ChatService } from './chat.service';
+import { ApplicationUser } from '../../model/application-user';
+import { ChatService } from '../chat.service';
 
 @Injectable({
   providedIn: 'root',
@@ -30,9 +30,10 @@ export class ChatWebsocketService {
           responseString.startsWith('LOGOUT') ||
           responseString.startsWith('REGISTRATION') ||
           responseString.startsWith('RUNNING_AGENT') ||
-          responseString.startsWith('PERFORMATIVE')
+          responseString.startsWith('PERFORMATIVE') ||
+          responseString.startsWith('AGENT_TYPE')
         ) {
-          console.log('MESSAGES: Safely ignore.');
+          console.log('MESSAGES: Safely ignore. ' + responseString);
           return;
         } else {
           let data = JSON.parse(response.data);
@@ -51,7 +52,7 @@ export class ChatWebsocketService {
           } else if (responseString.startsWith('LOGOUT')) {
             return new ApplicationUser(username, 'LOGOUT');
           } else {
-            console.log('ACTIVE USERS: Safely ignore.');
+            console.log('ACTIVE USERS: Safely ignore. ' + responseString);
             return;
           }
         })
@@ -66,7 +67,7 @@ export class ChatWebsocketService {
           if (responseString.startsWith('REGISTRATION')) {
             return new ApplicationUser(username, 'LOGOUT');
           } else {
-            console.log('REGISTERED USERS: Safely ignore.');
+            console.log('REGISTERED USERS: Safely ignore. ' + responseString);
             return;
           }
         })

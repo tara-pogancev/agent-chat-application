@@ -10,6 +10,11 @@
             >, {{ agent.host }}</mat-chip
           >
         </mat-chip-list>
+        <hr class="my-5" />
+        <h1>Available agent types:</h1>
+        <ol class="ml-5">
+          <li *ngFor="let type of agentTypes">{{ type }}</li>
+        </ol>
       </div>
     </div>
     <div class="column">
