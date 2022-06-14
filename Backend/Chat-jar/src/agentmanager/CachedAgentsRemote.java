@@ -1,6 +1,9 @@
-package agents;
+package agentmanager;
 
 import java.util.Set;
+
+import agents.Agent;
+import agents.AgentId;
 
 public interface CachedAgentsRemote {
 

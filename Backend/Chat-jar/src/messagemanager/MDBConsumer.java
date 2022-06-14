@@ -8,9 +8,9 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
+import agentmanager.CachedAgentsRemote;
 import agents.Agent;
 import agents.AgentId;
-import agents.CachedAgentsRemote;
 
 /**
  * Message-Driven Bean implementation class for: MDBConsumer

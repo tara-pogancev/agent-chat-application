@@ -31,7 +31,7 @@ public interface SystemRestRemote {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void startAgent(@PathParam("type") String type,@PathParam("name") String name);
 	
-	@DELETE
+	@PUT // Angular does not support DELETE with Body Params
 	@Path("/agents/running")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void stopAgent(AgentId agentId);

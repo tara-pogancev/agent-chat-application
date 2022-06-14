@@ -1,6 +1,5 @@
-package agents;
+package agentmanager;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,6 +8,8 @@ import javax.ejb.LocalBean;
 import javax.ejb.Remote;
 import javax.ejb.Singleton;
 
+import agents.Agent;
+import agents.AgentId;
 import ws.WSChat;
 
 /**
@@ -20,7 +21,7 @@ import ws.WSChat;
 public class CachedAgentsBean implements CachedAgentsRemote {
 
 	Set<Agent> runningAgents;
-	
+
 	@EJB
 	private WSChat ws;
 
@@ -32,14 +33,16 @@ public class CachedAgentsBean implements CachedAgentsRemote {
 	}
 
 	@Override
-	public Set<Agent>  getRunningAgents() {
+	public Set<Agent> getRunningAgents() {
 		return runningAgents;
 	}
 
 	@Override
 	public void addRunningAgent(Agent agent) {
 		runningAgents.add(agent);
-		ws.sendMessageToAllActive("RUNNING_AGENT&" + agent.getAgentId().getName() + "&" + agent.getAgentId().getType().toString() + "&" + agent.getAgentId().getHost().getAlias());
+		ws.sendMessageToAllActive(
+				"RUNNING_AGENT&" + agent.getAgentId().getName() + "&" + agent.getAgentId().getType().toString() + "&"
+						+ agent.getAgentId().getHost().getAlias() + "&" + agent.getAgentId().getHost().getAddress());
 	}
 
 	@Override
@@ -47,7 +50,8 @@ public class CachedAgentsBean implements CachedAgentsRemote {
 		Agent toRemove = getById(agentId);
 		if (toRemove != null) {
 			runningAgents.remove(toRemove);
-			ws.sendMessageToAllActive("RUNNING_AGENT_QUIT&" + agentId.getName() + "&" + agentId.getType().toString() + "&" + agentId.getHost().getAlias());
+			ws.sendMessageToAllActive("RUNNING_AGENT_QUIT&" + agentId.getName() + "&" + agentId.getType().toString()
+					+ "&" + agentId.getHost().getAlias() + "&" + agentId.getHost().getAddress());
 		}
 	}
 

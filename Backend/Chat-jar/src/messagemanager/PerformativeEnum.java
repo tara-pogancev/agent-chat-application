@@ -2,6 +2,9 @@ package messagemanager;
 
 public enum PerformativeEnum {
 	
+	// Testing
+	PING_PONG,
+	
 	// https://github.com/milanvidakovic/siebog-lite
 	ACCEPT_PROPOSAL,
 	AGREE, 

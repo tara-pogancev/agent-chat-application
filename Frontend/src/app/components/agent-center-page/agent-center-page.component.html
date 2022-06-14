@@ -1,13 +1,13 @@
 <div class="page-container pt-5 px-5">
   <div class="columns">
     <div class="column">
-      <div class="container">
+      <div class="container stretch-height">
         <h1>Currently running agents ({{ agents.length }})</h1>
         <mat-spinner *ngIf="loading"></mat-spinner>
         <mat-chip-list>
           <mat-chip color="primary" selected *ngFor="let agent of agents"
-            >{{ agent.type }}: <strong>{{ agent.name }}</strong
-            >, {{ agent.host }}</mat-chip
+            >{{ agent.agentId.type }}: <strong>{{ agent.agentId.name }}</strong
+            >, {{ agent.agentId.host.alias }}</mat-chip
           >
         </mat-chip-list>
         <hr class="my-5" />
@@ -16,7 +16,10 @@
           <li *ngFor="let type of agentTypes">{{ type }}</li>
         </ol>
       </div>
-      <div class="container mt-5">
+    </div>
+
+    <div class="column">
+      <div class="container stretch-height">
         <h1>Start new agent</h1>
         <mat-form-field appearance="outline">
           <mat-label>Select agent type</mat-label>
@@ -40,10 +43,31 @@
             Start agent
           </button>
         </div>
+        <hr />
+        <h1>Stop running agent</h1>
+        <mat-form-field appearance="outline">
+          <mat-label>Select agent</mat-label>
+          <mat-select required [(ngModel)]="stoppingAgentId">
+            <mat-option [value]="agent.agentId" *ngFor="let agent of agents"
+              >{{ agent.agentId.name }},
+              {{ agent.agentId.host.alias }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+        <div class="is-flex is-flex-direction-row-reverse">
+          <button
+            mat-raised-button
+            color="warn"
+            (click)="stopAgent()"
+            [disabled]="stoppingAgentId.name == ''"
+          >
+            Stop agent
+          </button>
+        </div>
       </div>
     </div>
     <div class="column">
-      <div class="container">
+      <div class="container stretch-height">
         <h1>Send ACL message</h1>
         <mat-spinner *ngIf="loading"></mat-spinner>
         <mat-form-field appearance="outline">
@@ -57,22 +81,23 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Select local agent</mat-label>
+          <mat-label>Select agent</mat-label>
           <mat-select required>
-            <mat-option [value]="agent.name" *ngFor="let agent of agents">{{
-              agent.name
-            }}</mat-option>
+            <mat-option
+              [value]="agent.agentId.name"
+              *ngFor="let agent of agents"
+              >{{ agent.agentId.name }}</mat-option
+            >
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Content</mat-label>
-          <textarea matInput formControlName="content" required></textarea>
+          <textarea matInput required></textarea>
         </mat-form-field>
         <div class="is-flex is-flex-direction-row-reverse">
           <button mat-raised-button color="primary">Send</button>
         </div>
       </div>
     </div>
-    <div class="column">Third column</div>
   </div>
 </div>

@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { WsMessage } from 'src/app/model/WsMessage';
-import { ACLMessage } from '../../model/ACLMessage';
 import { AgentModel } from '../../model/agent-model';
-import { AgentType } from '../../model/agent-type';
 import { ChatService } from '../chat.service';
 import { WebsocketService } from '../websocket.service';
 
@@ -36,10 +34,10 @@ export class SystemWebsocketService {
             return retVal;
           } else if (responseString.startsWith('RUNNING_AGENT')) {
             let agent: AgentModel = new AgentModel();
-            agent.name = responseString.split('&')[1];
-            agent.type = responseString.split('&')[2];
-            agent.host = responseString.split('&')[3];
-            agent.alias = responseString.split('&')[4];
+            agent.agentId.name = responseString.split('&')[1];
+            agent.agentId.type = responseString.split('&')[2];
+            agent.agentId.host.alias = responseString.split('&')[3];
+            agent.agentId.host.address = responseString.split('&')[4];
             agent.running = !responseString.startsWith('RUNNING_AGENT_QUIT');
             retVal.type = 'RUNNING_AGENT';
             retVal.content = agent;

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AgentId } from '../model/agent-model';
 import { ChatService } from './chat.service';
 
 @Injectable({
@@ -30,5 +31,10 @@ export class SystemService {
   startNewAgent(type: string, name: string) {
     const url = this.url + 'agents/running/' + type + '/' + name;
     return this._http.put<any>(url, null);
+  }
+
+  stopAgent(agentId: AgentId) {
+    const url = this.url + 'agents/running';
+    return this._http.put<any>(url, agentId);
   }
 }

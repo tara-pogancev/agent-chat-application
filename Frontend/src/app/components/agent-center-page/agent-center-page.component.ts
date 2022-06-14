@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AgentModel } from 'src/app/model/agent-model';
+import { AgentId, AgentModel } from 'src/app/model/agent-model';
 import { SystemWebsocketService } from 'src/app/service/websocket/system-websocket.service';
 import { SystemService } from 'src/app/service/system.service';
 import { ChatPageComponent } from '../chat-page/chat-page.component';
@@ -19,6 +19,9 @@ export class AgentCenterPageComponent implements OnInit {
   // START NEW AGENT
   newAgentType: string = '';
   newAgentName: string = '';
+
+  // STOP AGENT
+  stoppingAgentId: AgentId = new AgentId();
 
   constructor(
     private systemService: SystemService,
@@ -63,9 +66,9 @@ export class AgentCenterPageComponent implements OnInit {
   agentExists(newAgent: AgentModel): boolean {
     for (let agent of this.agents) {
       if (
-        newAgent.name == agent.name &&
-        newAgent.host == agent.host &&
-        newAgent.type == agent.type
+        newAgent.agentId.name == agent.agentId.name &&
+        newAgent.agentId.host.alias == agent.agentId.host.alias &&
+        newAgent.agentId.type == agent.agentId.type
       ) {
         return true;
       }
@@ -76,9 +79,9 @@ export class AgentCenterPageComponent implements OnInit {
   removeAgent(agent: AgentModel) {
     for (var i = 0; i < this.agents.length; i++) {
       if (
-        this.agents[i].name == agent.name &&
-        this.agents[i].host == agent.host &&
-        this.agents[i].type == agent.type
+        this.agents[i].agentId.name == agent.agentId.name &&
+        this.agents[i].agentId.host.alias == agent.agentId.host.alias &&
+        this.agents[i].agentId.type == agent.agentId.type
       ) {
         this.agents.splice(i, 1);
       }
@@ -93,6 +96,14 @@ export class AgentCenterPageComponent implements OnInit {
           this.newAgentName = ' ';
           this.newAgentType = 'Sample name.';
         });
+    }
+  }
+
+  stopAgent() {
+    if (this.stoppingAgentId.name != '') {
+      this.systemService.stopAgent(this.stoppingAgentId).subscribe((data) => {
+        this.stoppingAgentId = new AgentId();
+      });
     }
   }
 }

@@ -5,6 +5,7 @@ import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
 
+import agentmanager.CachedAgentsRemote;
 import chatmanager.ChatManagerRemote;
 import messagemanager.ACLMessage;
 import messagemanager.MessageManagerRemote;

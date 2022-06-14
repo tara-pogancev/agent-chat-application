@@ -8,9 +8,7 @@ import agentcenter.AgentCenter;
 import agents.Agent;
 import agents.AgentId;
 import agents.AgentTypeEnum;
-import agents.CachedAgentsRemote;
 import util.JNDILookup;
-import ws.WSChat;
 
 /**
  * Session Bean implementation class AgentManagerBean

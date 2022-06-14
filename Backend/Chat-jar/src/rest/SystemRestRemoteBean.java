@@ -58,32 +58,25 @@ public class SystemRestRemoteBean implements SystemRestRemote {
 
 	@Override
 	public void startAgent(String type, String name) {
-		AgentTypeEnum typeEnum = AgentTypeEnum.valueOf(type);
-		try {
-			switch (typeEnum) {
-			case AUTH_AGENT: 
-				Agent authAgent = agentManager.getAgentByIdOrStartNew(JNDILookup.AuthAgentLookup, name, typeEnum);
-				break;
-				
-			case CHAT_AGENT: 
-				Agent chatAgent = agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, name, typeEnum);
-				break;
-				
-			case SYSTEM_AGENT: 
-				Agent systemAgent = agentManager.getAgentByIdOrStartNew(JNDILookup.SystemAgentLookup, name, typeEnum);
-				break;				
-				
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.SystemAgentLookup, "SYSTEM_AGENT", AgentTypeEnum.SYSTEM_AGENT);
+		ACLMessage agentMsg = new ACLMessage();
+		agentMsg.getRecievers().add(agent.getAgentId());		
+		agentMsg.setPerformative(PerformativeEnum.START_AGENT);
+		agentMsg.setContent(name);	
+		agentMsg.setEncoding(type);
 		
+		messageManager.post(agentMsg);				
 	}
 
 	@Override
 	public void stopAgent(AgentId agentId) {
-		// TODO Auto-generated method stub
+		Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.SystemAgentLookup, "SYSTEM_AGENT", AgentTypeEnum.SYSTEM_AGENT);
+		ACLMessage agentMsg = new ACLMessage();
+		agentMsg.getRecievers().add(agent.getAgentId());		
+		agentMsg.setPerformative(PerformativeEnum.STOP_AGENT);
+		agentMsg.setContentObj(agentId);
 		
+		messageManager.post(agentMsg);				
 	}
 
 	@Override

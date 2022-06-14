@@ -1,19 +1,16 @@
 package agents;
 
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
-import javax.jms.Message;
 
-import chatmanager.ChatManagerRemote;
+import agentmanager.AgentManagerBean;
+import agentmanager.AgentManagerRemote;
+import agentmanager.CachedAgentsRemote;
 import messagemanager.ACLMessage;
 import messagemanager.MessageManagerRemote;
 import messagemanager.PerformativeEnum;
-import models.ChatMessage;
-import models.User;
 import util.JNDILookup;
 import ws.WSChat;
 
@@ -27,6 +24,8 @@ public class SystemAgent implements Agent  {
 	private static final long serialVersionUID = 1L;
 	private AgentId agentId;
 
+	private AgentManagerRemote agentManager = JNDILookup.lookUp(JNDILookup.AgentManagerLookup, AgentManagerBean.class);
+	
 	@EJB
 	private CachedAgentsRemote cachedAgents;
 	
@@ -51,6 +50,9 @@ public class SystemAgent implements Agent  {
 	@Override
 	public void handleMessage(ACLMessage message) {
 		String username = "";
+		String type = "";
+		String name = "";
+		AgentId agentId = new AgentId();
 
 		switch (message.getPerformative()) {
 		case GET_AGENT_TYPES:
@@ -67,20 +69,44 @@ public class SystemAgent implements Agent  {
 						"&" + agent.getAgentId().getHost().getAlias() + "&" + agent.getAgentId().getHost().getAddress() );
 			}
 			break;
-//
-//		case START_AGENT:
-//
-//			break;
-//			
-//		case STOP_AGENT:
-//
-//			break;
-//			
-//		case SEND_ACL_MESSAGE:
-//
-//			break;
-//			
+
+		case START_AGENT:
+			type = message.getEncoding();
+			name = message.getContent();
+			AgentTypeEnum typeEnum = AgentTypeEnum.valueOf(type);
+			try {
+				switch (typeEnum) {
+				case AUTH_AGENT: 
+					agentManager.getAgentByIdOrStartNew(JNDILookup.AuthAgentLookup, name, typeEnum);
+					break;
+					
+				case CHAT_AGENT: 
+					agentManager.getAgentByIdOrStartNew(JNDILookup.ChatAgentLookup, name, typeEnum);
+					break;
+					
+				case SYSTEM_AGENT: 
+					agentManager.getAgentByIdOrStartNew(JNDILookup.SystemAgentLookup, name, typeEnum);
+					break;				
+					
+				}
+			} catch (Exception e) {
+			}
+
+			break;
+			
+		case STOP_AGENT:
+			agentId = (AgentId) message.getContentObj();
+			agentManager.stopAgent(agentId);
+			break;
+
 		case GET_PERFORMATIVES:
+			username = message.getContent();
+			for (PerformativeEnum performative : PerformativeEnum.values()) {
+				ws.sendMessage(username, "PERFORMATIVE&" + performative.toString());
+			}
+			break;
+			
+		case PING_PONG:
 			username = message.getContent();
 			for (PerformativeEnum performative : PerformativeEnum.values()) {
 				ws.sendMessage(username, "PERFORMATIVE&" + performative.toString());
