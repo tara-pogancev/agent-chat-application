@@ -17,7 +17,7 @@ public class ACLMessage implements Serializable {
 	public Map<String, Serializable> userArgs = new HashMap<>();
 	public PerformativeEnum performative;
 	public AgentId sender;
-	public List<AgentId> recievers = new ArrayList<>();
+	public List<AgentId> receivers = new ArrayList<>();
 	public AgentId replyTo;
 	public String content;
 	public Object contentObj;
@@ -58,11 +58,11 @@ public class ACLMessage implements Serializable {
 	}
 
 	public List<AgentId> getRecievers() {
-		return recievers;
+		return receivers;
 	}
 
 	public void setRecievers(List<AgentId> recievers) {
-		this.recievers = recievers;
+		this.receivers = recievers;
 	}
 
 	public AgentId getReplyTo() {

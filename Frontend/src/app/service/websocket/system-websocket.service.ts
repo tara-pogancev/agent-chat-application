@@ -42,6 +42,10 @@ export class SystemWebsocketService {
             retVal.type = 'RUNNING_AGENT';
             retVal.content = agent;
             return retVal;
+          } else if (responseString.startsWith('PONG')) {
+            retVal.type = 'PONG';
+            retVal.content = responseString.split('&')[1];
+            return retVal;
           }
           {
             console.log('AGENT_TYPE: Safely ignore. ' + responseString);

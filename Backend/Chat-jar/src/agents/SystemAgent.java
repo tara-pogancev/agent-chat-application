@@ -107,10 +107,8 @@ public class SystemAgent implements Agent  {
 			break;
 			
 		case PING_PONG:
-			username = message.getContent();
-			for (PerformativeEnum performative : PerformativeEnum.values()) {
-				ws.sendMessage(username, "PERFORMATIVE&" + performative.toString());
-			}
+			username = message.getInReplyTo();
+			ws.sendMessage(username, "PONG&" + message.getContent());
 			break;
 			
 		default:

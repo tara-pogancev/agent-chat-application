@@ -3,6 +3,7 @@ import { AgentId, AgentModel } from 'src/app/model/agent-model';
 import { SystemWebsocketService } from 'src/app/service/websocket/system-websocket.service';
 import { SystemService } from 'src/app/service/system.service';
 import { ChatPageComponent } from '../chat-page/chat-page.component';
+import { ACLMessage } from 'src/app/model/ACLMessage';
 
 @Component({
   selector: 'agent-center-page',
@@ -22,6 +23,10 @@ export class AgentCenterPageComponent implements OnInit {
 
   // STOP AGENT
   stoppingAgentId: AgentId = new AgentId();
+
+  // NEW ACL MESSAGE
+  newMessage: ACLMessage = new ACLMessage();
+  newMessageReceiver: AgentId = new AgentId();
 
   constructor(
     private systemService: SystemService,
@@ -44,21 +49,31 @@ export class AgentCenterPageComponent implements OnInit {
           this.performatives.push(msg.content);
         } else if (msg.type == 'AGENT_TYPE') {
           this.agentTypes.push(msg.content);
+        } else if (msg.type == 'PONG') {
+          alert(msg.content);
         }
       }
     });
 
     if (ChatPageComponent.hasConnection) {
       this.systemService.getRunningAgents().subscribe();
-      this.systemService.getPerformatives().subscribe();
-      this.systemService.getAgentTypes().subscribe();
-      this.loading = false;
+      setTimeout(() => {
+        this.systemService.getPerformatives().subscribe();
+      }, 100);
+      setTimeout(() => {
+        this.systemService.getAgentTypes().subscribe();
+        this.loading = false;
+      }, 200);
     } else {
       setTimeout(() => {
         this.systemService.getRunningAgents().subscribe();
-        this.systemService.getPerformatives().subscribe();
-        this.systemService.getAgentTypes().subscribe();
-        this.loading = false;
+        setTimeout(() => {
+          this.systemService.getPerformatives().subscribe();
+        }, 100);
+        setTimeout(() => {
+          this.systemService.getAgentTypes().subscribe();
+          this.loading = false;
+        }, 200);
       }, 400);
     }
   }
@@ -105,5 +120,15 @@ export class AgentCenterPageComponent implements OnInit {
         this.stoppingAgentId = new AgentId();
       });
     }
+  }
+
+  sendACLMessage() {
+    this.newMessage.receivers.push(this.newMessageReceiver);
+    console.log(this.newMessage);
+
+    this.systemService.sendACLMessage(this.newMessage).subscribe((data) => {
+      this.newMessage = new ACLMessage();
+      this.newMessageReceiver = new AgentId();
+    });
   }
 }

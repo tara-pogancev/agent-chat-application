@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ACLMessage } from '../model/ACLMessage';
 import { AgentId } from '../model/agent-model';
 import { ChatService } from './chat.service';
 
@@ -36,5 +37,11 @@ export class SystemService {
   stopAgent(agentId: AgentId) {
     const url = this.url + 'agents/running';
     return this._http.put<any>(url, agentId);
+  }
+
+  sendACLMessage(message: ACLMessage) {
+    const url = this.url + 'messages';
+    message.inReplyTo = this.chatService.getActiveUsername()!;
+    return this._http.post<any>(url, message);
   }
 }

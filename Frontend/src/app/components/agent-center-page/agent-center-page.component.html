@@ -72,7 +72,7 @@
         <mat-spinner *ngIf="loading"></mat-spinner>
         <mat-form-field appearance="outline">
           <mat-label>Select performative</mat-label>
-          <mat-select required>
+          <mat-select required [(ngModel)]="newMessage.performative">
             <mat-option
               [value]="performative"
               *ngFor="let performative of performatives"
@@ -82,20 +82,45 @@
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Select agent</mat-label>
-          <mat-select required>
-            <mat-option
-              [value]="agent.agentId.name"
-              *ngFor="let agent of agents"
-              >{{ agent.agentId.name }}</mat-option
-            >
+          <mat-select required [(ngModel)]="newMessageReceiver">
+            <mat-option [value]="agent.agentId" *ngFor="let agent of agents">{{
+              agent.agentId.name
+            }}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Content</mat-label>
-          <textarea matInput required></textarea>
+          <textarea
+            matInput
+            required
+            [(ngModel)]="newMessage.content"
+          ></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Language</mat-label>
+          <input matInput [(ngModel)]="newMessage.language" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Encoding</mat-label>
+          <input matInput [(ngModel)]="newMessage.encoding" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Ontology</mat-label>
+          <input matInput [(ngModel)]="newMessage.ontology" />
         </mat-form-field>
         <div class="is-flex is-flex-direction-row-reverse">
-          <button mat-raised-button color="primary">Send</button>
+          <button
+            mat-raised-button
+            color="primary"
+            [disabled]="
+              newMessage.content == '' ||
+              newMessage.performative == '' ||
+              newMessageReceiver.name == ''
+            "
+            (click)="sendACLMessage()"
+          >
+            Send
+          </button>
         </div>
       </div>
     </div>

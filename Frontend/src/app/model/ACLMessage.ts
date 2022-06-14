@@ -12,7 +12,8 @@ export class ACLMessage {
     public inReplyTo: string = '',
     public sender: AgentId = new AgentId(),
     public replyTo: AgentId = new AgentId(),
-    public recievers: AgentId[] = [],
-    public replyBy: number = 0
+    public receivers: AgentId[] = [],
+    public replyBy: number = 0,
+    public userArgs: Map<String, any> = new Map(),
   ) {}
 }

@@ -8,7 +8,7 @@ export class AgentModel {
 export class AgentId {
   constructor(
     public name: string = '',
-    public type: string = '',
+    public type: string = 'SYSTEM_AGENT',
     public host: AgentHost = new AgentHost()
   ) {}
 }
