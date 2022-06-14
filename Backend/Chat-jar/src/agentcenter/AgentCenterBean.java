@@ -139,7 +139,7 @@ public class AgentCenterBean implements AgentCenter {
 		cachedAgents.removeFromNode(alias);
 	}
 	
-	//@Schedule(hour = "*", minute="*/1", persistent=false)
+	@Schedule(hour = "*", minute="*/1", persistent=false)
 	private void heartbeat() {
 		System.out.println("*** Heartbeat protocol initiated");
 		for(String node : nodeCluster) {
