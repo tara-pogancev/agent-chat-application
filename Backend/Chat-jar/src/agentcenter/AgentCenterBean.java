@@ -30,7 +30,10 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
+import agentmanager.CachedAgentsRemote;
+import agents.Agent;
 import chatmanager.ChatManagerRemote;
+import messagemanager.PerformativeEnum;
 import models.ChatMessage;
 import models.Host;
 import models.User;
@@ -52,7 +55,10 @@ public class AgentCenterBean implements AgentCenter {
 	private ChatManagerRemote chatManager;
 	
 	@EJB
-	private WSChat ws;	
+	private WSChat ws;		
+
+	@EJB
+	private CachedAgentsRemote cachedAgents;
 	
 	@PostConstruct
 	private void init() {
@@ -67,8 +73,13 @@ public class AgentCenterBean implements AgentCenter {
 			ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 			ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + getMasterAlias() + "/Chat-war/api/connection");
 			AgentCenter rest = rtarget.proxy(AgentCenter.class);
+
 			// HANDSHAKE [1] - New node notifies master
-			nodeCluster = rest.registerNewNode(localNode.getAlias());
+			nodeCluster = rest.registerNewNode(localNode.getAlias());	
+			
+			// HANDSHAKE [2] - Master requests list of performatives
+			rest.getAgentClassesFromRemote(localNode.getAlias());
+
 			nodeCluster.add(getMasterAlias());
 			nodeCluster.removeIf(n -> n.equals(localNode.getAlias()));
 			resteasyClient.close();
@@ -124,6 +135,7 @@ public class AgentCenterBean implements AgentCenter {
 		System.out.println("*** Removing node: " + alias);
 		nodeCluster.removeIf(n -> n.equals(alias));
 		chatManager.logOutFromNode(alias);
+		cachedAgents.removeFromNode(alias);
 	}
 	
 	@Schedule(hour = "*", minute="*/1", persistent=false)
@@ -168,7 +180,7 @@ public class AgentCenterBean implements AgentCenter {
 		System.out.println("** Registering new node: " + nodeAlias);
 		addNewNode(nodeAlias);
 		for (String tempNode: nodeCluster) {
-			// HANDSHAKE [2] - Master notifies others
+			// HANDSHAKE [3] - Master notifies others
 			if (!tempNode.equals(nodeAlias)) {
 				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + tempNode + "/Chat-war/api/connection");
@@ -181,7 +193,7 @@ public class AgentCenterBean implements AgentCenter {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				// HANDSHAKE [4] - Master returns all other logged in users to the baby node
+				// HANDSHAKE [5] - Master returns all other logged in users and agents to the baby node
 				// Master should already have the complete list!
 				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + nodeAlias + "/Chat-war/api/connection");
@@ -193,6 +205,10 @@ public class AgentCenterBean implements AgentCenter {
 				
 				for (User user : chatManager.getLoggedInRemote()) {
 					rest.addLoggedInFromRemote(user);
+				}
+				
+				for (Agent agent: cachedAgents.getRunningAgents()) {
+					rest.addAgentFromRemote(agent);
 				}
 				resteasyClient.close();
 			}
@@ -282,6 +298,67 @@ public class AgentCenterBean implements AgentCenter {
 	@Override
 	public Host getHost() {
 		return localNode;
+	}
+
+
+	// AGENTS
+	@Override
+	public void addAgentFromRemote(Agent agent) {
+		cachedAgents.addRunningAgentFromRemote(agent);		
+	}
+	
+
+	@Override
+	public void removeAgentFromRemote(Agent agent) {
+		cachedAgents.stopAgentFromRemote(agent);		
+	}
+
+	@Override
+	public void getAgentClassesFromRemote(String alias) {
+		ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
+		ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + alias + "/Chat-war/api/connection");
+		AgentCenter rest = rtarget.proxy(AgentCenter.class);
+		PerformativeEnum[] performativeEnums = rest.sendLocalAgentClasses();
+		resteasyClient.close();
+		
+		System.out.println("I've been notified that node " + alias + " accepts the following performatives:\n");
+		for (int i = 0; i < performativeEnums.length; i++) {
+			if (i != 0) {
+				System.out.println(", ");
+			}
+			System.out.println(performativeEnums[i].toString());
+		}
+	}
+
+	@Override
+	public PerformativeEnum[] sendLocalAgentClasses() {
+		return PerformativeEnum.values();
+	}
+
+	@Override
+	public void notifyAllNewAgent(Agent agent) {
+		for (String node: nodeCluster) {
+			if (!node.equals(localNode.getAlias())) {
+				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
+				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
+				AgentCenter rest = rtarget.proxy(AgentCenter.class);
+				rest.addAgentFromRemote(agent);
+				resteasyClient.close();
+			}
+		}			
+	}
+
+	@Override
+	public void notifyAllAgentQuit(Agent agent) {
+		for (String node: nodeCluster) {
+			if (!node.equals(localNode.getAlias())) {
+				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
+				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
+				AgentCenter rest = rtarget.proxy(AgentCenter.class);
+				rest.removeAgentFromRemote(agent);
+				resteasyClient.close();
+			}
+		}	
 	}
 
 }
