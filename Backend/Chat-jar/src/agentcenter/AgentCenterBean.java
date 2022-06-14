@@ -32,6 +32,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import agentmanager.CachedAgentsRemote;
 import agents.Agent;
+import agents.AgentId;
 import chatmanager.ChatManagerRemote;
 import messagemanager.PerformativeEnum;
 import models.ChatMessage;
@@ -78,7 +79,7 @@ public class AgentCenterBean implements AgentCenter {
 			nodeCluster = rest.registerNewNode(localNode.getAlias());	
 			
 			// HANDSHAKE [2] - Master requests list of performatives
-			rest.getAgentClassesFromRemote(localNode.getAlias());
+			rest.getAgentClassesFromRemote(performativeEnumToString());
 
 			nodeCluster.add(getMasterAlias());
 			nodeCluster.removeIf(n -> n.equals(localNode.getAlias()));
@@ -138,7 +139,7 @@ public class AgentCenterBean implements AgentCenter {
 		cachedAgents.removeFromNode(alias);
 	}
 	
-	@Schedule(hour = "*", minute="*/1", persistent=false)
+	//@Schedule(hour = "*", minute="*/1", persistent=false)
 	private void heartbeat() {
 		System.out.println("*** Heartbeat protocol initiated");
 		for(String node : nodeCluster) {
@@ -208,7 +209,7 @@ public class AgentCenterBean implements AgentCenter {
 				}
 				
 				for (Agent agent: cachedAgents.getRunningAgents()) {
-					rest.addAgentFromRemote(agent);
+					rest.addAgentFromRemote(agent.getAgentId());
 				}
 				resteasyClient.close();
 			}
@@ -303,62 +304,63 @@ public class AgentCenterBean implements AgentCenter {
 
 	// AGENTS
 	@Override
-	public void addAgentFromRemote(Agent agent) {
-		cachedAgents.addRunningAgentFromRemote(agent);		
+	public void addAgentFromRemote(AgentId agentId) {
+		System.out.println("Adding agent from remote: " + agentId.getName());
+		cachedAgents.addRunningAgentFromRemote(agentId);		
 	}
 	
 
 	@Override
-	public void removeAgentFromRemote(Agent agent) {
-		cachedAgents.stopAgentFromRemote(agent);		
+	public void removeAgentFromRemote(AgentId agentId) {
+		cachedAgents.stopAgentFromRemote(agentId);		
 	}
 
 	@Override
-	public void getAgentClassesFromRemote(String alias) {
-		ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
-		ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + alias + "/Chat-war/api/connection");
-		AgentCenter rest = rtarget.proxy(AgentCenter.class);
-		PerformativeEnum[] performativeEnums = rest.sendLocalAgentClasses();
-		resteasyClient.close();
-		
-		System.out.println("I've been notified that node " + alias + " accepts the following performatives:\n");
-		for (int i = 0; i < performativeEnums.length; i++) {
-			if (i != 0) {
-				System.out.println(", ");
-			}
-			System.out.println(performativeEnums[i].toString());
-		}
+	public void getAgentClassesFromRemote(String values) {		
+		System.out.println("I've been notified that newly registered node accepts the following performatives:");
+		System.out.println(values);
 	}
 
 	@Override
-	public PerformativeEnum[] sendLocalAgentClasses() {
-		return PerformativeEnum.values();
+	public String sendLocalAgentClasses() {
+		return performativeEnumToString();
 	}
 
 	@Override
-	public void notifyAllNewAgent(Agent agent) {
+	public void notifyAllNewAgent(AgentId agentId) {
 		for (String node: nodeCluster) {
 			if (!node.equals(localNode.getAlias())) {
 				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
 				AgentCenter rest = rtarget.proxy(AgentCenter.class);
-				rest.addAgentFromRemote(agent);
+				rest.addAgentFromRemote(agentId);
 				resteasyClient.close();
 			}
 		}			
 	}
 
 	@Override
-	public void notifyAllAgentQuit(Agent agent) {
+	public void notifyAllAgentQuit(AgentId agentId) {
 		for (String node: nodeCluster) {
 			if (!node.equals(localNode.getAlias())) {
 				ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
 				ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + node + "/Chat-war/api/connection");
 				AgentCenter rest = rtarget.proxy(AgentCenter.class);
-				rest.removeAgentFromRemote(agent);
+				rest.removeAgentFromRemote(agentId);
 				resteasyClient.close();
 			}
 		}	
+	}
+	
+	private String performativeEnumToString() {
+		String retVal = "";
+		for (int i = 0; i < PerformativeEnum.values().length; i++) {
+			if (i != 0) {
+				retVal+=(", ");
+			}
+			retVal+=(PerformativeEnum.values()[i].toString());
+		} 
+		return retVal;
 	}
 
 }

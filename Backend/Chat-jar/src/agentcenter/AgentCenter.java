@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import agents.Agent;
+import agents.AgentId;
 import messagemanager.PerformativeEnum;
 import models.ChatMessage;
 import models.Host;
@@ -85,43 +86,47 @@ public interface AgentCenter {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void notifyAllLogout(String user);
 	
+	@GET
+	@Path("/host")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Host getHost();
 	
 	// AGENTS	
-	@GET
-	@Path("/agents/classes")
+	@POST
+	@Path("/agents/classes/remote")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getAgentClassesFromRemote(String alias);
+	public void getAgentClassesFromRemote(String values);
 	
 	@POST
 	@Path("/agents/classes")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public PerformativeEnum[] sendLocalAgentClasses();
+	public String sendLocalAgentClasses();
 	
 	@POST
 	@Path("/agents/running")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addAgentFromRemote(Agent agent);
+	public void addAgentFromRemote(AgentId agentId);
 	
 	@POST
 	@Path("/agents/running/quit")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void removeAgentFromRemote(Agent agent);
+	public void removeAgentFromRemote(AgentId agentId);
 	
 	@POST
 	@Path("/notify/agent")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void notifyAllNewAgent(Agent agent);
+	public void notifyAllNewAgent(AgentId agentId);
 	
 	@POST
 	@Path("/notify/agent/quit")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void notifyAllAgentQuit(Agent agent);
+	public void notifyAllAgentQuit(AgentId agentId);
 	
 }

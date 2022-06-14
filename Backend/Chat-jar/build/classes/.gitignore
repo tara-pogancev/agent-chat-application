@@ -1,11 +1,9 @@
-/META-INF/
+/agentcenter/
 /agentmanager/
 /agents/
 /chatmanager/
-/connectionmanager/
 /messagemanager/
 /models/
 /preferences/
 /rest/
 /util/
-/agentcenter/

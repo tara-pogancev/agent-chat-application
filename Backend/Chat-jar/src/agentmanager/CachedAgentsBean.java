@@ -11,6 +11,7 @@ import javax.ejb.Singleton;
 import agentcenter.AgentCenter;
 import agents.Agent;
 import agents.AgentId;
+import util.JNDILookup;
 import ws.WSChat;
 
 /**
@@ -29,13 +30,14 @@ public class CachedAgentsBean implements CachedAgentsRemote {
 	@EJB
 	private AgentCenter agentCenter;
 
+	private AgentManagerRemote agentManager = JNDILookup.lookUp(JNDILookup.AgentManagerLookup, AgentManagerBean.class);
+
 	/**
 	 * Default constructor.
 	 */
 	public CachedAgentsBean() {
 		runningAgents = new HashSet<Agent>();
 	}
-	
 
 	@Override
 	public Agent getById(AgentId agentId) {
@@ -53,16 +55,18 @@ public class CachedAgentsBean implements CachedAgentsRemote {
 		ws.sendMessageToAllActive(
 				"RUNNING_AGENT&" + agent.getAgentId().getName() + "&" + agent.getAgentId().getType().toString() + "&"
 						+ agent.getAgentId().getHost().getAlias() + "&" + agent.getAgentId().getHost().getAddress());
-
-		agentCenter.notifyAllNewAgent(agent);
+		
+		if (agentCenter.getHost().equals(agent.getAgentId().getHost())) {
+			agentCenter.notifyAllNewAgent(agent.getAgentId());
+		}
 	}
 
 	@Override
 	public void stopAgent(AgentId agentId) {
 		Agent toRemove = getById(agentId);
 		if (toRemove != null) {
-			agentCenter.notifyAllAgentQuit(toRemove);
-			
+			agentCenter.notifyAllAgentQuit(toRemove.getAgentId());
+
 			runningAgents.remove(toRemove);
 			ws.sendMessageToAllActive("RUNNING_AGENT_QUIT&" + agentId.getName() + "&" + agentId.getType().toString()
 					+ "&" + agentId.getHost().getAlias() + "&" + agentId.getHost().getAddress());
@@ -70,34 +74,51 @@ public class CachedAgentsBean implements CachedAgentsRemote {
 	}
 
 	@Override
-	public void stopAgentFromRemote(Agent agent) {
-		Agent toRemove = getById(agent.getAgentId());
-		if (toRemove != null) {			
+	public void stopAgentFromRemote(AgentId agentId) {
+		Agent toRemove = getById(agentId);
+		if (toRemove != null) {
 			runningAgents.remove(toRemove);
-			ws.sendMessageToAllActive("RUNNING_AGENT_QUIT&" + toRemove.getAgentId().getName() + "&" + toRemove.getAgentId().getType().toString()
-					+ "&" + toRemove.getAgentId().getHost().getAlias() + "&" + toRemove.getAgentId().getHost().getAddress());
+			ws.sendMessageToAllActive("RUNNING_AGENT_QUIT&" + toRemove.getAgentId().getName() + "&"
+					+ toRemove.getAgentId().getType().toString() + "&" + toRemove.getAgentId().getHost().getAlias()
+					+ "&" + toRemove.getAgentId().getHost().getAddress());
 		}
 	}
 
 	@Override
-	public void addRunningAgentFromRemote(Agent agent) {
-		runningAgents.add(agent);
-		ws.sendMessageToAllActive(
-				"RUNNING_AGENT&" + agent.getAgentId().getName() + "&" + agent.getAgentId().getType().toString() + "&"
-						+ agent.getAgentId().getHost().getAlias() + "&" + agent.getAgentId().getHost().getAddress());
-	}
+	public void addRunningAgentFromRemote(AgentId agentId) {
+		System.out.println("Cached agents adding: " + agentId.getName());
+		switch (agentId.getType()) {
+		case AUTH_AGENT:
+			agentManager.startAgentRemote(JNDILookup.AuthAgentLookup, agentId);
+			break;
 
+		case CHAT_AGENT:
+			agentManager.startAgentRemote(JNDILookup.ChatAgentLookup, agentId);
+			break;
+
+		case SYSTEM_AGENT:
+			agentManager.startAgentRemote(JNDILookup.SystemAgentLookup, agentId);
+			break;
+
+		}
+
+		ws.sendMessageToAllActive(
+				"RUNNING_AGENT&" + agentId.getName() + "&" + agentId.getType().toString() + "&"
+						+ agentId.getHost().getAlias() + "&" + agentId.getHost().getAddress());
+
+	}
 
 	@Override
 	public void removeFromNode(String alias) {
-		for (Agent agent: runningAgents) {			
+		for (Agent agent : runningAgents) {
 			if (agent.getAgentId().getHost().getAlias().equals(alias)) {
-				ws.sendMessageToAllActive("RUNNING_AGENT_QUIT&" + agent.getAgentId().getName() + "&" + agent.getAgentId().getType().toString()
-						+ "&" + agent.getAgentId().getHost().getAlias() + "&" + agent.getAgentId().getHost().getAddress());
-			}			
+				ws.sendMessageToAllActive("RUNNING_AGENT_QUIT&" + agent.getAgentId().getName() + "&"
+						+ agent.getAgentId().getType().toString() + "&" + agent.getAgentId().getHost().getAlias() + "&"
+						+ agent.getAgentId().getHost().getAddress());
+			}
 		}
-		
-		runningAgents.removeIf(a -> a.getAgentId().getHost().getAlias().equals(alias));		
+
+		runningAgents.removeIf(a -> a.getAgentId().getHost().getAlias().equals(alias));
 	}
 
 }

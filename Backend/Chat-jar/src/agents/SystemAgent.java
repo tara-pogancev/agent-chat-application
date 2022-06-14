@@ -86,8 +86,7 @@ public class SystemAgent implements Agent  {
 					
 				case SYSTEM_AGENT: 
 					agentManager.getAgentByIdOrStartNew(JNDILookup.SystemAgentLookup, name, typeEnum);
-					break;				
-					
+					break;									
 				}
 			} catch (Exception e) {
 			}

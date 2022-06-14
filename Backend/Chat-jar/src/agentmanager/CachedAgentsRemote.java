@@ -11,7 +11,7 @@ public interface CachedAgentsRemote {
 	public void addRunningAgent(Agent agent);
 	public void stopAgent(AgentId agentId);
 	public Agent getById(AgentId agentId);
-	public void addRunningAgentFromRemote(Agent agent);
-	public void stopAgentFromRemote(Agent agent);
+	public void addRunningAgentFromRemote(AgentId agentId);
+	public void stopAgentFromRemote(AgentId agentId);
 	public void removeFromNode(String alias);
 }

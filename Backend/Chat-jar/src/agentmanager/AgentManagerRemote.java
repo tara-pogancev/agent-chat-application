@@ -14,5 +14,6 @@ public interface AgentManagerRemote {
 	public Agent getAgentByIdOrStartNew(String name, String agentName, AgentTypeEnum type);
 	public void stopAgent(AgentId agentId);
 	public void stopLocalAgent(String agentName, AgentTypeEnum type);
+	public AgentId startAgentRemote(String name, AgentId agentId);
 	
 }

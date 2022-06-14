@@ -32,7 +32,7 @@ public class Host implements Serializable{
 	}
 	
 	public Host() {}
-
+	
 	public Host(String alias, String address) {
 		super();
 		this.alias = alias;

@@ -9,17 +9,15 @@ public class AgentId implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	private String name;
-	private Host host;
-	private AgentTypeEnum type;
+	public static final long serialVersionUID = 1L;
+	public String name;
+	public Host host;
+	public AgentTypeEnum type;
 	
 	public AgentId() {
-		super();
 	}	
 	
 	public AgentId(String name, Host host, AgentTypeEnum type) {
-		super();
 		this.name = name;
 		this.host = host;
 		this.type = type;
@@ -42,6 +40,9 @@ public class AgentId implements Serializable {
 	}
 	public void setType(AgentTypeEnum type) {
 		this.type = type;
+	}	
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	@Override
