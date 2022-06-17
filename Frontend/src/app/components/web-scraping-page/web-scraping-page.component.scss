@@ -13,3 +13,8 @@ strong {
 hr {
   border: solid black 0.5px !important;
 }
+
+.scrolable {
+  height: 73vh;
+  overflow-y: scroll;
+}

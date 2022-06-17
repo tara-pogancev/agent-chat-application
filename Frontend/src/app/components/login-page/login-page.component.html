@@ -24,6 +24,7 @@
                 matInput
                 placeholder="Username"
                 formControlName="username"
+                (keyup.enter)="submit()"
               />
             </mat-form-field>
           </div>
@@ -36,6 +37,7 @@
                 matInput
                 placeholder="Password"
                 formControlName="password"
+                (keyup.enter)="submit()"
               />
             </mat-form-field>
           </div>

@@ -7,7 +7,7 @@
       <div>
         <mat-form-field appearance="outline">
           <mat-label>Search something...</mat-label>
-          <input matInput [(ngModel)]="searchText" />
+          <input matInput [(ngModel)]="searchText" (keyup.enter)="search()" />
         </mat-form-field>
       </div>
       <div class="pb-4 ml-3">
@@ -22,8 +22,15 @@
     </div>
     <mat-chip-list> </mat-chip-list>
     <hr class="my-5" />
-    <div>
-      <p *ngFor="let result of results">{{ result.title }}</p>
+    <div class="scrolable">
+      <div *ngFor="let result of results">
+        <mat-card class="mb-3 mr-5">
+          <mat-card-title
+            >{{ result.title }} : {{ result.price }} RSD</mat-card-title
+          >
+          <mat-card-subtitle>{{ result.location }}</mat-card-subtitle>
+        </mat-card>
+      </div>
     </div>
   </div>
 </div>

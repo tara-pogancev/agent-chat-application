@@ -6,6 +6,8 @@ import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
 
+import agentmanager.AgentManagerBean;
+import agentmanager.AgentManagerRemote;
 import agentmanager.CachedAgentsRemote;
 import agents.Agent;
 import agents.AgentId;
@@ -14,6 +16,7 @@ import messagemanager.ACLMessage;
 import messagemanager.MessageManagerRemote;
 import messagemanager.PerformativeEnum;
 import models.SearchResult;
+import util.JNDILookup;
 
 @Stateful
 @Remote(Agent.class)
@@ -24,7 +27,8 @@ public class WebScrapingSearchAgent implements Agent {
 	 */
 	private static final long serialVersionUID = 1L;
 	private AgentId agentId;
-	private AgentId respondingTo;
+	
+	private AgentManagerRemote agentManager = JNDILookup.lookUp(JNDILookup.AgentManagerLookup, AgentManagerBean.class);
 
 	@EJB
 	private CachedAgentsRemote cachedAgents;
@@ -43,13 +47,11 @@ public class WebScrapingSearchAgent implements Agent {
 	public void handleMessage(ACLMessage message) {
 		switch (message.getPerformative()) {
 		case REQUEST_FILTERED_DATA:
-			this.respondingTo = message.getSender();
 			ACLMessage agentMsg = new ACLMessage();
 			for (Agent runningAgent : cachedAgents.getRunningAgents()) {
 				if (runningAgent.getAgentId().getType().equals(AgentTypeEnum.TEHNOMANIJA_AGENT)
 						|| runningAgent.getAgentId().getType().equals(AgentTypeEnum.GIGATRON_AGENT)
 						|| runningAgent.getAgentId().getType().equals(AgentTypeEnum.DR_TEHNO_AGENT)) {
-					System.out.println("Adding agent to list: " + runningAgent.getAgentId().name);
 					agentMsg.getRecievers().add(runningAgent.getAgentId());
 				}
 			}
@@ -62,11 +64,12 @@ public class WebScrapingSearchAgent implements Agent {
 
 		case PASS_DATA_TO_USER:
 			SearchResult result = (SearchResult) message.getContentObj();
-			System.out.println("Tehnomanija out: " + result.title);
-			if (result.getTitle().toLowerCase().contains(this.getAgentId().name.toLowerCase())) {
+			System.out.println("Results out: " + result.title);
+			Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.WebScrapingMasterAgentLookup, getMasterAgentName(), AgentTypeEnum.WEB_SCRAPING_MASTER_AGENT);
+			if (result.getTitle().toLowerCase().contains(getSearchParam().toLowerCase())) {
 				ACLMessage respondingMsg = new ACLMessage();
 				respondingMsg.setContentObj(result);
-				respondingMsg.getRecievers().add(respondingTo);
+				respondingMsg.getRecievers().add(agent.getAgentId());
 				respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
 				messageManager.post(respondingMsg);
 			}
@@ -77,6 +80,14 @@ public class WebScrapingSearchAgent implements Agent {
 					.println("ERROR! Option: " + message.getPerformative().toString() + " not defined for auth agent.");
 			break;
 		}
+	}
+	
+	private String getMasterAgentName() {
+		return this.agentId.getName().split("&")[0];
+	}
+	
+	private String getSearchParam() {
+		return this.agentId.getName().split("&")[1];
 	}
 
 	@Override

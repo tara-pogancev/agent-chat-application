@@ -29,7 +29,10 @@ export class WebScrapingPageComponent implements OnInit {
   }
 
   search() {
-    this.results = [];
+    this.searchText.replace('&', '');
+    if (this.searchText.trim() == '') {
+      this.results = [];
+    }
     this.systemService.search(this.searchText).subscribe((data) => {
       this.searchText = '';
       this.results = [];
