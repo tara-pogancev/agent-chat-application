@@ -3,6 +3,7 @@ package agentcenter;
 import java.util.List;
 import java.util.Map;
 
+import javax.jms.Message;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 
 import agents.Agent;
 import agents.AgentId;
+import messagemanager.ACLMessage;
 import messagemanager.PerformativeEnum;
 import models.ChatMessage;
 import models.Host;
@@ -128,5 +130,17 @@ public interface AgentCenter {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void notifyAllAgentQuit(AgentId agentId);
+
+	@POST
+	@Path("/agents/message/forward")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void forwardMessage(ACLMessage agentMessageToForward);
+	
+	@POST
+	@Path("/agents/message/accept")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void acceptMessage(ACLMessage agentMessageToForward);
 	
 }

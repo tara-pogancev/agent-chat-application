@@ -10,6 +10,11 @@ import agents.Agent;
 import agents.AuthAgent;
 import agents.ChatAgent;
 import agents.SystemAgent;
+import agents.webscraping.DrTehnoAgent;
+import agents.webscraping.GigatronAgent;
+import agents.webscraping.TehnomanijaAgent;
+import agents.webscraping.WebScrapingMasterAgent;
+import agents.webscraping.WebScrapingSearchAgent;
 import messagemanager.MessageManagerBean;
 import messagemanager.MessageManagerRemote;
 
@@ -25,6 +30,16 @@ public abstract class JNDILookup {
 	public static final String AuthAgentLookup = JNDIPathChat + AuthAgent.class.getSimpleName() + "!"
 			+ Agent.class.getName() + "?stateful";
 	public static final String SystemAgentLookup = JNDIPathChat + SystemAgent.class.getSimpleName() + "!"
+			+ Agent.class.getName() + "?stateful";
+	public static final String WebScrapingMasterAgentLookup = JNDIPathChat + WebScrapingMasterAgent.class.getSimpleName() + "!"
+			+ Agent.class.getName() + "?stateful";
+	public static final String WebScrapingSearchAgentLookup = JNDIPathChat + WebScrapingSearchAgent.class.getSimpleName() + "!"
+			+ Agent.class.getName() + "?stateful";
+	public static final String TehnomanijaAgentLookup = JNDIPathChat + TehnomanijaAgent.class.getSimpleName() + "!"
+			+ Agent.class.getName() + "?stateful";
+	public static final String GigatronAgentLookup = JNDIPathChat + GigatronAgent.class.getSimpleName() + "!"
+			+ Agent.class.getName() + "?stateful";
+	public static final String DrTehnoAgentLookup = JNDIPathChat + DrTehnoAgent.class.getSimpleName() + "!"
 			+ Agent.class.getName() + "?stateful";
 
 	@SuppressWarnings("unchecked")

@@ -9,7 +9,17 @@ import javax.ws.rs.core.MediaType;
 
 import com.jaunt.*;
 import com.jaunt.component.*;
+
+import agents.Agent;
+import agents.AgentTypeEnum;
+import messagemanager.ACLMessage;
+import messagemanager.PerformativeEnum;
+import models.SearchResult;
+import util.JNDILookup;
+
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Stateless
 @Consumes(MediaType.APPLICATION_JSON)
@@ -19,38 +29,11 @@ import java.io.*;
 public class WebScrapingRestRemoteBean implements WebScrapingRestRemote {
 
 	@Override
-	public String searchWeb(String text) {
-		String retVal = "SEARCH RESULT";
-		  try{
-			  UserAgent userAgent = new UserAgent();         //create new userAgent (headless browser)
-			  userAgent.visit("http://google.com");          //visit google
-			  userAgent.doc.apply("butterflies").submit();   //apply form input and submit
-			       
-		//	  for (int i = 0; i < 15; i++) {
-
-				  Elements linkDiv = userAgent.doc.findEvery("<a>").findEvery("<h3>");  //find search result links
-				  System.out.println(linkDiv.size());
-				  for(Element link : linkDiv) {
-					  String linkText = link.getTextContent();
-					  System.out.println(linkText);
-					  
-					  Element linkHref = link.getParent();					  
-					  System.out.println(linkHref);
-					  
-		//		  }
-				  //Hyperlink nextPageLink = userAgent.doc.nextPageLink(); //extract url to next page of results
-			      //nextPageLink.follow();                                 //visit next page (p 2).
-
-			  }
-		      
-		    } 
-		    catch(JauntException e){
-		      System.err.println(e);
-		    } 		  
-
-			return retVal;
-		  }
-	
-	      	
+	public List<SearchResult> searchWeb(String text) {
+		List<SearchResult> retVal = new ArrayList<>();
+		
+		
+		return retVal;
+	}
 
 }

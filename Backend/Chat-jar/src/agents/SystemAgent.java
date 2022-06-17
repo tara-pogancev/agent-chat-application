@@ -86,7 +86,27 @@ public class SystemAgent implements Agent  {
 					
 				case SYSTEM_AGENT: 
 					agentManager.getAgentByIdOrStartNew(JNDILookup.SystemAgentLookup, name, typeEnum);
-					break;									
+					break;		
+					
+				case WEB_SCRAPING_MASTER_AGENT: 
+					agentManager.getAgentByIdOrStartNew(JNDILookup.WebScrapingMasterAgentLookup, name, typeEnum);
+					break;	
+					
+				case WEB_SCRAPING_SEARCH_AGENT: 
+					agentManager.getAgentByIdOrStartNew(JNDILookup.WebScrapingSearchAgentLookup, name, typeEnum);
+					break;	
+					
+				case TEHNOMANIJA_AGENT: 
+					agentManager.getAgentByIdOrStartNew(JNDILookup.TehnomanijaAgentLookup, name, typeEnum);
+					break;	
+					
+				case GIGATRON_AGENT: 
+					agentManager.getAgentByIdOrStartNew(JNDILookup.GigatronAgentLookup, name, typeEnum);
+					break;	
+					
+				case DR_TEHNO_AGENT: 
+					agentManager.getAgentByIdOrStartNew(JNDILookup.DrTehnoAgentLookup, name, typeEnum);
+					break;	
 				}
 			} catch (Exception e) {
 			}

@@ -20,6 +20,7 @@ import { MessagePreviewComponent } from './components/messages-page/message-prev
 import { MessagePreviewBoxComponent } from './components/messages-page/message-preview-box/message-preview-box.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AgentCenterPageComponent } from './components/agent-center-page/agent-center-page.component';
+import { WebScrapingPageComponent } from './components/web-scraping-page/web-scraping-page.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { AgentCenterPageComponent } from './components/agent-center-page/agent-c
     MessagePreviewComponent,
     MessagePreviewBoxComponent,
     AgentCenterPageComponent,
+    WebScrapingPageComponent,
   ],
   imports: [
     BrowserModule,

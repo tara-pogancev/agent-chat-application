@@ -17,6 +17,7 @@ import javax.ejb.Remote;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.jms.Message;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
@@ -34,6 +35,8 @@ import agentmanager.CachedAgentsRemote;
 import agents.Agent;
 import agents.AgentId;
 import chatmanager.ChatManagerRemote;
+import messagemanager.ACLMessage;
+import messagemanager.MessageManagerRemote;
 import messagemanager.PerformativeEnum;
 import models.ChatMessage;
 import models.Host;
@@ -60,6 +63,9 @@ public class AgentCenterBean implements AgentCenter {
 
 	@EJB
 	private CachedAgentsRemote cachedAgents;
+	
+	@EJB
+	public MessageManagerRemote messageManager;
 	
 	@PostConstruct
 	private void init() {
@@ -361,6 +367,24 @@ public class AgentCenterBean implements AgentCenter {
 			retVal+=(PerformativeEnum.values()[i].toString());
 		} 
 		return retVal;
+	}
+
+	@Override
+	public void forwardMessage(ACLMessage agentMessageToForward) {		
+		String forwardAlias = agentMessageToForward.getRecievers().get(0).getHost().getAlias();
+		if (forwardAlias != null && forwardAlias != "") {
+			ResteasyClient resteasyClient = new ResteasyClientBuilder().build();
+			ResteasyWebTarget rtarget = resteasyClient.target(HTTP_PREFIX + agentMessageToForward.getRecievers().get(0).getHost().getAlias() + "/Chat-war/api/connection");
+			AgentCenter rest = rtarget.proxy(AgentCenter.class);
+			rest.acceptMessage(agentMessageToForward);
+			resteasyClient.close();
+		}
+	}
+
+	@Override
+	public void acceptMessage(ACLMessage agentMessageToForward) {
+		System.out.println("Recieving forwarded agent message.");
+		messageManager.post(agentMessageToForward);		
 	}
 
 }
