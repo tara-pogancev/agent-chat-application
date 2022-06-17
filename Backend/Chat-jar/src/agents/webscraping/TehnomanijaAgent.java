@@ -1,16 +1,11 @@
 package agents.webscraping;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
-import javax.swing.plaf.synth.SynthSpinnerUI;
 
 import com.jaunt.Element;
 import com.jaunt.Elements;
@@ -79,7 +74,7 @@ public class TehnomanijaAgent implements Agent {
 //				System.out.println(html);
 				result.setLocation("Tehnomanija");
 				String title = html.split("data-name=\"")[1];
-				result.setTitle(title.split("&")[0]);
+				result.setTitle(title.split("\"")[0]);
 				
 				String price = html.split("data-price=\"")[1];
 				price = price.split("\"")[0];

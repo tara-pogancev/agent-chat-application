@@ -109,7 +109,7 @@ export class AgentCenterPageComponent implements OnInit {
         .startNewAgent(this.newAgentType, this.newAgentName)
         .subscribe((data) => {
           this.newAgentName = ' ';
-          this.newAgentType = 'Sample name.';
+          this.newAgentType = '';
         });
     }
   }
