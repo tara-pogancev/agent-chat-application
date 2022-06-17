@@ -27,7 +27,7 @@ public class WebScrapingSearchAgent implements Agent {
 	 */
 	private static final long serialVersionUID = 1L;
 	private AgentId agentId;
-	
+
 	private AgentManagerRemote agentManager = JNDILookup.lookUp(JNDILookup.AgentManagerLookup, AgentManagerBean.class);
 
 	@EJB
@@ -64,8 +64,8 @@ public class WebScrapingSearchAgent implements Agent {
 
 		case PASS_DATA_TO_USER:
 			SearchResult result = (SearchResult) message.getContentObj();
-			System.out.println("Results out: " + result.title);
-			Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.WebScrapingMasterAgentLookup, getMasterAgentName(), AgentTypeEnum.WEB_SCRAPING_MASTER_AGENT);
+			Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.WebScrapingMasterAgentLookup,
+					getMasterAgentName(), AgentTypeEnum.WEB_SCRAPING_MASTER_AGENT);
 			if (result.getTitle().toLowerCase().contains(getSearchParam().toLowerCase())) {
 				ACLMessage respondingMsg = new ACLMessage();
 				respondingMsg.setContentObj(result);
@@ -81,11 +81,11 @@ public class WebScrapingSearchAgent implements Agent {
 			break;
 		}
 	}
-	
+
 	private String getMasterAgentName() {
 		return this.agentId.getName().split("&")[0];
 	}
-	
+
 	private String getSearchParam() {
 		return this.agentId.getName().split("&")[1];
 	}

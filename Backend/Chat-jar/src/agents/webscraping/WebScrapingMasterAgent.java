@@ -61,7 +61,6 @@ public class WebScrapingMasterAgent implements Agent {
 			break;
 
 		case PASS_DATA_TO_USER:
-			System.out.println("Mmmh");
 			SearchResult result = (SearchResult) message.getContentObj();
 			ws.sendMessage(agentId.name, "SEARCH_RESULT&" + result.location + "&" + result.price + "&" + result.title);
 			break;

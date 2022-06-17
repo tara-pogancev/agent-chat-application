@@ -2,19 +2,22 @@
   <div class="columns variable">
     <div class="column is-5">
       <div class="container stretch-height">
-        <h1>Currently running agents ({{ agents.length }})</h1>
-        <mat-spinner *ngIf="loading"></mat-spinner>
-        <mat-chip-list>
-          <mat-chip color="primary" selected *ngFor="let agent of agents"
-            >{{ agent.agentId.type }}: <strong>{{ agent.agentId.name }}</strong
-            >, {{ agent.agentId.host.alias }}</mat-chip
-          >
-        </mat-chip-list>
-        <hr class="my-5" />
-        <h1>Available agent types:</h1>
-        <ol class="ml-5">
-          <li *ngFor="let type of agentTypes">{{ type }}</li>
-        </ol>
+        <div class="scrollable pr-5">
+          <h1>Currently running agents ({{ agents.length }})</h1>
+          <mat-spinner *ngIf="loading"></mat-spinner>
+          <mat-chip-list>
+            <mat-chip color="primary" selected *ngFor="let agent of agents"
+              >{{ agent.agentId.type }}:
+              <strong>{{ agent.agentId.name }}</strong
+              >, {{ agent.agentId.host.alias }}</mat-chip
+            >
+          </mat-chip-list>
+          <hr class="my-5" />
+          <h1>Available agent types:</h1>
+          <ol class="ml-5">
+            <li *ngFor="let type of agentTypes">{{ type }}</li>
+          </ol>
+        </div>
       </div>
     </div>
 

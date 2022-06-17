@@ -1,5 +1,10 @@
 package agents.webscraping;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +12,8 @@ import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.jaunt.Element;
 import com.jaunt.Elements;
 import com.jaunt.JauntException;
@@ -45,12 +52,16 @@ public class GigatronAgent implements Agent {
 		cachedAgents.addRunningAgent(this);
 		System.out.println("Scraping: " + searchUrl);
 		new Thread(() -> {
-			webScrape();
+			try {
+				webScrape();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}).start();
 		return agentId;
 	}
 
-	private void webScrape() {
+	private void webScrape() throws IOException {
 		try {
 			UserAgent userAgent = new UserAgent();
 			userAgent.visit(searchUrl);
@@ -71,22 +82,45 @@ public class GigatronAgent implements Agent {
 				searchResults.add(result);
 			}
 			
+			File file = new File(getPersonalFileName());
+			file.createNewFile();
+			FileWriter fileWriter = new FileWriter(getPersonalFileName());
+			Gson gson = new Gson();
+			String json = gson.toJson(searchResults);
+			fileWriter.write(json);
+			fileWriter.close();
+			
 			System.out.println("Gigatron agent finished web scraping " + searchResults.size() + " items.");
 						
 		} catch (JauntException e) {
 			System.err.println(e);
 		}
 	}
+	
+	private String getPersonalFileName() {
+		return "./" + this.agentId.name.replaceAll(" ", "") + "-gigatron" + ".json";
+	}
 
 	@Override
 	public void handleMessage(ACLMessage message) {
 		switch (message.getPerformative()) {
 		case REQUEST_ALL_DATA:
-			ACLMessage respondingMsg = new ACLMessage();
-			respondingMsg.setContentObj(this.searchResults);
-			respondingMsg.getRecievers().add(message.sender);
-			respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
-			messageManager.post(respondingMsg);
+			try {
+				Gson gson = new Gson();
+				Type resultListType = new TypeToken<ArrayList<SearchResult>>(){}.getType();
+				searchResults = gson.fromJson(new FileReader(getPersonalFileName()), resultListType);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			System.out.println("Tehnomanija in: " + searchResults.size());
+			for (SearchResult result : searchResults) {
+				ACLMessage respondingMsg = new ACLMessage();
+				respondingMsg.setContentObj(result);
+				respondingMsg.getRecievers().add(message.sender);
+				respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
+				messageManager.post(respondingMsg);
+			}
 			break;
 
 		default:

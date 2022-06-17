@@ -31,6 +31,7 @@
           <mat-card-subtitle>{{ result.location }}</mat-card-subtitle>
         </mat-card>
       </div>
+      <p *ngIf="results.length == 0">No search results to display.</p>
     </div>
   </div>
 </div>
