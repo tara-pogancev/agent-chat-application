@@ -41,7 +41,7 @@ public class TehnomanijaAgent implements Agent {
 	@Override
 	public AgentId init(AgentId agentId) {
 		this.agentId = agentId;
-		this.searchUrl += agentId.getName().toLowerCase().trim() + "&items_per_page=200";
+		this.searchUrl += agentId.getName().toLowerCase().trim().replaceAll(" ", "%20") + "&items_per_page=200";
 		cachedAgents.addRunningAgent(this);
 		System.out.println("Scraping: " + searchUrl);
 		new Thread(() -> {
@@ -76,7 +76,7 @@ public class TehnomanijaAgent implements Agent {
 			for (Element div : productDivs) {
 				SearchResult result = new SearchResult();
 				String html = div.outerHTML();
-				System.out.println(html);
+//				System.out.println(html);
 				result.setLocation("Tehnomanija");
 				String title = html.split("data-name=\"")[1];
 				result.setTitle(title.split("&")[0]);
@@ -95,24 +95,18 @@ public class TehnomanijaAgent implements Agent {
 		} catch (JauntException e) {
 			System.err.println(e);
 		}
-
 	}
 
 	@Override
 	public void handleMessage(ACLMessage message) {
 		switch (message.getPerformative()) {
-		case LOGIN:
-			break;
-
-		case REGISTER:
-			break;
-
-		case LOGOUT:
+		case SEND_WEB_SCRAPING_DATA:
+			
 			break;
 
 		default:
 			System.out
-					.println("ERROR! Option: " + message.getPerformative().toString() + " not defined for auth agent.");
+					.println("ERROR! Option: " + message.getPerformative().toString() + " not defined for Tehnomanija agent.");
 			break;
 		}
 	}

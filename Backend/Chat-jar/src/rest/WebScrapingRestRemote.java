@@ -17,6 +17,6 @@ public interface WebScrapingRestRemote {
 	@GET
 	@Path("/search/{text}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public List<SearchResult> searchWeb(@PathParam("text") String text);
+	public void searchWeb(@PathParam("text") String text);
 
 }

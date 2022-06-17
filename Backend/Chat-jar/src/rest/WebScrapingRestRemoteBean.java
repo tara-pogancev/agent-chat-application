@@ -29,11 +29,8 @@ import java.util.List;
 public class WebScrapingRestRemoteBean implements WebScrapingRestRemote {
 
 	@Override
-	public List<SearchResult> searchWeb(String text) {
-		List<SearchResult> retVal = new ArrayList<>();
+	public void searchWeb(String text) {
 		
-		
-		return retVal;
 	}
 
 }
