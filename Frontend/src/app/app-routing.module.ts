@@ -10,6 +10,7 @@ import { NewGroupMessagePageComponent } from './components/new-group-message-pag
 import { NewMessagePageComponent } from './components/new-message-page/new-message-page.component';
 import { RegisterPageComponent } from './components/register-page/register-page.component';
 import { RegisteredUsersPageComponent } from './components/registered-users-page/registered-users-page.component';
+import { WebScrapingPageComponent } from './components/web-scraping-page/web-scraping-page.component';
 import { AuthGuard, UnAuthGuard } from './service/auth-guard.service';
 
 const routes: Routes = [
@@ -24,6 +25,7 @@ const routes: Routes = [
       { path: 'active-users', component: ActiveUsersPageComponent },
       { path: 'registered-users', component: RegisteredUsersPageComponent },
       { path: 'agent-center', component: AgentCenterPageComponent },
+      { path: 'web-scrapers', component: WebScrapingPageComponent },
     ],
   },
   { path: 'login', component: LoginPageComponent, canActivate: [UnAuthGuard] },

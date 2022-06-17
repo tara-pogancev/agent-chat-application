@@ -6,9 +6,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.TextMessage;
 
 import agentmanager.CachedAgentsRemote;
 import chatmanager.ChatManagerRemote;

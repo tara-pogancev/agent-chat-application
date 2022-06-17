@@ -44,4 +44,13 @@ export class SystemService {
     message.inReplyTo = this.chatService.getActiveUsername()!;
     return this._http.post<any>(url, message);
   }
+
+  search(searchText: string) {
+    const url =
+      'http://localhost:8080/Chat-war/api/web/search/' +
+      searchText +
+      '/' +
+      this.chatService.getActiveUsername()!;
+    return this._http.get<any>(url);
+  }
 }

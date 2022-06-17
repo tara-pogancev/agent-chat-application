@@ -105,7 +105,6 @@ public class CachedAgentsBean implements CachedAgentsRemote {
 		ws.sendMessageToAllActive(
 				"RUNNING_AGENT&" + agentId.getName() + "&" + agentId.getType().toString() + "&"
 						+ agentId.getHost().getAlias() + "&" + agentId.getHost().getAddress());
-
 	}
 
 	@Override

@@ -57,9 +57,6 @@ public class MessageManagerBean implements MessageManagerRemote {
 		ObjectMessage msg = null;
 		try {
 			msg = session.createObjectMessage(amsg);	
-//			for(String property : amsg.userArgs.keySet()) {
-//				msg.setObjectProperty(property, amsg.userArgs.get(property));
-//			}
 			return msg;
 		} catch (JMSException e) {
 			e.printStackTrace();

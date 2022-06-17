@@ -1,7 +1,5 @@
 package agents.webscraping;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +16,8 @@ import agentmanager.CachedAgentsRemote;
 import agents.Agent;
 import agents.AgentId;
 import messagemanager.ACLMessage;
+import messagemanager.MessageManagerRemote;
+import messagemanager.PerformativeEnum;
 import models.SearchResult;
 
 @Stateful
@@ -34,6 +34,9 @@ public class DrTehnoAgent implements Agent {
 
 	@EJB
 	private CachedAgentsRemote cachedAgents;
+	
+	@EJB
+	public MessageManagerRemote messageManager;
 
 	@Override
 	public AgentId init(AgentId agentId) {
@@ -51,23 +54,6 @@ public class DrTehnoAgent implements Agent {
 		try {
 			UserAgent userAgent = new UserAgent();
 			userAgent.visit(searchUrl);
-						
-//			 try {
-//			      java.io.File myObj = new java.io.File("E:\\FTN\\drtehno.txt");
-//			      if (myObj.createNewFile()) {
-//			        System.out.println("File created: " + myObj.getName());
-//			      } else {
-//			        System.out.println("File already exists.");
-//			      }			      
-//
-//			      FileWriter myWriter = new FileWriter("E:\\FTN\\drtehno.txt");
-//			      myWriter.write(userAgent.doc.outerHTML());
-//			      myWriter.close();
-//			      
-//			    } catch (IOException e) {
-//			      System.out.println("An error occurred working with files.");
-//			      e.printStackTrace();
-//			    }		
 			
 			Elements productDivs = userAgent.doc.findEach("<div class=\"product details product-item-details\">");
 			System.out.println(productDivs.size());
@@ -82,7 +68,6 @@ public class DrTehnoAgent implements Agent {
 				Double priceDouble = Double.parseDouble(price);
 				result.setPrice(priceDouble);
 				
-				System.out.println(result.toString());
 				searchResults.add(result);
 			}
 			
@@ -96,8 +81,12 @@ public class DrTehnoAgent implements Agent {
 	@Override
 	public void handleMessage(ACLMessage message) {
 		switch (message.getPerformative()) {
-		case SEND_WEB_SCRAPING_DATA:
-			
+		case REQUEST_ALL_DATA:
+			ACLMessage respondingMsg = new ACLMessage();
+			respondingMsg.setContentObj(this.searchResults);
+			respondingMsg.getRecievers().add(message.sender);
+			respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
+			messageManager.post(respondingMsg);
 			break;
 
 		default:

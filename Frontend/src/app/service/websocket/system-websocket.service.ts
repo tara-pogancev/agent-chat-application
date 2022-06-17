@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { SearchResult } from 'src/app/model/SearchResult';
 import { WsMessage } from 'src/app/model/WsMessage';
 import { AgentModel } from '../../model/agent-model';
 import { ChatService } from '../chat.service';
@@ -46,8 +47,15 @@ export class SystemWebsocketService {
             retVal.type = 'PONG';
             retVal.content = responseString.split('&')[1];
             return retVal;
-          }
-          {
+          } else if (responseString.startsWith('SEARCH_RESULT')) {
+            retVal.type = 'SEARCH_RESULT';
+            let response = new SearchResult();
+            response.location = responseString.split('&')[1];
+            response.price = Number(responseString.split('&')[2]);
+            response.title = responseString.split('&')[3];
+            retVal.content = response;
+            return retVal;
+          } else {
             console.log('AGENT_TYPE: Safely ignore. ' + responseString);
             return;
           }

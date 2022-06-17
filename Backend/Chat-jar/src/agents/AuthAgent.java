@@ -9,7 +9,6 @@ import agentmanager.CachedAgentsRemote;
 import chatmanager.ChatManagerRemote;
 import messagemanager.ACLMessage;
 import messagemanager.MessageManagerRemote;
-import models.ChatMessage;
 import util.JNDILookup;
 import ws.WSChat;
 

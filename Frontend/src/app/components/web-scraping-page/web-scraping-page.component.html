@@ -1,1 +1,29 @@
-<p>web-scraping-page works!</p>
+<div class="page-container py-5 px-5 stretch-height">
+  <div class="container stretch-height">
+    <div class="is-flex is-flex-direction-row is-align-items-center">
+      <div class="mr-5">
+        <h1>Search data scraped from web:</h1>
+      </div>
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Search something...</mat-label>
+          <input matInput [(ngModel)]="searchText" />
+        </mat-form-field>
+      </div>
+      <div class="pb-4 ml-3">
+        <button
+          mat-icon-button
+          (click)="search()"
+          [disabled]="searchText.trim() == ''"
+        >
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+    </div>
+    <mat-chip-list> </mat-chip-list>
+    <hr class="my-5" />
+    <div>
+      <p *ngFor="let result of results">{{ result.title }}</p>
+    </div>
+  </div>
+</div>

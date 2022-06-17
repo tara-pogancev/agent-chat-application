@@ -32,7 +32,8 @@ export class ChatWebsocketService {
           responseString.startsWith('RUNNING_AGENT') ||
           responseString.startsWith('PERFORMATIVE') ||
           responseString.startsWith('AGENT_TYPE') ||
-          responseString.startsWith('PONG')
+          responseString.startsWith('PONG') ||
+          responseString.startsWith('SEARCH_RESULT')
         ) {
           console.log('MESSAGES: Safely ignore. ' + responseString);
           return;
