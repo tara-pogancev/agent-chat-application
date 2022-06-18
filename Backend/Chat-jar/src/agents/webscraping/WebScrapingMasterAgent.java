@@ -49,7 +49,7 @@ public class WebScrapingMasterAgent implements Agent {
 	public void handleMessage(ACLMessage message) {
 		switch (message.getPerformative()) {
 		case START_WEB_SEARCH:
-			Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.WebScrapingSearchAgentLookup, agentId.getName()+"&"+message.getContent(), AgentTypeEnum.WEB_SCRAPING_SEARCH_AGENT);
+			Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.WebScrapingSearchAgentLookup, agentId.getName()+"!"+message.getContent(), AgentTypeEnum.WEB_SCRAPING_SEARCH_AGENT);
 			ACLMessage agentMsg = new ACLMessage();
 			agentMsg.getRecievers().add(agent.getAgentId());	
 			agentMsg.setSender(this.agentId);

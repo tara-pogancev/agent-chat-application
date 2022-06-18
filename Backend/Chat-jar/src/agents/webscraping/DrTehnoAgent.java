@@ -30,7 +30,7 @@ import models.SearchResult;
 @Stateful
 @Remote(Agent.class)
 public class DrTehnoAgent implements Agent {
-	
+
 	/**
 	 * 
 	 */
@@ -41,7 +41,7 @@ public class DrTehnoAgent implements Agent {
 
 	@EJB
 	private CachedAgentsRemote cachedAgents;
-	
+
 	@EJB
 	public MessageManagerRemote messageManager;
 
@@ -53,9 +53,10 @@ public class DrTehnoAgent implements Agent {
 		System.out.println("Scraping: " + searchUrl);
 		new Thread(() -> {
 			try {
-				webScrape();
+				if (cachedAgents.isAgentLocal(agentId)) {
+					webScrape();
+				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}).start();
@@ -66,7 +67,7 @@ public class DrTehnoAgent implements Agent {
 		try {
 			UserAgent userAgent = new UserAgent();
 			userAgent.visit(searchUrl);
-			
+
 			Elements productDivs = userAgent.doc.findEach("<div class=\"product details product-item-details\">");
 			System.out.println(productDivs.size());
 			for (Element div : productDivs) {
@@ -75,14 +76,14 @@ public class DrTehnoAgent implements Agent {
 				result.setLocation("DrTehno");
 				String title = div.findFirst("<a>").innerHTML();
 				result.setTitle(title.split("%")[0].trim());
-				
+
 				String price = div.findFirst("<span data-price-amount>").getAt("data-price-amount");
 				Double priceDouble = Double.parseDouble(price);
 				result.setPrice(priceDouble);
-				
+
 				searchResults.add(result);
 			}
-			
+
 			File file = new File(getPersonalFileName());
 			file.createNewFile();
 			FileWriter fileWriter = new FileWriter(getPersonalFileName());
@@ -90,14 +91,14 @@ public class DrTehnoAgent implements Agent {
 			String json = gson.toJson(searchResults);
 			fileWriter.write(json);
 			fileWriter.close();
-			
+
 			System.out.println("DrTehno agent finished web scraping " + searchResults.size() + " items.");
-						
+
 		} catch (JauntException e) {
 			System.err.println(e);
 		}
 	}
-	
+
 	private String getPersonalFileName() {
 		return "./" + this.agentId.name.replaceAll(" ", "") + "-drtehno" + ".json";
 	}
@@ -108,25 +109,34 @@ public class DrTehnoAgent implements Agent {
 		case REQUEST_ALL_DATA:
 			try {
 				Gson gson = new Gson();
-				Type resultListType = new TypeToken<ArrayList<SearchResult>>(){}.getType();
+				Type resultListType = new TypeToken<ArrayList<SearchResult>>() {
+				}.getType();
 				searchResults = gson.fromJson(new FileReader(getPersonalFileName()), resultListType);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
-			System.out.println("Tehnomanija in: " + searchResults.size());
-			for (SearchResult result : searchResults) {
-				ACLMessage respondingMsg = new ACLMessage();
-				respondingMsg.setContentObj(result);
-				respondingMsg.getRecievers().add(message.sender);
-				respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
-				messageManager.post(respondingMsg);
-			}
+			System.out.println("DrTehno in: " + searchResults.size());
+			ACLMessage respondingMsg = new ACLMessage();
+			respondingMsg.setSearchResults(searchResults);
+			respondingMsg.setSender(agentId);
+			respondingMsg.getRecievers().add(message.sender);
+			respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
+			messageManager.post(respondingMsg);
+
+//			for (SearchResult result : searchResults) {
+//				ACLMessage respondingMsg = new ACLMessage();
+//				respondingMsg.setContentObj(result);
+//				respondingMsg.setSender(agentId);
+//				respondingMsg.getRecievers().add(message.sender);
+//				respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
+//				messageManager.post(respondingMsg);
+//			}
 			break;
 
 		default:
-			System.out
-					.println("ERROR! Option: " + message.getPerformative().toString() + " not defined for DrTehno agent.");
+			System.out.println(
+					"ERROR! Option: " + message.getPerformative().toString() + " not defined for DrTehno agent.");
 			break;
 		}
 	}
@@ -135,5 +145,5 @@ public class DrTehnoAgent implements Agent {
 	public AgentId getAgentId() {
 		return agentId;
 	}
-		
+
 }

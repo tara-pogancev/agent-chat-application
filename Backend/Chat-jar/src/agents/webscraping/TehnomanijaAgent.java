@@ -54,7 +54,9 @@ public class TehnomanijaAgent implements Agent {
 		System.out.println("Scraping: " + searchUrl);
 		new Thread(() -> {
 			try {
-				webScrape();
+				if (cachedAgents.isAgentLocal(agentId)) {
+					webScrape();
+				}
 			} catch (JsonIOException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -92,7 +94,7 @@ public class TehnomanijaAgent implements Agent {
 			String json = gson.toJson(searchResults);
 			fileWriter.write(json);
 			fileWriter.close();
-			
+
 			System.out.println("Tehnomanija agent finished web scraping " + searchResults.size() + " items.");
 
 		} catch (JauntException e) {
@@ -110,20 +112,29 @@ public class TehnomanijaAgent implements Agent {
 		case REQUEST_ALL_DATA:
 			try {
 				Gson gson = new Gson();
-				Type resultListType = new TypeToken<ArrayList<SearchResult>>(){}.getType();
+				Type resultListType = new TypeToken<ArrayList<SearchResult>>() {
+				}.getType();
 				searchResults = gson.fromJson(new FileReader(getPersonalFileName()), resultListType);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
 			System.out.println("Tehnomanija in: " + searchResults.size());
-			for (SearchResult result : searchResults) {
-				ACLMessage respondingMsg = new ACLMessage();
-				respondingMsg.setContentObj(result);
-				respondingMsg.getRecievers().add(message.sender);
-				respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
-				messageManager.post(respondingMsg);
-			}
+			ACLMessage respondingMsg = new ACLMessage();
+			respondingMsg.setSearchResults(searchResults);
+			respondingMsg.setSender(agentId);
+			respondingMsg.getRecievers().add(message.sender);
+			respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
+			messageManager.post(respondingMsg);
+
+//			for (SearchResult result : searchResults) {
+//				ACLMessage respondingMsg = new ACLMessage();
+//				respondingMsg.setContentObj(result);
+//				respondingMsg.setSender(agentId);
+//				respondingMsg.getRecievers().add(message.sender);
+//				respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
+//				messageManager.post(respondingMsg);
+//			}
 			break;
 
 		default:

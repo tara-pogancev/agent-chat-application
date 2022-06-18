@@ -4,13 +4,37 @@
       <div class="container stretch-height">
         <div class="scrollable pr-5">
           <h1>Currently running agents ({{ agents.length }})</h1>
+          <h3>Desktop agents</h3>
           <mat-spinner *ngIf="loading"></mat-spinner>
           <mat-chip-list>
-            <mat-chip color="primary" selected *ngFor="let agent of agents"
-              >{{ agent.agentId.type }}:
-              <strong>{{ agent.agentId.name }}</strong
-              >, {{ agent.agentId.host.alias }}</mat-chip
-            >
+            <div *ngFor="let agent of agents">
+              <mat-chip
+                color="primary"
+                selected
+                *ngIf="!agent.agentId.host.alias.startsWith('laptop')"
+                ><div>
+                  {{ agent.agentId.type }}: <br />
+                  <strong>{{ agent.agentId.name }}</strong
+                  >, {{ agent.agentId.host.alias }}
+                </div></mat-chip
+              >
+            </div>
+          </mat-chip-list>
+          <hr class="my-5" />
+          <h3>Laptop agents</h3>
+          <mat-chip-list>
+            <div *ngFor="let agent of agents">
+              <mat-chip
+                color="primary"
+                selected
+                *ngIf="agent.agentId.host.alias.startsWith('laptop')"
+                ><div>
+                  {{ agent.agentId.type }}: <br />
+                  <strong>{{ agent.agentId.name }}</strong
+                  >, {{ agent.agentId.host.alias }}
+                </div></mat-chip
+              >
+            </div>
           </mat-chip-list>
           <hr class="my-5" />
           <h1>Available agent types:</h1>
@@ -86,9 +110,10 @@
         <mat-form-field appearance="outline">
           <mat-label>Select agent</mat-label>
           <mat-select required [(ngModel)]="newMessageReceiver">
-            <mat-option [value]="agent.agentId" *ngFor="let agent of agents">{{
-              agent.agentId.name
-            }}</mat-option>
+            <mat-option [value]="agent.agentId" *ngFor="let agent of agents"
+              >{{ agent.agentId.name }}:
+              {{ agent.agentId.host.alias }}</mat-option
+            >
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">

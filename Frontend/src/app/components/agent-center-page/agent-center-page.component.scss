@@ -4,14 +4,14 @@
   min-height: 180px;
 }
 .scrollable {
-  height: 85vh;
+  height: calc(100vh - 140px);
   overflow-y: scroll;
   overflow-x: hidden;
 }
 
 strong {
   color: white !important;
-  margin-left: 10px !important;
+  //margin-left: 10px !important;
   font-size: 0.9rem;
 }
 
@@ -25,4 +25,8 @@ textarea {
 
 hr {
   border: solid black 0.5px !important;
+}
+
+mat-chip {
+  height: 50px !important;
 }

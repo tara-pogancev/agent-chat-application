@@ -53,7 +53,9 @@ public class GigatronAgent implements Agent {
 		System.out.println("Scraping: " + searchUrl);
 		new Thread(() -> {
 			try {
-				webScrape();
+				if (cachedAgents.isAgentLocal(agentId)) {
+					webScrape();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -70,7 +72,6 @@ public class GigatronAgent implements Agent {
 			for (Element div : productDivs) {
 				SearchResult result = new SearchResult();
 				String html = div.outerHTML();
-				System.out.println(html);
 				result.setLocation("Gigatron");
 				String title = div.findFirst("<h4>").innerHTML();
 				result.setTitle(title);
@@ -113,14 +114,22 @@ public class GigatronAgent implements Agent {
 				e.printStackTrace();
 			}
 
-			System.out.println("Tehnomanija in: " + searchResults.size());
-			for (SearchResult result : searchResults) {
-				ACLMessage respondingMsg = new ACLMessage();
-				respondingMsg.setContentObj(result);
-				respondingMsg.getRecievers().add(message.sender);
-				respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
-				messageManager.post(respondingMsg);
-			}
+			System.out.println("Gigatron in: " + searchResults.size());
+			ACLMessage respondingMsg = new ACLMessage();
+			respondingMsg.setSearchResults(searchResults);
+			respondingMsg.setSender(agentId);
+			respondingMsg.getRecievers().add(message.sender);
+			respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
+			messageManager.post(respondingMsg);
+
+//			for (SearchResult result : searchResults) {
+//				ACLMessage respondingMsg = new ACLMessage();
+//				respondingMsg.setContentObj(result);
+//				respondingMsg.setSender(agentId);
+//				respondingMsg.getRecievers().add(message.sender);
+//				respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
+//				messageManager.post(respondingMsg);
+//			}
 			break;
 
 		default:

@@ -371,6 +371,7 @@ public class AgentCenterBean implements AgentCenter {
 
 	@Override
 	public void forwardMessage(ACLMessage agentMessageToForward) {		
+		System.out.println("Forwarding message to: " + agentMessageToForward.getRecievers().get(0).getHost().getAlias());
 		String forwardAlias = agentMessageToForward.getRecievers().get(0).getHost().getAlias();
 		if (forwardAlias != null && forwardAlias != "") {
 			ResteasyClient resteasyClient = new ResteasyClientBuilder().build();

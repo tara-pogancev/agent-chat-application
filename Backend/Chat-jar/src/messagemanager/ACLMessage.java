@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import agents.AgentId;
+import models.SearchResult;
 
 public class ACLMessage implements Serializable {
 	
@@ -27,7 +28,8 @@ public class ACLMessage implements Serializable {
 	public String conversationId;
 	public String replyWith;
 	public String inReplyTo;
-	public Long replyBy;	
+	public Long replyBy;
+	public List<SearchResult> searchResults = new ArrayList<>();
 	
 	public ACLMessage() {
 		super();
@@ -148,6 +150,21 @@ public class ACLMessage implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
-	
+
+	public List<AgentId> getReceivers() {
+		return receivers;
+	}
+
+	public void setReceivers(List<AgentId> receivers) {
+		this.receivers = receivers;
+	}
+
+	public List<SearchResult> getSearchResults() {
+		return searchResults;
+	}
+
+	public void setSearchResults(List<SearchResult> searchResults) {
+		this.searchResults = searchResults;
+	}
+		
 }

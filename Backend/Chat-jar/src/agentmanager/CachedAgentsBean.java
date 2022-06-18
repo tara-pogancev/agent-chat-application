@@ -55,7 +55,7 @@ public class CachedAgentsBean implements CachedAgentsRemote {
 		ws.sendMessageToAllActive(
 				"RUNNING_AGENT&" + agent.getAgentId().getName() + "&" + agent.getAgentId().getType().toString() + "&"
 						+ agent.getAgentId().getHost().getAlias() + "&" + agent.getAgentId().getHost().getAddress());
-		
+
 		if (agentCenter.getHost().equals(agent.getAgentId().getHost())) {
 			agentCenter.notifyAllNewAgent(agent.getAgentId());
 		}
@@ -100,11 +100,30 @@ public class CachedAgentsBean implements CachedAgentsRemote {
 			agentManager.startAgentRemote(JNDILookup.SystemAgentLookup, agentId);
 			break;
 
+		case WEB_SCRAPING_MASTER_AGENT:
+			agentManager.startAgentRemote(JNDILookup.WebScrapingMasterAgentLookup, agentId);
+			break;
+
+		case WEB_SCRAPING_SEARCH_AGENT:
+			agentManager.startAgentRemote(JNDILookup.WebScrapingSearchAgentLookup, agentId);
+			break;
+
+		case TEHNOMANIJA_AGENT:
+			agentManager.startAgentRemote(JNDILookup.TehnomanijaAgentLookup, agentId);
+			break;
+
+		case GIGATRON_AGENT:
+			agentManager.startAgentRemote(JNDILookup.GigatronAgentLookup, agentId);
+			break;
+
+		case DR_TEHNO_AGENT:
+			agentManager.startAgentRemote(JNDILookup.DrTehnoAgentLookup, agentId);
+			break;
+
 		}
 
-		ws.sendMessageToAllActive(
-				"RUNNING_AGENT&" + agentId.getName() + "&" + agentId.getType().toString() + "&"
-						+ agentId.getHost().getAlias() + "&" + agentId.getHost().getAddress());
+		ws.sendMessageToAllActive("RUNNING_AGENT&" + agentId.getName() + "&" + agentId.getType().toString() + "&"
+				+ agentId.getHost().getAlias() + "&" + agentId.getHost().getAddress());
 	}
 
 	@Override
@@ -118,6 +137,11 @@ public class CachedAgentsBean implements CachedAgentsRemote {
 		}
 
 		runningAgents.removeIf(a -> a.getAgentId().getHost().getAlias().equals(alias));
+	}
+
+	@Override
+	public boolean isAgentLocal(AgentId agentId) {
+		return agentId.getHost().equals(agentCenter.getHost());
 	}
 
 }

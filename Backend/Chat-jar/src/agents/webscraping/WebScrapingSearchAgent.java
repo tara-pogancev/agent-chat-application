@@ -1,5 +1,6 @@
 package agents.webscraping;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -52,6 +53,7 @@ public class WebScrapingSearchAgent implements Agent {
 				if (runningAgent.getAgentId().getType().equals(AgentTypeEnum.TEHNOMANIJA_AGENT)
 						|| runningAgent.getAgentId().getType().equals(AgentTypeEnum.GIGATRON_AGENT)
 						|| runningAgent.getAgentId().getType().equals(AgentTypeEnum.DR_TEHNO_AGENT)) {
+					System.out.println("Adding agent: " + runningAgent.getAgentId().getName() + runningAgent.getAgentId().getHost().getAlias());
 					agentMsg.getRecievers().add(runningAgent.getAgentId());
 				}
 			}
@@ -63,16 +65,49 @@ public class WebScrapingSearchAgent implements Agent {
 			break;
 
 		case PASS_DATA_TO_USER:
-			SearchResult result = (SearchResult) message.getContentObj();
+			List<SearchResult> results = message.getSearchResults();
 			Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.WebScrapingMasterAgentLookup,
 					getMasterAgentName(), AgentTypeEnum.WEB_SCRAPING_MASTER_AGENT);
-			if (result.getTitle().toLowerCase().contains(getSearchParam().toLowerCase())) {
-				ACLMessage respondingMsg = new ACLMessage();
-				respondingMsg.setContentObj(result);
-				respondingMsg.getRecievers().add(agent.getAgentId());
-				respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
-				messageManager.post(respondingMsg);
+			for (SearchResult result: results) {
+				if (result.getTitle().toLowerCase().contains(getSearchParam().toLowerCase())) {
+					// System.out.println("From: " + message.getSender());
+					ACLMessage respondingMsg = new ACLMessage();
+					respondingMsg.setContentObj(result);
+					respondingMsg.getRecievers().add(agent.getAgentId());
+					respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
+					messageManager.post(respondingMsg);
+				}
 			}
+			
+//			try {
+//				result = (SearchResult) message.getContentObj();
+//				Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.WebScrapingMasterAgentLookup,
+//						getMasterAgentName(), AgentTypeEnum.WEB_SCRAPING_MASTER_AGENT);
+//				if (result.getTitle().toLowerCase().contains(getSearchParam().toLowerCase())) {
+//					// System.out.println("From: " + message.getSender());
+//					ACLMessage respondingMsg = new ACLMessage();
+//					respondingMsg.setContentObj(result);
+//					respondingMsg.getRecievers().add(agent.getAgentId());
+//					respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
+//					messageManager.post(respondingMsg);
+//				}
+//			} catch (Exception e){
+//				System.out.println("Error occured while reading message from: " + message.getSender().getHost().getAlias());
+//				result.setLocation((String) ((LinkedHashMap)message.getContentObj()).get("location"));
+//				result.setTitle((String) ((LinkedHashMap)message.getContentObj()).get("title"));
+//				result.setPrice((Double) ((LinkedHashMap)message.getContentObj()).get("price"));
+//				Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.WebScrapingMasterAgentLookup,
+//						getMasterAgentName(), AgentTypeEnum.WEB_SCRAPING_MASTER_AGENT);
+//				if (result.getTitle().toLowerCase().contains(getSearchParam().toLowerCase())) {
+//					// System.out.println("From: " + message.getSender());
+//					ACLMessage respondingMsg = new ACLMessage();
+//					respondingMsg.setContentObj(result);
+//					respondingMsg.getRecievers().add(agent.getAgentId());
+//					respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
+//					messageManager.post(respondingMsg);
+//				}
+//			}
+			
 			break;
 
 		default:
@@ -83,11 +118,11 @@ public class WebScrapingSearchAgent implements Agent {
 	}
 
 	private String getMasterAgentName() {
-		return this.agentId.getName().split("&")[0];
+		return this.agentId.getName().split("!")[0];
 	}
 
 	private String getSearchParam() {
-		return this.agentId.getName().split("&")[1];
+		return this.agentId.getName().split("!")[1];
 	}
 
 	@Override

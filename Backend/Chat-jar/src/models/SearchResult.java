@@ -56,6 +56,4 @@ public class SearchResult implements Serializable {
 		return "SearchResult [title=" + title + ", location=" + location + ", price=" + price + "]";
 	}
 	
-	
-	
 }
