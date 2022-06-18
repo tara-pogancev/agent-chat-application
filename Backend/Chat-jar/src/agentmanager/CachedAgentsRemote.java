@@ -1,9 +1,11 @@
 package agentmanager;
 
+import java.util.List;
 import java.util.Set;
 
 import agents.Agent;
 import agents.AgentId;
+import models.SearchResult;
 
 public interface CachedAgentsRemote {
 
@@ -15,4 +17,5 @@ public interface CachedAgentsRemote {
 	public void stopAgentFromRemote(AgentId agentId);
 	public void removeFromNode(String alias);
 	public boolean isAgentLocal(AgentId agentId);
+	public List<SearchResult> getAllLocalAgentsData();
 }

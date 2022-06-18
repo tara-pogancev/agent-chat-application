@@ -56,8 +56,7 @@ public class MDBConsumer implements MessageListener {
 			}
 		} catch (JMSException e) {
 			e.printStackTrace();
-		}
-		
+		}		
 	}
 
 }

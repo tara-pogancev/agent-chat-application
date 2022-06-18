@@ -1,5 +1,6 @@
 package agents.webscraping;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -49,17 +50,30 @@ public class WebScrapingSearchAgent implements Agent {
 		switch (message.getPerformative()) {
 		case REQUEST_FILTERED_DATA:
 			ACLMessage agentMsg = new ACLMessage();
+			AgentId remoteAgent = null;
 			for (Agent runningAgent : cachedAgents.getRunningAgents()) {
 				if (runningAgent.getAgentId().getType().equals(AgentTypeEnum.TEHNOMANIJA_AGENT)
 						|| runningAgent.getAgentId().getType().equals(AgentTypeEnum.GIGATRON_AGENT)
 						|| runningAgent.getAgentId().getType().equals(AgentTypeEnum.DR_TEHNO_AGENT)) {
-					System.out.println("Adding agent: " + runningAgent.getAgentId().getName() + runningAgent.getAgentId().getHost().getAlias());
-					agentMsg.getRecievers().add(runningAgent.getAgentId());
+					if (cachedAgents.isAgentLocal(runningAgent.getAgentId())) {
+						agentMsg.getRecievers().add(runningAgent.getAgentId());
+					} else {
+						remoteAgent = runningAgent.getAgentId();
+					}
 				}
 			}
 			agentMsg.setSender(this.agentId);
 			agentMsg.setPerformative(PerformativeEnum.REQUEST_ALL_DATA);
 			messageManager.post(agentMsg);
+			
+			if (remoteAgent != null) {
+				ACLMessage remoteMsg = new ACLMessage();
+				remoteMsg.setSender(this.agentId);
+				remoteMsg.getReceivers().add(remoteAgent);
+				remoteMsg.setPerformative(PerformativeEnum.REQUEST_ALL_LOCAL_AGENTS_DATA);
+				System.out.println("Requesting all remote data from: " + remoteAgent.getHost().getAlias());
+				messageManager.post(remoteMsg);
+			}
 
 			System.out.println("Starting web search for " + agentId.name);
 			break;
@@ -70,7 +84,6 @@ public class WebScrapingSearchAgent implements Agent {
 					getMasterAgentName(), AgentTypeEnum.WEB_SCRAPING_MASTER_AGENT);
 			for (SearchResult result: results) {
 				if (result.getTitle().toLowerCase().contains(getSearchParam().toLowerCase())) {
-					// System.out.println("From: " + message.getSender());
 					ACLMessage respondingMsg = new ACLMessage();
 					respondingMsg.setContentObj(result);
 					respondingMsg.getRecievers().add(agent.getAgentId());
@@ -78,35 +91,6 @@ public class WebScrapingSearchAgent implements Agent {
 					messageManager.post(respondingMsg);
 				}
 			}
-			
-//			try {
-//				result = (SearchResult) message.getContentObj();
-//				Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.WebScrapingMasterAgentLookup,
-//						getMasterAgentName(), AgentTypeEnum.WEB_SCRAPING_MASTER_AGENT);
-//				if (result.getTitle().toLowerCase().contains(getSearchParam().toLowerCase())) {
-//					// System.out.println("From: " + message.getSender());
-//					ACLMessage respondingMsg = new ACLMessage();
-//					respondingMsg.setContentObj(result);
-//					respondingMsg.getRecievers().add(agent.getAgentId());
-//					respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
-//					messageManager.post(respondingMsg);
-//				}
-//			} catch (Exception e){
-//				System.out.println("Error occured while reading message from: " + message.getSender().getHost().getAlias());
-//				result.setLocation((String) ((LinkedHashMap)message.getContentObj()).get("location"));
-//				result.setTitle((String) ((LinkedHashMap)message.getContentObj()).get("title"));
-//				result.setPrice((Double) ((LinkedHashMap)message.getContentObj()).get("price"));
-//				Agent agent = agentManager.getAgentByIdOrStartNew(JNDILookup.WebScrapingMasterAgentLookup,
-//						getMasterAgentName(), AgentTypeEnum.WEB_SCRAPING_MASTER_AGENT);
-//				if (result.getTitle().toLowerCase().contains(getSearchParam().toLowerCase())) {
-//					// System.out.println("From: " + message.getSender());
-//					ACLMessage respondingMsg = new ACLMessage();
-//					respondingMsg.setContentObj(result);
-//					respondingMsg.getRecievers().add(agent.getAgentId());
-//					respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
-//					messageManager.post(respondingMsg);
-//				}
-//			}
 			
 			break;
 
@@ -128,6 +112,11 @@ public class WebScrapingSearchAgent implements Agent {
 	@Override
 	public AgentId getAgentId() {
 		return agentId;
+	}
+
+	@Override
+	public List<SearchResult> getSearchResults() {
+		return new ArrayList<SearchResult>();
 	}
 
 }

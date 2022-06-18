@@ -1,5 +1,8 @@
 package agents;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Remote;
@@ -11,6 +14,7 @@ import agentmanager.CachedAgentsRemote;
 import messagemanager.ACLMessage;
 import messagemanager.MessageManagerRemote;
 import messagemanager.PerformativeEnum;
+import models.SearchResult;
 import util.JNDILookup;
 import ws.WSChat;
 
@@ -139,6 +143,12 @@ public class SystemAgent implements Agent  {
 	@Override
 	public AgentId getAgentId() {
 		return agentId;
+	}
+	
+
+	@Override
+	public List<SearchResult> getSearchResults() {
+		return new ArrayList<SearchResult>();
 	}
 
 }

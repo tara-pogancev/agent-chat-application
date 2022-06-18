@@ -1,6 +1,8 @@
 package agentmanager;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.ejb.EJB;
@@ -11,6 +13,8 @@ import javax.ejb.Singleton;
 import agentcenter.AgentCenter;
 import agents.Agent;
 import agents.AgentId;
+import agents.AgentTypeEnum;
+import models.SearchResult;
 import util.JNDILookup;
 import ws.WSChat;
 
@@ -142,6 +146,24 @@ public class CachedAgentsBean implements CachedAgentsRemote {
 	@Override
 	public boolean isAgentLocal(AgentId agentId) {
 		return agentId.getHost().equals(agentCenter.getHost());
+	}
+
+	@Override
+	public List<SearchResult> getAllLocalAgentsData() {
+		System.out.println("Collecting data from files...");
+		List<SearchResult> retVal = new ArrayList<SearchResult>();
+		for (Agent agent : runningAgents) {
+			if (isAgentLocal(agent.getAgentId())) {
+				if (agent.getAgentId().getType().equals(AgentTypeEnum.TEHNOMANIJA_AGENT)
+						|| agent.getAgentId().getType().equals(AgentTypeEnum.GIGATRON_AGENT)
+						|| agent.getAgentId().getType().equals(AgentTypeEnum.DR_TEHNO_AGENT)) {
+					for (SearchResult res : agent.getSearchResults()) {
+						retVal.add(res);
+					}
+				}
+			}
+		}
+		return retVal;
 	}
 
 }

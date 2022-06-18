@@ -108,38 +108,33 @@ public class TehnomanijaAgent implements Agent {
 
 	@Override
 	public void handleMessage(ACLMessage message) {
+		ACLMessage respondingMsg = new ACLMessage();
 		switch (message.getPerformative()) {
 		case REQUEST_ALL_DATA:
-			try {
-				Gson gson = new Gson();
-				Type resultListType = new TypeToken<ArrayList<SearchResult>>() {
-				}.getType();
-				searchResults = gson.fromJson(new FileReader(getPersonalFileName()), resultListType);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			System.out.println("Tehnomanija in: " + searchResults.size());
-			ACLMessage respondingMsg = new ACLMessage();
+			this.searchResults = getSearchResults();
+			System.out.println("DrTehno in: " + searchResults.size());
+			respondingMsg = new ACLMessage();
 			respondingMsg.setSearchResults(searchResults);
 			respondingMsg.setSender(agentId);
 			respondingMsg.getRecievers().add(message.sender);
 			respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
 			messageManager.post(respondingMsg);
-
-//			for (SearchResult result : searchResults) {
-//				ACLMessage respondingMsg = new ACLMessage();
-//				respondingMsg.setContentObj(result);
-//				respondingMsg.setSender(agentId);
-//				respondingMsg.getRecievers().add(message.sender);
-//				respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
-//				messageManager.post(respondingMsg);
-//			}
+			break;
+			
+		case REQUEST_ALL_LOCAL_AGENTS_DATA:
+			this.searchResults = cachedAgents.getAllLocalAgentsData();
+			System.out.println("All local node agents in: " + searchResults.size());
+			respondingMsg = new ACLMessage();
+			respondingMsg.setSearchResults(searchResults);
+			respondingMsg.setSender(agentId);
+			respondingMsg.getRecievers().add(message.sender);
+			respondingMsg.setPerformative(PerformativeEnum.PASS_DATA_TO_USER);
+			messageManager.post(respondingMsg);
 			break;
 
 		default:
 			System.out.println(
-					"ERROR! Option: " + message.getPerformative().toString() + " not defined for Tehnomanija agent.");
+					"ERROR! Option: " + message.getPerformative().toString() + " not defined for DrTehno agent.");
 			break;
 		}
 	}
@@ -157,12 +152,19 @@ public class TehnomanijaAgent implements Agent {
 		this.searchUrl = searchUrl;
 	}
 
+	
+	@Override
 	public List<SearchResult> getSearchResults() {
+		try {
+			Gson gson = new Gson();
+			Type resultListType = new TypeToken<ArrayList<SearchResult>>() {
+			}.getType();
+			searchResults = gson.fromJson(new FileReader(getPersonalFileName()), resultListType);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		return searchResults;
-	}
-
-	public void setSearchResults(List<SearchResult> searchResults) {
-		this.searchResults = searchResults;
 	}
 
 }

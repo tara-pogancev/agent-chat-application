@@ -1,5 +1,8 @@
 package agents.webscraping;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
@@ -76,5 +79,11 @@ public class WebScrapingMasterAgent implements Agent {
 	public AgentId getAgentId() {
 		return agentId;
 	}
+	
+	@Override
+	public List<SearchResult> getSearchResults() {
+		return new ArrayList<SearchResult>();
+	}
+
 
 }

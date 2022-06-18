@@ -1,5 +1,6 @@
 package agents;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +13,7 @@ import chatmanager.ChatManagerRemote;
 import messagemanager.ACLMessage;
 import messagemanager.MessageManagerRemote;
 import models.ChatMessage;
+import models.SearchResult;
 import models.User;
 import util.JNDILookup;
 import ws.WSChat;
@@ -123,5 +125,11 @@ public class ChatAgent implements Agent {
 	@Override
 	public AgentId getAgentId() {
 		return agentId;
+	}
+	
+
+	@Override
+	public List<SearchResult> getSearchResults() {
+		return new ArrayList<SearchResult>();
 	}
 }
